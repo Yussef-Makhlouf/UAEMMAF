@@ -2,19 +2,35 @@ import createMiddleware from 'next-intl/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// تنشئ دالة الوسيط مع دعم الكوكيز
+// Create intl middleware with cookie support
 const intlMiddleware = createMiddleware({
   locales: ['en', 'ar'],
   defaultLocale: 'en',
   localePrefix: 'as-needed',
-  localeDetection: true // تمكين اكتشاف اللغة
+  localeDetection: true
 });
 
-// وسيط مخصص للتحقق من ملفات تعريف الارتباط وتعيين اللغة
+// Helper function to clean paths with repeated locales
+function cleanPathWithRepeatedLocales(path: string): string {
+  const locales = ['en', 'ar'];
+  const localePattern = locales.join('|');
+  
+  // Check for repeated locale patterns like /ar/ar, /en/ar, /ar/en, etc.
+  const repeatedLocaleRegex = new RegExp(`^/(${localePattern})/(${localePattern})(/.*)?$`);
+  const match = path.match(repeatedLocaleRegex);
+  
+  if (match) {
+    // Keep the first locale and any additional path
+    return `/${match[1]}${match[3] || ''}`;
+  }
+  
+  return path;
+}
+
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // للتأكد من عدم التداخل مع الملفات الثابتة والأصول
+  // Skip middleware for static files and assets
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
@@ -24,46 +40,63 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // معالجة المسارات المكررة مثل /ar/ar - تحسين طريقة الكشف والإصلاح
-  const repeatedLocalePattern = /^\/(en|ar)\/(en|ar)(\/.*)?$/;
-  const repeatedMatch = pathname.match(repeatedLocalePattern);
-  
-  if (repeatedMatch) {
-    // الحصول على اللغة الأولى في المسار
-    const firstLocale = repeatedMatch[1];
-    // إنشاء المسار الصحيح باستخدام اللغة الأولى فقط
-    const fixedPath = pathname.replace(repeatedLocalePattern, `/${firstLocale}$3`);
-    const newUrl = new URL(fixedPath, request.url);
+  // First, handle repeated locale patterns in the URL
+  const cleanedPath = cleanPathWithRepeatedLocales(pathname);
+  if (cleanedPath !== pathname) {
+    const newUrl = new URL(cleanedPath, request.url);
     newUrl.search = request.nextUrl.search;
     return NextResponse.redirect(newUrl);
   }
 
-  // تحقق من وجود ملف تعريف ارتباط للغة
+  // Check locale cookie
   const localeCookie = request.cookies.get('NEXT_LOCALE')?.value;
   
-  // إذا كان هناك ملف تعريف ارتباط للغة وكان المسار الحالي لا يعكس هذه اللغة
-  const hasDefaultLocaleInPath = pathname === '/' || pathname.startsWith('/en/');
-  const hasArLocaleInPath = pathname.startsWith('/ar/');
+  // Check the current path's locale
+  const isRootPath = pathname === '/';
+  const hasEnLocaleInPath = pathname.startsWith('/en/') || pathname === '/en';
+  const hasArLocaleInPath = pathname.startsWith('/ar/') || pathname === '/ar';
   
+  // If cookie is set to Arabic but path isn't in Arabic
   if (localeCookie === 'ar' && !hasArLocaleInPath) {
-    // تحويل إلى المسار العربي
-    const newUrl = new URL(
-      pathname === '/' ? '/ar' : `/ar${pathname}`, 
-      request.url
-    );
+    let newPath;
+    
+    if (isRootPath) {
+      // Root path needs Arabic locale
+      newPath = '/ar';
+    } else if (hasEnLocaleInPath) {
+      // Replace English locale with Arabic
+      newPath = pathname.replace(/^\/en(\/|$)/, '/ar$1');
+    } else {
+      // Add Arabic prefix to other paths (ensuring we don't double slash)
+      newPath = `/ar${pathname.startsWith('/') ? pathname : `/${pathname}`}`;
+    }
+    
+    const newUrl = new URL(newPath, request.url);
     newUrl.search = request.nextUrl.search;
     return NextResponse.redirect(newUrl);
-  } else if (localeCookie === 'en' && !hasDefaultLocaleInPath && hasArLocaleInPath) {
-    // تحويل إلى المسار الإنجليزي
-    const newUrl = new URL(
-      pathname.replace(/^\/ar/, '') || '/', 
-      request.url
-    );
+  } 
+  // If cookie is set to English but path is in Arabic
+  else if (localeCookie === 'en' && hasArLocaleInPath) {
+    let newPath;
+    
+    if (pathname === '/ar') {
+      // Root Arabic path becomes root path
+      newPath = '/';
+    } else {
+      // Remove Arabic locale prefix
+      newPath = pathname.replace(/^\/ar(\/|$)/, '/$1').replace(/\/+/, '/');
+      // If the path is now empty, set it to root
+      if (newPath === '' || newPath === '//' || newPath === '//') {
+        newPath = '/';
+      }
+    }
+    
+    const newUrl = new URL(newPath, request.url);
     newUrl.search = request.nextUrl.search;
     return NextResponse.redirect(newUrl);
   }
 
-  // في حالة عدم وجود ملف تعريف ارتباط أو عندما يعكس المسار الحالي اللغة المخزنة بالفعل
+  // Default - use the intl middleware
   return intlMiddleware(request);
 }
 

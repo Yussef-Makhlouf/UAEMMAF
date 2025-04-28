@@ -130,11 +130,11 @@ export default function Hero() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
                   >
-                    <Link href={slides[currentSlide].link}>
+                    {/* <Link href={slides[currentSlide].link}>
                       <Button className="bg-primary hover:bg-primary-dark text-white text-lg px-8 py-6 h-auto rounded-md">
                         {slides[currentSlide].cta}
                       </Button>
-                    </Link>
+                    </Link> */}
                   </motion.div>
                 </motion.div>
               </div>

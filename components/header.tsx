@@ -18,13 +18,33 @@ export default function Header() {
   const locale = useLocale()
 
   const getLocalizedHref = (path: string) => {
+    // For external URLs (absolute URLs), return as is
     if (path.startsWith('http')) {
       return path;
     }
+    
+    // Special handling for the home page
     if (path === '/') {
-      return `/${locale === 'en' ? '' : locale}`;
+      if (locale === 'en') {
+        return '/'; // Default locale - no prefix needed
+      } else {
+        return `/${locale}`; // For other locales like Arabic, just use the locale
+      }
     }
-    return `/${locale}${path.startsWith('/') ? path : `/${path}`}`;
+    
+    // Normalize path to ensure it starts with a single slash
+    let normalizedPath = path;
+    if (!normalizedPath.startsWith('/')) {
+      normalizedPath = `/${normalizedPath}`;
+    }
+    
+    // Remove any potential trailing slashes except for the root path
+    if (normalizedPath !== '/' && normalizedPath.endsWith('/')) {
+      normalizedPath = normalizedPath.slice(0, -1);
+    }
+    
+    // Add locale prefix
+    return `/${locale}${normalizedPath}`;
   };
 
   const handleMenuClose = () => {
@@ -40,7 +60,10 @@ export default function Header() {
           <div className="flex justify-between items-center">
             {/* Logo */}
             <div className="flex items-center">
-              <Link href={getLocalizedHref('/')} className="flex-shrink-0">
+              <Link 
+                href={locale === 'en' ? '/' : `/${locale}`} 
+                className="flex-shrink-0"
+              >
                 <Image 
                   src="/logo3.png" 
                   alt="UAEMMAF Logo" 
@@ -69,9 +92,9 @@ export default function Header() {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-6">
               <Link 
-                href={getLocalizedHref('/')}
+                href={locale === 'en' ? '/' : `/${locale}`}
                 className={`font-medium hover:text-primary transition-colors ${
-                  pathname === "/" ? "text-primary" : "text-white"
+                  pathname === "/" || pathname === `/${locale}` ? "text-primary" : "text-white"
                 }`}
               >
                 {t('home')}
@@ -203,7 +226,11 @@ export default function Header() {
                 >
                   <div className="p-6">
                     <div className="flex justify-between items-center mb-8">
-                      <Link href={getLocalizedHref('/')} className="flex-shrink-0" onClick={handleMenuClose}>
+                      <Link 
+                        href={locale === 'en' ? '/' : `/${locale}`} 
+                        className="flex-shrink-0" 
+                        onClick={handleMenuClose}
+                      >
                         <Image 
                           src="/logo3.png" 
                           alt="UAEMMAF Logo" 
@@ -225,7 +252,11 @@ export default function Header() {
                     </div>
                     
                     <nav className="flex flex-col space-y-6">
-                      <Link href={getLocalizedHref('/')} className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" onClick={handleMenuClose}>
+                      <Link 
+                        href={locale === 'en' ? '/' : `/${locale}`} 
+                        className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" 
+                        onClick={handleMenuClose}
+                      >
                         {t('home')}
                       </Link>
                       <Link href={getLocalizedHref('/about')} className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" onClick={handleMenuClose}>
