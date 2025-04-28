@@ -21,6 +21,7 @@ export default function Footer() {
               alt="Capital Smart Logo" 
               width={140} 
               height={50}
+              loading="lazy"
               className="w-auto h-8 sm:h-10"
             />
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">

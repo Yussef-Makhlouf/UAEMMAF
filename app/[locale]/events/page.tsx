@@ -290,6 +290,7 @@ function EventsContent() {
                         src={event.image}
                         alt={event.title}
                         fill
+                        loading="lazy"
                         className="object-cover transition-transform group-hover:scale-105 duration-500"
                       />
                       <div className="absolute top-4 left-4 bg-primary text-white text-sm font-medium px-3 py-1 rounded">

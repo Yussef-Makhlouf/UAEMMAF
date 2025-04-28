@@ -338,6 +338,7 @@ export default function EventDetailPage() {
                   src="/hero2.jpeg"
                   alt={event.location}
                   fill
+                  loading="lazy"
                   className="object-cover"
                 />
               </div>
@@ -361,6 +362,7 @@ export default function EventDetailPage() {
                           src={otherEvent.image}
                           alt={otherEvent.title}
                           fill
+                          loading="lazy"
                           className="object-cover"
                         />
                       </div>

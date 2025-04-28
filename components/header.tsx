@@ -69,6 +69,7 @@ export default function Header() {
                   alt="UAEMMAF Logo" 
                   width={120} 
                   height={70} 
+                  loading="lazy"
                   className="rounded-sm"
                 />
               </Link>
@@ -236,6 +237,7 @@ export default function Header() {
                           alt="UAEMMAF Logo" 
                           width={120} 
                           height={70} 
+                          loading="lazy"
                           className="rounded-sm"
                         />
                       </Link>

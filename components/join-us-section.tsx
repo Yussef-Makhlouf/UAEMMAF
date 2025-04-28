@@ -67,6 +67,7 @@ export default function JoinUsSection() {
                 src="/main.jpg"
                 alt={t('athletes.title')}
                 fill
+                loading="lazy"
                 className="object-cover transition-transform group-hover:scale-105 duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-70"></div>
@@ -131,6 +132,7 @@ export default function JoinUsSection() {
                 src="/main2.jpg"
                 alt={t('clubs.title')}
                 fill
+                loading="lazy"
                 className="object-cover transition-transform group-hover:scale-105 duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-70"></div>

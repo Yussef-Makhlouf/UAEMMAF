@@ -249,6 +249,7 @@ export default function NewsPage() {
                       src={item.image}
                       alt={item.title}
                       fill
+                      loading="lazy"
                       className="object-cover transition-transform group-hover:scale-105 duration-500"
                     />
                     <div className="absolute top-4 right-4 bg-primary px-3 py-1 rounded-full text-xs font-medium text-white">

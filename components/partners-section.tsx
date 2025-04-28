@@ -113,6 +113,7 @@ export default function PartnersSection() {
                   src={partner.logo}
                   alt={partner.name}
                   fill
+                  loading="lazy"
                   className="object-contain bg-white rounded-[40px] items-center justify-center"
                 />
               </div>
