@@ -1,6 +1,6 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import { useParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -22,8 +22,17 @@ type NewsItem = {
 
 export default function NewsArticlePage() {
   const t = useTranslations('news')
+  const locale = useLocale()
   const params = useParams<{ slug: string }>()
   const slug = params?.slug
+
+  // إنشاء رابط مع اللغة
+  const getLocalizedHref = (path: string) => {
+    if (path.startsWith('http')) {
+      return path;
+    }
+    return `/${locale}${path.startsWith('/') ? path : `/${path}`}`;
+  };
 
   // In a real application, you would fetch the article based on the slug from an API or CMS
   // Here we're using mock data
@@ -42,7 +51,7 @@ export default function NewsArticlePage() {
   // Format date to display in a localized format
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -97,41 +106,34 @@ export default function NewsArticlePage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Article Content */}
+      <div className="container mx-auto px-4 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* Main Content */}
           <div className="lg:col-span-2">
-            <div className="bg-background-200 rounded-lg p-6 md:p-10 mb-10">
-              <div className="prose prose-invert max-w-none">
-                <p className="text-xl text-gray-300 mb-6 font-medium leading-relaxed">
-                  {article.excerpt}
-                </p>
-                
-                <div className="my-8 border-y border-gray-700 py-4">
-                  <div className="flex items-center gap-4">
-                    <div className="relative h-12 w-12 rounded-full overflow-hidden">
-                      <Image 
-                        src={article.authorImage}
-                        alt={article.author}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-white text-sm font-medium">{t('byAuthor')}</p>
-                      <p className="text-primary font-bold">{article.author}</p>
-                    </div>
+            <div className="bg-background-200 rounded-lg p-8">
+              <div className="prose prose-lg prose-invert max-w-none mb-8">
+                <div className="flex items-center gap-4 mb-8 pb-6 border-b border-gray-700">
+                  <div className="relative h-12 w-12 rounded-full overflow-hidden">
+                    <Image
+                      src={article.authorImage}
+                      alt={article.author}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('byAuthor')}</p>
+                    <p className="text-white font-medium">{article.author}</p>
                   </div>
                 </div>
-                
-                <div className="text-gray-300 space-y-6 text-lg leading-relaxed">
-                  {article.content.split("\n\n").map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
-                </div>
+                {/* Article content - split by paragraphs */}
+                {article.content.split('\n\n').map((paragraph, index) => (
+                  <p key={index} className="text-gray-300 mb-4">
+                    {paragraph}
+                  </p>
+                ))}
               </div>
               
-              {/* Share Section */}
               <div className="mt-10 pt-6 border-t border-gray-700">
                 <h3 className="text-white font-medium mb-4 flex items-center">
                   <Share2 className="mr-2 h-5 w-5" /> {t('shareArticle')}
@@ -151,7 +153,7 @@ export default function NewsArticlePage() {
             </div>
             
             {/* Back Button */}
-            <Link href="/news">
+            <Link href={getLocalizedHref('/news')}>
               <Button variant="outline" className="text-white border-gray-700 hover:bg-background-300">
                 <ChevronLeft className="mr-2 h-4 w-4" /> {t('backToNews')}
               </Button>
@@ -167,7 +169,7 @@ export default function NewsArticlePage() {
               </h3>
               <div className="space-y-6">
                 {relatedArticles.map((item) => (
-                  <Link key={item.id} href={`/news/${item.slug}`} className="block group">
+                  <Link key={item.id} href={getLocalizedHref(`/news/${item.slug}`)} className="block group">
                     <div className="flex gap-4">
                       <div className="relative h-20 w-20 flex-shrink-0 rounded-md overflow-hidden">
                         <Image
@@ -191,7 +193,7 @@ export default function NewsArticlePage() {
                 ))}
               </div>
               <div className="mt-6">
-                <Link href="/news">
+                <Link href={getLocalizedHref('/news')}>
                   <Button variant="outline" className="w-full text-white border-gray-700 hover:bg-background-300">
                     {t('viewAllNews')}
                     <ChevronRight className="ml-2 h-4 w-4" />
@@ -206,19 +208,19 @@ export default function NewsArticlePage() {
                 {t('categories.title')}
               </h3>
               <div className="space-y-2">
-                <Link href="/news?category=championships" className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
+                <Link href={getLocalizedHref('/news?category=championships')} className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
                   {t('categories.championships')}
                 </Link>
-                <Link href="/news?category=partnerships" className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
+                <Link href={getLocalizedHref('/news?category=partnerships')} className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
                   {t('categories.partnerships')}
                 </Link>
-                <Link href="/news?category=development" className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
+                <Link href={getLocalizedHref('/news?category=development')} className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
                   {t('categories.development')}
                 </Link>
-                <Link href="/news?category=regulations" className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
+                <Link href={getLocalizedHref('/news?category=regulations')} className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
                   {t('categories.regulations')}
                 </Link>
-                <Link href="/news?category=education" className="block text-gray-300 hover:text-primary py-2 transition-colors">
+                <Link href={getLocalizedHref('/news?category=education')} className="block text-gray-300 hover:text-primary py-2 transition-colors">
                   {t('categories.education')}
                 </Link>
               </div>

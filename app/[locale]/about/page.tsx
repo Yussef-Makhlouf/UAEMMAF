@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -10,7 +10,16 @@ import ContactSection from "@/components/contact-section"
 
 export default function AboutPage() {
   const t = useTranslations('aboutPage')
+  const locale = useLocale()
   
+  // إنشاء رابط مع اللغة
+  const getLocalizedHref = (path: string) => {
+    if (path === '/') {
+      return `/${locale === 'en' ? '' : locale}`;
+    }
+    return `/${locale}${path.startsWith('/') ? path : `/${path}`}`;
+  };
+
   const [ref1, inView1] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -66,7 +75,7 @@ export default function AboutPage() {
               src="/main5.jpg"
               alt={t('heroTitle')} 
               fill 
-              className="object-cover opacity-20 transition-transform duration-[15s] hover:scale-105"
+              className="object-cover opacity-20 transition-transform duration-[15000ms] hover:scale-105"
               priority
               quality={85}
             />
@@ -74,7 +83,7 @@ export default function AboutPage() {
         <div className="relative z-10 text-center px-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{t('heroTitle')}</h1>
           <div className="flex items-center justify-center gap-2 text-gray-300">
-            <Link href="/" className="hover:text-primary transition-colors">
+            <Link href={getLocalizedHref('/')} className="hover:text-primary transition-colors">
               {t('breadcrumbs.home')}
             </Link>
             <span>/</span>

@@ -35,32 +35,33 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const locale = params.locale;
-  
-  if (!locale || !['en', 'ar'].includes(locale)) {
+  // Validate the locale
+  if (!params.locale || !['en', 'ar'].includes(params.locale)) {
     notFound();
   }
 
   let messages;
   try {
-    messages = (await import(`@/messages/${locale}.json`)).default;
+    messages = (await import(`@/messages/${params.locale}.json`)).default;
   } catch (error) {
     notFound();
   }
 
   return (
-    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${inter.variable} ${notoSansArabic.variable}`}>
-      <body className={locale === 'ar' ? 'font-noto' : 'font-inter'}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-      
-            <div className="min-h-screen flex flex-col bg-[#111111] text-white">
-              <Header />
-              <main className="flex-grow">
-                {children}
-              </main>
-              <Footer />
-            </div>
-          
+    <html 
+      lang={params.locale} 
+      dir={params.locale === 'ar' ? 'rtl' : 'ltr'} 
+      className={`${inter.variable} ${notoSansArabic.variable}`}
+    >
+      <body className={params.locale === 'ar' ? 'font-noto' : 'font-inter'}>
+        <NextIntlClientProvider locale={params.locale} messages={messages}>
+          <div className="min-h-screen flex flex-col bg-[#111111] text-white">
+            <Header />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </NextIntlClientProvider>
       </body>
     </html>

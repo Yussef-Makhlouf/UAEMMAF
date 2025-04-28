@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import LanguageSwitcher from './LanguageSwitcher'
 import { motion, AnimatePresence } from "framer-motion"
 import { usePathname } from "next/navigation"
@@ -15,8 +15,18 @@ export default function Header() {
   const [isJoinUsOpen, setIsJoinUsOpen] = useState(false)
   const t = useTranslations('nav')
   const pathname = usePathname()
+  const locale = useLocale()
 
-  // Close all dropdowns when menu is closed
+  const getLocalizedHref = (path: string) => {
+    if (path.startsWith('http')) {
+      return path;
+    }
+    if (path === '/') {
+      return `/${locale === 'en' ? '' : locale}`;
+    }
+    return `/${locale}${path.startsWith('/') ? path : `/${path}`}`;
+  };
+
   const handleMenuClose = () => {
     setIsMenuOpen(false)
     setIsEventsOpen(false)
@@ -25,33 +35,41 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full">
-      <nav className="bg-background border-b border-gray-800">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between items-center relative">
+      <nav className="bg-black py-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center">
             {/* Logo */}
-            <div className="flex items-center gap-2">
-              <Link href="/">
-                <div className="font-bold text-primary text-xl">
-                  <Image src="/logo3.png" alt="UAEMMAF Logo" width={110} height={32} />
-                </div>
+            <div className="flex items-center">
+              <Link href={getLocalizedHref('/')} className="flex-shrink-0">
+                <Image 
+                  src="/logo3.png" 
+                  alt="UAEMMAF Logo" 
+                  width={120} 
+                  height={70} 
+                  className="rounded-sm"
+                />
               </Link>
             </div>
-
+            
             {/* Mobile Menu Button */}
-            <button
-              className="lg:hidden p-2 rounded-md border border-gray-700 text-white hover:bg-gray-800 focus:outline-none"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 18H21V16H3V18ZM3 13H21V11H3V13ZM3 6V8H21V6H3Z" fill="currentColor" />
-              </svg>
-            </button>
-
+            <div className="flex lg:hidden">
+              <button
+                type="button"
+                className="text-white p-2"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <div className="w-6 flex items-center justify-center relative">
+                  <span className={`transform transition-all duration-300 absolute ${isMenuOpen ? "rotate-45 translate-y-0" : "-translate-y-2"} w-full h-0.5 bg-white rounded-lg`}></span>
+                  <span className={`transform transition-all duration-300 absolute ${isMenuOpen ? "opacity-0 translate-x-3" : "opacity-100"} w-full h-0.5 bg-white rounded-lg`}></span>
+                  <span className={`transform transition-all duration-300 absolute ${isMenuOpen ? "-rotate-45 translate-y-0" : "translate-y-2"} w-full h-0.5 bg-white rounded-lg`}></span>
+                </div>
+              </button>
+            </div>
+            
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-6">
               <Link 
-                href="/" 
+                href={getLocalizedHref('/')}
                 className={`font-medium hover:text-primary transition-colors ${
                   pathname === "/" ? "text-primary" : "text-white"
                 }`}
@@ -59,17 +77,17 @@ export default function Header() {
                 {t('home')}
               </Link>
               <Link 
-                href="/about" 
+                href={getLocalizedHref('/about')}
                 className={`font-medium hover:text-primary transition-colors ${
-                  pathname.startsWith("/about") ? "text-primary" : "text-white"
+                  pathname.includes("/about") ? "text-primary" : "text-white"
                 }`}
               >
                 {t('about')}
               </Link>
               <Link 
-                href="/news" 
+                href={getLocalizedHref('/news')}
                 className={`font-medium hover:text-primary transition-colors ${
-                  pathname.startsWith("/news") ? "text-primary" : "text-white"
+                  pathname.includes("/news") ? "text-primary" : "text-white"
                 }`}
               >
                 {t('news')}
@@ -81,7 +99,7 @@ export default function Header() {
                   onClick={() => setIsEventsOpen(!isEventsOpen)}
                   onMouseEnter={() => setIsEventsOpen(true)}
                   className={`flex items-center gap-1 font-medium hover:text-primary transition-colors ${
-                    pathname.startsWith("/events") ? "text-primary" : "text-white"
+                    pathname.includes("/events") ? "text-primary" : "text-white"
                   }`}
                 >
                   {t('events')}
@@ -98,7 +116,7 @@ export default function Header() {
                       onMouseLeave={() => setIsEventsOpen(false)}
                     >
                       <Link 
-                        href="/events" 
+                        href={getLocalizedHref('/events')}
                         className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-primary"
                       >
                         {t('events')}
@@ -126,7 +144,7 @@ export default function Header() {
                   onClick={() => setIsJoinUsOpen(!isJoinUsOpen)}
                   onMouseEnter={() => setIsJoinUsOpen(true)}
                   className={`flex items-center gap-1 font-medium hover:text-primary transition-colors ${
-                    pathname.startsWith("/join-us") ? "text-primary" : "text-white"
+                    pathname.includes("/join-us") ? "text-primary" : "text-white"
                   }`}
                 >
                   {t('joinUs')}
@@ -160,9 +178,9 @@ export default function Header() {
               </div>
               
               <Link 
-                href="/contact" 
+                href={getLocalizedHref('/contact')}
                 className={`font-medium hover:text-primary transition-colors ${
-                  pathname.startsWith("/contact") ? "text-primary" : "text-white"
+                  pathname.includes("/contact") ? "text-primary" : "text-white"
                 }`}
               >
                 {t('contact')}
@@ -183,31 +201,40 @@ export default function Header() {
                   transition={{ duration: 0.3 }}
                   className="fixed inset-0 bg-background z-50 lg:hidden overflow-y-auto"
                 >
-                  <div className="container mx-auto px-4 py-6">
+                  <div className="p-6">
                     <div className="flex justify-between items-center mb-8">
-                      <div className="font-bold text-primary text-xl">UAEMMAF</div>
+                      <Link href={getLocalizedHref('/')} className="flex-shrink-0" onClick={handleMenuClose}>
+                        <Image 
+                          src="/logo3.png" 
+                          alt="UAEMMAF Logo" 
+                          width={120} 
+                          height={70} 
+                          className="rounded-sm"
+                        />
+                      </Link>
                       <button
-                        onClick={handleMenuClose}
-                        className="p-2 rounded-md border border-gray-700 text-white hover:bg-gray-800 focus:outline-none"
-                        aria-label="Close menu"
+                        type="button"
+                        className="text-white p-2"
+                        onClick={() => setIsMenuOpen(false)}
                       >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
                       </button>
                     </div>
-                    <nav className="flex flex-col gap-4">
-                      <Link href="/" className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" onClick={handleMenuClose}>
+                    
+                    <nav className="flex flex-col space-y-6">
+                      <Link href={getLocalizedHref('/')} className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" onClick={handleMenuClose}>
                         {t('home')}
                       </Link>
-                      <Link href="/about" className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" onClick={handleMenuClose}>
+                      <Link href={getLocalizedHref('/about')} className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" onClick={handleMenuClose}>
                         {t('about')}
                       </Link>
-                      <Link href="/news" className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" onClick={handleMenuClose}>
+                      <Link href={getLocalizedHref('/news')} className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" onClick={handleMenuClose}>
                         {t('news')}
                       </Link>
                       
-                      {/* Mobile Events Dropdown */}
                       <div className="py-3 border-b border-gray-800">
                         <button 
                           onClick={() => setIsEventsOpen(!isEventsOpen)}
@@ -219,7 +246,7 @@ export default function Header() {
                         {isEventsOpen && (
                           <div className="mt-2 pl-4 flex flex-col gap-2">
                             <Link 
-                              href="/events" 
+                              href={getLocalizedHref('/events')}
                               className="text-sm text-gray-300 hover:text-primary py-2"
                               onClick={handleMenuClose}
                             >
@@ -243,7 +270,6 @@ export default function Header() {
                         )}
                       </div>
                       
-                      {/* Mobile Join Us Dropdown */}
                       <div className="py-3 border-b border-gray-800">
                         <button 
                           onClick={() => setIsJoinUsOpen(!isJoinUsOpen)}
@@ -272,7 +298,7 @@ export default function Header() {
                         )}
                       </div>
                       
-                      <Link href="/contact" className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" onClick={handleMenuClose}>
+                      <Link href={getLocalizedHref('/contact')} className="font-medium text-white hover:text-primary py-3 border-b border-gray-800" onClick={handleMenuClose}>
                         {t('contact')}
                       </Link>
                       

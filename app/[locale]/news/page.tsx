@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
@@ -22,9 +22,18 @@ type NewsItem = {
 
 export default function NewsPage() {
   const t = useTranslations('news')
+  const locale = useLocale()
   const [searchQuery, setSearchQuery] = useState("")
   const [currentCategory, setCurrentCategory] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
+  
+  // إنشاء رابط مع اللغة
+  const getLocalizedHref = (path: string) => {
+    if (path.startsWith('http')) {
+      return path;
+    }
+    return `/${locale}${path.startsWith('/') ? path : `/${path}`}`;
+  };
   
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -156,7 +165,7 @@ export default function NewsPage() {
   // Format date to display in a localized format
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -257,7 +266,7 @@ export default function NewsPage() {
                     <p className="text-gray-400 mb-4 line-clamp-3">
                       {item.excerpt}
                     </p>
-                    <Link href={`/news/${item.slug}`} className="text-primary font-medium inline-flex items-center group-hover:underline">
+                    <Link href={getLocalizedHref(`/news/${item.slug}`)} className="text-primary font-medium inline-flex items-center group-hover:underline">
                       {t('readMore')}
                       <ChevronRight className="ml-1 h-4 w-4" />
                     </Link>
