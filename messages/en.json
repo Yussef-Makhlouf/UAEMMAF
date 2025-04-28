@@ -1,0 +1,407 @@
+{
+  "Index": {
+    "title": "UAE Mixed Martial Arts Federation",
+    "subtitle": "The governing body for MMA in the United Arab Emirates"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "news": "News",
+    "events": "Events",
+    "upcomingEvents": "Upcoming Events",
+    "pastEvents": "Past Events",
+    "joinUs": "Join Us",
+    "athletes": "Athletes",
+    "clubs": "Clubs",
+    "contact": "Contact"
+  },
+  "hero": {
+    "slide1": {
+      "title": "UAE Mixed Martial Arts Federation",
+      "description": "The official governing body for Mixed Martial Arts in the United Arab Emirates, established in 2021 to develop and standardize MMA across the nation.",
+      "cta": "Learn More"
+    },
+    "slide2": {
+      "title": "Upcoming MMA Championships",
+      "description": "Join us for the most anticipated MMA events in the UAE. Experience world-class competitions featuring top athletes from across the region and beyond.",
+      "cta": "View Events"
+    },
+    "slide3": {
+      "title": "Join the UAEMMAF Community",
+      "description": "Whether you're an athlete looking to compete or a club seeking affiliation, become part of the UAE's growing MMA community today.",
+      "cta": "Join Now"
+    }
+  },
+  "about": {
+    "aboutUs": "About Us",
+    "title": "The UAE Mixed Martial Arts Federation",
+    "imageAlt": "MMA Training in UAE",
+    "established": "Established",
+    "mission": "Our mission is to develop and promote Mixed Martial Arts in the UAE, while ensuring the highest standards of safety, professionalism, and athletic excellence.",
+    "description1": "The UAE Mixed Martial Arts Federation (UAEMMAF) is the governing body for MMA in the United Arab Emirates. Established in 2021, the federation is responsible for developing and promoting MMA in the UAE, as well as regulating and standardizing the sport across the country.",
+    "description2": "On June 2, 2021, the UAEMMAF became a member of the International Mixed Martial Arts Federation (IMMAF), which has enabled the UAE to host flagship MMA and martial arts events. Registered in Abu Dhabi, the UAEMMAF aims to be the official regulator and provider of both amateur and professional MMA in the territory.",
+    "learnMore": "Learn More",
+    "joinUs": "Join Us",
+    "feature1": {
+      "title": "International Recognition",
+      "description": "Official member of the IMMAF"
+    },
+    "feature2": {
+      "title": "National Standard",
+      "description": "Setting the benchmark for MMA in UAE"
+    }
+  },
+  "news": {
+    "latestNews": "Latest News",
+    "title": "MMA News & Updates",
+    "viewAll": "View All News",
+    "readMore": "Read More",
+    "article1": {
+      "title": "UAE National MMA Championship Concludes with Record Participation",
+      "excerpt": "The UAE National MMA Championship concluded with record participation, showcasing the country's growing talent pool in mixed martial arts. The event featured over 200 athletes competing across different weight classes."
+    },
+    "article2": {
+      "title": "UAEMMAF Signs Partnership Agreement with IMMAF for Technical Development",
+      "excerpt": "The UAE Mixed Martial Arts Federation has signed a strategic partnership agreement with the International Mixed Martial Arts Federation focused on technical development and referee training programs."
+    },
+    "article3": {
+      "title": "Youth MMA Development Program Launched Across the UAE",
+      "excerpt": "A new Youth Development Program has been launched by the UAEMMAF aimed at discovering and nurturing young MMA talent across all emirates. The program will provide structured training and competitive opportunities."
+    },
+    "article4": {
+      "title": "MMA Equipment Safety Standards Updated by UAEMMAF",
+      "excerpt": "The UAE Mixed Martial Arts Federation has updated safety standards for all equipment used in official competitions, ensuring greater athlete protection through enhanced gear requirements."
+    },
+    "article5": {
+      "title": "Women's MMA Fighters Excel at Regional Championships",
+      "excerpt": "Female MMA athletes from the UAE delivered outstanding performances at the recent regional championships, with multiple gold medal wins demonstrating the growth of women's MMA in the Emirates."
+    },
+    "article6": {
+      "title": "Referee Training Program Graduates First Class of Officials",
+      "excerpt": "The first class of MMA referees has graduated from the UAEMMAF's specialized training program, adding 20 qualified officials to support the growing number of MMA events across the UAE."
+    },
+    "pageTitle": "Latest MMA News",
+    "pageDescription": "Stay updated with the latest news, announcements, and developments from the UAE Mixed Martial Arts Federation.",
+    "searchPlaceholder": "Search news articles...",
+    "backToNews": "Back to News",
+    "relatedArticles": "Related Articles",
+    "viewAllNews": "View All News",
+    "byAuthor": "By",
+    "shareArticle": "Share This Article",
+    "noResults": {
+      "title": "No Results Found",
+      "description": "We couldn't find any news articles matching your search criteria. Try adjusting your filters or search terms.",
+      "resetFilters": "Reset Filters"
+    },
+    "categories": {
+      "title": "Categories",
+      "all": "All Categories",
+      "championships": "Championships",
+      "partnerships": "Partnerships",
+      "development": "Development",
+      "regulations": "Regulations",
+      "education": "Education"
+    },
+    "fullArticle": {
+      "title": "UAE National MMA Championship Concludes with Record Participation",
+      "excerpt": "The UAE National MMA Championship concluded with record participation, showcasing the country's growing talent pool in mixed martial arts.",
+      "content": "The UAE National MMA Championship, held in Abu Dhabi last week, has concluded with unprecedented success, marking a significant milestone for the sport in the country. The event attracted over 200 athletes from across all seven emirates, competing in various weight classes and skill levels.\n\nOrganized by the UAE Mixed Martial Arts Federation (UAEMMAF), the championship showcased the rapid development of MMA in the UAE since the federation's establishment in 2021. The tournament featured both male and female competitors, with particularly strong performances from the youth divisions, highlighting the effectiveness of grassroots development programs implemented over the past two years.\n\nHH Sheikh Mohammed bin Zayed Al Nahyan, who attended the final day of competition, expressed his satisfaction with the growth of the sport, stating: \"The impressive level of talent displayed during this championship reflects the UAE's commitment to developing all sports, including mixed martial arts. We are proud to see Emirati athletes competing at such a high level.\"\n\nThe championship also served as a qualifier for the upcoming IMMAF World Championship, with the top performers earning spots on the national team that will represent the UAE on the global stage. The selected athletes will now enter an intensive training camp supervised by international coaches brought in by the UAEMMAF.\n\nBeyond the competitive aspect, the event featured educational workshops on proper training techniques, injury prevention, and sports nutrition, aligning with the federation's holistic approach to athlete development.\n\nAs MMA continues to gain popularity in the UAE, the UAEMMAF has announced plans to increase the frequency of national competitions and expand training facilities across the country, ensuring that aspiring fighters have access to proper coaching and resources regardless of their location.",
+      "author": "Ahmed Al Mansouri"
+    }
+  },
+  "events": {
+    "upcomingEvents": "Upcoming Events",
+    "title": "MMA Championship Calendar",
+    "viewAll": "View All Events",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "competitors": "Competitors",
+    "learnMore": "Learn More",
+    "register": "Register",
+    "pageTitle": "MMA Events Calendar",
+    "pageDescription": "Discover upcoming MMA events, championships, and tournaments across the UAE.",
+    "searchPlaceholder": "Search events by title, location or description",
+    "noResults": {
+      "title": "No Events Found",
+      "description": "Try adjusting your search or filter criteria",
+      "resetFilters": "Reset Filters"
+    },
+    "categories": {
+      "all": "All Categories",
+      "championships": "Championships",
+      "qualifiers": "Qualifiers",
+      "youth": "Youth Events",
+      "professional": "Professional Fights",
+      "seminar": "Seminars & Training"
+    },
+    "eventNotFound": {
+      "title": "Event Not Found",
+      "description": "The event you're looking for doesn't exist or has been removed.",
+      "returnToEvents": "Return to Events"
+    },
+    "detailLabels": {
+      "date": "Date",
+      "time": "Time",
+      "location": "Location",
+      "participants": "Participants",
+      "aboutEvent": "About This Event",
+      "shareEvent": "Share Event",
+      "saveEvent": "Save",
+      "eventOrganizer": "Event Organizer",
+      "organizerName": "UAE Mixed Martial Arts Federation",
+      "organizerRole": "Official Governing Body",
+      "organizerDescription": "This event is organized by the UAE Mixed Martial Arts Federation, the official governing body for MMA in the United Arab Emirates.",
+      "contactOrganizer": "Contact Organizer",
+      "venueInfo": "Venue Information",
+      "venueDescription": "The venue is equipped with state-of-the-art facilities and can accommodate all participants comfortably.",
+      "viewOnMap": "View on Map",
+      "otherEvents": "Other Upcoming Events"
+    },
+    "registerForm": {
+      "title": "Register for This Event",
+      "description": "Complete the form below to register for the event. Our team will contact you with confirmation details.",
+      "firstName": "First Name",
+      "firstNamePlaceholder": "Enter your first name",
+      "lastName": "Last Name",
+      "lastNamePlaceholder": "Enter your last name",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email address",
+      "phone": "Phone Number",
+      "phonePlaceholder": "Enter your phone number",
+      "participantType": "Participant Type",
+      "selectType": "Select participant type",
+      "typeCompetitor": "Competitor",
+      "typeCoach": "Coach",
+      "typeOfficial": "Official",
+      "typeSpectator": "Spectator",
+      "notes": "Additional Notes",
+      "notesPlaceholder": "Any additional information we should know",
+      "submit": "Submit Registration"
+    },
+    "event1": {
+      "title": "UAE MMA Championship 2025",
+      "description": "The premier MMA event in the UAE featuring top national athletes competing for national titles across all weight divisions."
+    },
+    "event2": {
+      "title": "IMMAF World Championship Qualifiers 2025",
+      "description": "Official qualifying tournament for the IMMAF World Championships, featuring the UAE's elite fighters competing for spots on the national team."
+    }
+  },
+  "partners": {
+    "title": "Our Partners & Sponsors",
+    "description": "The UAE Mixed Martial Arts Federation proudly collaborates with leading organizations that share our commitment to developing the sport of MMA in the UAE."
+  },
+  "joinUs": {
+    "joinTheFederation": "Join the Federation",
+    "title": "Become Part of UAE MMA",
+    "description": "Join the UAE Mixed Martial Arts Federation as an athlete or register your club to become an official part of the growing MMA community in the UAE.",
+    "athletes": {
+      "title": "Athletes",
+      "description": "Register as an athlete with the UAEMMAF to participate in official tournaments, access training programs, and represent the UAE in international competitions.",
+      "joinNow": "Join as an Athlete",
+      "benefit1": {
+        "title": "Official Recognition",
+        "description": "Compete in sanctioned events and tournaments"
+      },
+      "benefit2": {
+        "title": "Professional Development",
+        "description": "Access to training camps and development programs"
+      },
+      "benefit3": {
+        "title": "International Opportunities",
+        "description": "Potential selection for UAE national team"
+      }
+    },
+    "clubs": {
+      "title": "MMA Clubs",
+      "description": "Register your MMA club or training facility with the UAEMMAF to become an officially recognized center for martial arts training and development in the UAE.",
+      "registerNow": "Register Your Club",
+      "benefit1": {
+        "title": "Official Affiliation",
+        "description": "Recognition as an official UAEMMAF training center"
+      },
+      "benefit2": {
+        "title": "Tournament Hosting",
+        "description": "Ability to host and participate in official events"
+      },
+      "benefit3": {
+        "title": "Coaching Support",
+        "description": "Access to coaching education and certification"
+      }
+    }
+  },
+  "contact": {
+    "getInTouch": "Get In Touch",
+    "title": "Contact UAEMMAF",
+    "description": "Have questions about the UAE Mixed Martial Arts Federation? We're here to help. Fill out the form below or contact us directly.",
+    "email": "Email Us",
+    "location":"location",
+    "phone": "Call Us",
+    "address": "Visit Us",
+    "form": {
+      "name": "Your Name",
+      "namePlaceholder": "Enter your full name",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email address",
+      "subject": "Subject",
+      "subjectPlaceholder": "What is this regarding?",
+      "message": "Message",
+      "messagePlaceholder": "Type your message here...",
+      "submit": "Send Message",
+      "sending": "Sending..."
+    }
+  },
+  "contactPage":{
+    "heroTitle": "Contact Us",
+    "breadcrumbs": {
+      "home": "Home",
+      "contact": "Contact"
+    }
+  },
+  "footer": {
+    "description": "UAE Mixed Martial Art Federation Capital Tower, Abu Dhabi, UAE PO Box 110007 Abu Dhabi, UAE",
+    "quickLinks": "Quick Links",
+    "home": "Home",
+    "about": "About Us",
+    "news": "News",
+    "contact": "Contact",
+    "events": "Events",
+    "upcomingEvents": "Upcoming Events",
+    "pastEvents": "Past Events",
+    "joinUs": "Join Us",
+    "athletes": "Athletes",
+    "clubs": "Clubs",
+    "contactUs": "Contact Us",
+    "allRightsReserved": "All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfUse": "Terms of Use",
+    "services": "Services",
+    "financial": "Financial Services",
+    "legal": "Legal Services",
+    "consulting": "Consulting",
+    "investment": "Investment",
+    "crypto": "Crypto Services",
+    "privacy": "Privacy Policy",
+    "newsletter": "Newsletter",
+    "subscribeText": "Subscribe to our newsletter to receive the latest updates and news.",
+    "emailPlaceholder": "Enter your email address",
+    "subscribe": "Subscribe",
+    "cookies": "Cookie Policy",
+    "terms": "Terms of Service",
+    "location": "Location"
+  },
+  "aboutCapital": {
+    "aboutCapital": "About Capital Smart",
+    "title": "Capital Smart Financial Services",
+    "imageAlt": "Capital Smart Headquarters",
+    "established": "Established",
+    "mission": "Our mission is to provide innovative financial solutions that empower businesses and individuals to achieve their financial goals with confidence and security.",
+    "description1": "Capital Smart Financial Services is a leading financial technology company based in the UAE. Established in 2023, we combine cutting-edge technology with financial expertise to deliver smart, efficient, and secure financial services to our clients.",
+    "description2": "With a strong focus on innovation and customer satisfaction, Capital Smart has quickly established itself as a trusted partner for businesses and individuals seeking modern financial solutions. Our team of experts brings decades of experience in finance, technology, and regulatory compliance.",
+    "learnMore": "Learn More",
+    "contactUs": "Contact Us",
+    "feature1": {
+      "title": "Innovative Solutions",
+      "description": "Cutting-edge financial technology"
+    },
+    "feature2": {
+      "title": "Expert Team",
+      "description": "Seasoned financial professionals"
+    },
+    "feature3": {
+      "title": "Global Network",
+      "description": "International partnerships and reach"
+    },
+    "feature4": {
+      "title": "Secure Platform",
+      "description": "Advanced security protocols"
+    }
+  },
+  "aboutPage": {
+    "heroTitle": "About Us",
+    "breadcrumbs": {
+      "home": "Home",
+      "about": "About Us"
+    },
+    "aboutUs": {
+      "badge": "About Us",
+      "title": "The UAE Mixed Martial Arts Federation",
+      "imageAlt": "MMA Training in UAE",
+      "established": "Established",
+      "mission": "Our mission is to develop and promote Mixed Martial Arts in the UAE, while ensuring the highest standards of safety, professionalism, and athletic excellence.",
+      "paragraph1": "The UAE Mixed Martial Arts Federation (UAEMMAF) is the governing body for MMA in the United Arab Emirates. Established in 2021, the federation is responsible for developing and promoting MMA in the UAE, as well as regulating and standardizing the sport across the country.",
+      "paragraph2": "On June 2, 2021, the UAEMMAF became a member of the International Mixed Martial Arts Federation (IMMAF), which has enabled the UAE to host flagship MMA and martial arts events. Registered in Abu Dhabi, the UAEMMAF aims to be the official regulator and provider of both amateur and professional MMA in the territory."
+    },
+    "vision": {
+      "badge": "Our Vision",
+      "title": "Building the Future of MMA",
+      "imageAlt": "MMA Competition in UAE",
+      "description": "The UAEMMAF envisions the UAE as a global hub for mixed martial arts, recognized for its world-class athletes, premier events, and innovative approach to sport development. We aim to establish a sustainable ecosystem that nurtures local talent while attracting international participation.",
+      "goals": {
+        "0": "Develop world-class athletes",
+        "1": "Host international competitions",
+        "2": "Promote safety and fair play",
+        "3": "Increase MMA participation"
+      }
+    },
+    "mission": {
+      "badge": "Our Mission",
+      "title": "Advancing MMA Excellence",
+      "imageAlt": "MMA Coaching in UAE",
+      "description": "We are committed to creating a thriving MMA community in the UAE through comprehensive development programs, education initiatives, and high-standard competitions. Our approach focuses on both grassroots development and elite performance pathways.",
+      "values": {
+        "0": "Excellence in all aspects of sport management and athlete development",
+        "1": "Integrity in governance, competitions, and relationships with stakeholders",
+        "2": "Inclusivity that welcomes participation from all backgrounds and skill levels",
+        "3": "Innovation in training methods, event production, and sport promotion"
+      }
+    },
+    "leadership": {
+      "badge": "Our Leadership",
+      "title": "Meet Our Team",
+      "description": "The UAEMMAF is led by a dedicated team of sports administrators, former athletes, and industry experts committed to the development of mixed martial arts in the UAE.",
+      "viewFullTeam": "View Full Team",
+      "members": {
+        "0": {
+          "name": "Abdulmunem Alsayed Mohamed Alhashmi",
+          "position": "Chairman"
+        },
+        "1": {
+          "name": " Fahad Ali Alshamsi ",
+          "position": "Board Member, General Secretary"
+        },
+        "2": {
+          "name": "Sameera Murshid Al Romaithi",
+          "position": "Board Member"
+        },
+        "3": {
+          "name": "Yousef Abdullah Al Shehhi",
+          "position": "Board Member"
+        },
+        "4": {
+          "name": "Mansour Mohammed Al Dhaheri",
+          "position": "Board Member"
+        },
+        "5": {
+          "name": "Mohamed Humaid Hamad Dalmouj Aldhaheri",
+          "position": "Board Member"
+        },
+        "6": {
+          "name": " Mohamed Salim Al Thani",
+          "position": " Vice Chairman"
+        }
+      
+      }
+    },
+    "presidentMessage": {
+      "badge": "PRESIDENT'S MESSAGE",
+      "title": "A Word From Our Chairman",
+      "imageAlt": "Chairman of UAE MMA Federation",
+      "message1": "The UAE Mixed Martial Arts Federation is committed to developing and nurturing the sport in the country. Abu Dhabi has established itself as a leading destination for hosting combat sports events, and we are proud to be part of these achievements.",
+      "message2": "The federation aims to provide world-class training opportunities and infrastructure for athletes of all categories, as well as nurturing local talent and preparing them to compete in prominent global forums. We also seek to host the most important and largest global championships in the UAE, attracting the strongest and most skilled athletes. We are determined to continue working to develop mixed martial arts in the UAE and around the world.",
+      "name": "H.E. Abdulmonem Al Hashemi",
+      "position": "Chairman of UAE Jiu-Jitsu and MMA Federation",
+      "email": "chairman@uaemmaf.com"
+    }
+  }
+} 

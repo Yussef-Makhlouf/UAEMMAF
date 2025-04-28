@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Lama Sans';
+  src: url('/app/fonts/LamaSans-Regular.woff2') format('woff2'),
+       url('/app/fonts/LamaSans-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lama Sans';
+  src: url('/app/fonts/LamaSans-Medium.woff2') format('woff2'),
+       url('/app/fonts/LamaSans-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lama Sans';
+  src: url('/app/fonts/LamaSans-Bold.woff2') format('woff2'),
+       url('/app/fonts/LamaSans-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+  font-family: 'Lama Sans', Arial, sans-serif;
+}
+
+@layer base {
+  :root {
+    /* Background and foreground colors */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+
+    /* Primary color palette */
+    --primary: 356 100% 38%; /* #C20000 */
+    --primary-dark: 356 100% 43%; /* #DD0000 */
+    --primary-foreground: 0 0% 93.7%; /* #EFEFEF */
+
+    /* Secondary color palette */
+    --secondary: 356 100% 43%; /* #DD0000 */
+    --secondary-foreground: 0 0% 93.7%; /* #EFEFEF */
+
+    /* Accent color palette */
+    --accent: 356 100% 43%; /* #DD0000 */
+    --accent-foreground: 0 0% 93.7%; /* #EFEFEF */
+
+    /* Muted color palette */
+    --muted: 0 0% 93.7%; /* #EFEFEF */
+    --muted-foreground: 0 0% 18.0%; /* #2E2E2E */
+
+    /* Dark color palette */
+    --dark: 133 76% 9%; /* #042C09 */
+
+    /* Gray color palette */
+    --gray: 0 0% 18.0%; /* #2E2E2E */
+
+    /* Light color palette */
+    --light: 0 0% 93.7%; /* #EFEFEF */
+
+    /* Destructive color palette */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Border and input colors */
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+
+    /* Ring color */
+    --ring: 0 0% 3.9%;
+
+    /* Radius */
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
