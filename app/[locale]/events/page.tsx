@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
@@ -32,7 +32,8 @@ type EventItem = {
   category: string
 }
 
-export default function EventsPage() {
+// Create a separate component for the content that uses useSearchParams
+function EventsContent() {
   const t = useTranslations('events')
   const locale = useLocale()
   const searchParams = useSearchParams()
@@ -323,13 +324,13 @@ export default function EventsPage() {
                       </div>
                       
                       <div className="flex gap-3">
-                        <Link href={`/events/${event.slug}`}>
+                        <Link href={`/${locale}/events/${event.slug}`}>
                           <Button className="bg-primary hover:bg-primary-dark text-white">
                             {t('learnMore')}
                           </Button>
                         </Link>
                         {!isPastEvent(event.date) && (
-                          <Link href={`/events/${event.slug}#register`}>
+                          <Link href={`/${locale}/events/${event.slug}#register`}>
                             <Button variant="outline" className="text-white border-white hover:bg-background-400">
                               {t('register')}
                             </Button>
@@ -400,5 +401,27 @@ export default function EventsPage() {
         )}
       </div>
     </div>
+  )
+}
+
+// Loading component
+function EventsLoading() {
+  return (
+    <div className="min-h-screen bg-background-100 flex items-center justify-center">
+      <div className="text-center">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-r-transparent align-[-0.125em]" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+        <p className="mt-4 text-gray-300">Loading events...</p>
+      </div>
+    </div>
+  )
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense fallback={<EventsLoading />}>
+      <EventsContent />
+    </Suspense>
   )
 } 
