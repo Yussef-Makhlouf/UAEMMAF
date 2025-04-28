@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server';
 export default createMiddleware({
   locales: ['en', 'ar'],
   defaultLocale: 'en',
-  localePrefix: 'always'
+  localePrefix: 'as-needed'
 
 });
 
