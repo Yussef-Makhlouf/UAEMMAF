@@ -8,6 +8,7 @@ import { useInView } from "react-intersection-observer"
 import { Mail, Phone, MapPin, Send } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { API_URL } from "@/lib/constants";
 
 export default function ContactSection() {
   const t = useTranslations('contact')
@@ -45,23 +46,42 @@ export default function ContactSection() {
     },
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+  // Then in your handleSubmit function:
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     
-    // Simulate form submission
-    setTimeout(() => {
-      console.log("Form submitted:", formState)
+    try {
+      const response = await fetch(`${API_URL}/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState),
+      });
+      // console.log(response);
+      
+      if (response.ok) {
+        // Handle success
+        console.log("Form submitted successfully")
+        setFormState({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        })
+      } else {
+        // Handle error response
+        console.error("Form submission failed:", await response.text())
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error)
+    } finally {
       setIsSubmitting(false)
-      setFormState({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      })
-      // In a real application, you would handle form submission to your backend here
-    }, 1500)
+    }
   }
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
