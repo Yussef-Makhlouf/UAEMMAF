@@ -182,32 +182,15 @@ export default function NewsArticlePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
         </motion.div>
-        <div className="relative z-10 container mx-auto px-4 pb-16 max-w-5xl">
+        <div className="relative z-10 container mx-auto px-4 pb-12 max-w-5xl">
           <motion.h1 
             {...fadeIn}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight"
+            className="text-3xl md:text-3xl sm:text-2xl font-bold text-white leading-tight tracking-tight"
           >
             {title}
           </motion.h1>
-          <motion.div 
-            {...fadeIn}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="flex flex-wrap items-center gap-6 text-gray-300 text-sm md:text-base"
-          >
-            <div className="flex items-center">
-              <CalendarDays className="h-4 w-4 mr-2 text-primary" />
-              <span>{formatDate(newsData.date)}</span>
-            </div>
-            {/* <div className="flex items-center">
-              <Clock className="h-4 w-4 mr-2 text-primary" />
-              <span>{readingTime} {t('minuteRead')}</span>
-            </div>
-            <div className="flex items-center">
-              <Eye className="h-4 w-4 mr-2 text-primary" />
-              <span>{Math.floor(Math.random() * 2000) + 500} {t('views')}</span>
-            </div> */}
-          </motion.div>
+     
         </div>
       </div>
 
