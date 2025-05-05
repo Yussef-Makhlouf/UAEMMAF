@@ -5,8 +5,9 @@ import { useParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
-import { CalendarDays, ChevronRight, ChevronLeft, Share2, Facebook, Twitter, Instagram } from "lucide-react"
+import { CalendarDays, ChevronLeft, Share2, Facebook, Twitter, Instagram, Clock, User, Eye } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect } from "react"
 
 type NewsItem = {
   id: number
@@ -25,8 +26,11 @@ export default function NewsArticlePage() {
   const locale = useLocale()
   const params = useParams<{ slug: string }>()
   const slug = params?.slug
-
-  // إنشاء رابط مع اللغة
+  const [readingTime, setReadingTime] = useState<number>(0)
+  const [activeSection, setActiveSection] = useState<string>('intro')
+  const [showShareTooltip, setShowShareTooltip] = useState<boolean>(false)
+  
+  // Create localized href
   const getLocalizedHref = (path: string) => {
     if (path.startsWith('http')) {
       return path;
@@ -58,33 +62,53 @@ export default function NewsArticlePage() {
     }).format(date)
   }
 
-  // Placeholder for related articles
-  const relatedArticles = [
-    {
-      id: 2,
-      title: t('article2.title'),
-      excerpt: t('article2.excerpt'),
-      date: "2025-04-28",
-      image: "/main2.jpg",
-      slug: "uaemmaf-signs-partnership-agreement-with-immaf",
-      category: "partnerships"
-    },
-    {
-      id: 3,
-      title: t('article3.title'),
-      excerpt: t('article3.excerpt'),
-      date: "2025-04-10",
-      image: "/main3.jpg",
-      slug: "youth-mma-development-program-launched",
-      category: "development"
+  // Calculate reading time
+  useEffect(() => {
+    const wordCount = article.content.split(/\s+/).length;
+    const time = Math.ceil(wordCount / 200); // Average reading speed: 200 words per minute
+    setReadingTime(time);
+  }, [article.content]);
+
+  // Animation variants
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+  }
+
+  const staggerContainer = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
     }
-  ]
+  }
+
+  // Copy share URL functionality
+  const handleShareClick = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShowShareTooltip(true);
+      setTimeout(() => setShowShareTooltip(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy URL: ', err);
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-background-100 pb-16">
-      {/* Hero Banner */}
-      <div className="relative h-[400px] md:h-[500px] bg-background-300 flex items-end overflow-hidden">
-        <div className="absolute inset-0">
+    <motion.div 
+      initial="initial"
+      animate="animate"
+      className="min-h-screen bg-background-100"
+    >
+      {/* Hero Banner with Parallax Effect */}
+      <div className="relative h-[60vh] lg:h-[80vh] bg-background-300 flex items-end overflow-hidden">
+        <motion.div 
+          className="absolute inset-0"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
           <Image 
             src={article.image}
             alt={article.title} 
@@ -92,142 +116,167 @@ export default function NewsArticlePage() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent"></div>
-        </div>
-        <div className="relative z-10 container mx-auto px-4 pb-10">
-          <div className="bg-primary inline-block px-3 py-1 rounded-full text-sm font-medium text-white mb-4">
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
+        </motion.div>
+        <div className="relative z-10 container mx-auto px-4 pb-16 max-w-5xl">
+          <motion.div 
+            {...fadeIn}
+            className="bg-primary inline-block px-4 py-1.5 rounded-full text-sm font-medium text-white mb-5 shadow-lg shadow-primary/30"
+          >
             {t(`categories.${article.category}`)}
-          </div>
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 max-w-4xl">{article.title}</h1>
-          <div className="flex items-center text-gray-300 text-sm">
-            <CalendarDays className="h-4 w-4 mr-2" />
-            <span>{formatDate(article.date)}</span>
-          </div>
+          </motion.div>
+          <motion.h1 
+            {...fadeIn}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight"
+          >
+            {article.title}
+          </motion.h1>
+          <motion.div 
+            {...fadeIn}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="flex flex-wrap items-center gap-6 text-gray-300 text-sm md:text-base"
+          >
+            <div className="flex items-center">
+              <CalendarDays className="h-4 w-4 mr-2 text-primary" />
+              <span>{formatDate(article.date)}</span>
+            </div>
+            {/* <div className="flex items-center">
+              <Clock className="h-4 w-4 mr-2 text-primary" />
+              <span>{readingTime} {t('minuteRead')}</span>
+            </div>
+            <div className="flex items-center">
+              <Eye className="h-4 w-4 mr-2 text-primary" />
+              <span>{Math.floor(Math.random() * 2000) + 500} {t('views')}</span>
+            </div> */}
+          </motion.div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            <div className="bg-background-200 rounded-lg p-8">
-              <div className="prose prose-lg prose-invert max-w-none mb-8">
-                <div className="flex items-center gap-4 mb-8 pb-6 border-b border-gray-700">
-                  <div className="relative h-12 w-12 rounded-full overflow-hidden">
-                    <Image
-                      src={article.authorImage}
-                      alt={article.author}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">{t('byAuthor')}</p>
-                    <p className="text-white font-medium">{article.author}</p>
-                  </div>
-                </div>
-                {/* Article content - split by paragraphs */}
-                {article.content.split('\n\n').map((paragraph, index) => (
-                  <p key={index} className="text-gray-300 mb-4">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+      {/* Progress Bar */}
+      <motion.div 
+        className="sticky top-0 z-20 w-full h-1 bg-background-300"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 0.4, ease: "linear" }}
+      >
+        <motion.div 
+          className="h-full bg-primary origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 30, ease: "linear" }}
+        />
+      </motion.div>
+
+      {/* Article Content Section */}
+      <div className="container mx-auto px-4 py-16 max-w-4xl">
+        {/* Author Info Card */}
+        {/* <motion.div 
+          {...fadeIn}
+          className="flex items-center gap-5 mb-12 p-6 bg-background-200 rounded-xl shadow-xl"
+        >
+          <div className="relative h-16 w-16 rounded-full overflow-hidden ring-2 ring-primary ring-offset-2 ring-offset-background-200">
+            <Image
+              src={article.authorImage}
+              alt={article.author}
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <User className="h-4 w-4 text-primary" />
+              <p className="text-gray-400 text-sm">{t('byAuthor')}</p>
+            </div>
+            <p className="text-white font-semibold text-lg">{article.author}</p>
+          </div>
+        </motion.div> */}
+        
+        {/* Article Intro */}
+        <motion.div 
+          {...fadeIn}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="mb-12"
+        >
+          <p className="text-gray-200 text-xl leading-relaxed font-medium italic border-l-4 border-primary pl-6 py-2">
+            {article.excerpt}
+          </p>
+        </motion.div>
+        
+        {/* Article Content */}
+        <motion.div 
+          variants={staggerContainer}
+          className="prose prose-xl prose-invert max-w-none mb-16"
+        >
+          {article.content.split('\n\n').map((paragraph, index) => (
+            <motion.p 
+              key={index} 
+              className="text-gray-300 mb-8 leading-relaxed text-lg"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ 
+                duration: 0.5, 
+                delay: index * 0.05,
+                ease: "easeOut" 
+              }}
+            >
+              {paragraph}
+            </motion.p>
+          ))}
+        </motion.div>
+        
+        {/* Share Section */}
+        <motion.div 
+          {...fadeIn}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-12 pt-8 border-t border-gray-700 relative"
+        >
+          <h3 className="text-white font-medium mb-5 flex items-center">
+            <Share2 className="mr-2 h-5 w-5 text-primary" /> {t('shareArticle')}
+          </h3>
+          <div className="flex flex-wrap gap-4">
+       
+            <button 
+              onClick={handleShareClick}
+              className="group flex items-center gap-2 bg-background-300 py-2 px-4 rounded-full text-white hover:bg-primary transition-colors duration-300 relative"
+            >
+              <Share2 size={18} />
+              <span className="text-sm">{t('copyLink')}</span>
               
-              <div className="mt-10 pt-6 border-t border-gray-700">
-                <h3 className="text-white font-medium mb-4 flex items-center">
-                  <Share2 className="mr-2 h-5 w-5" /> {t('shareArticle')}
-                </h3>
-                <div className="flex gap-3">
-                  <a href="#" className="bg-background-300 p-3 rounded-full text-white hover:text-primary hover:bg-background-400 transition-colors">
-                    <Facebook size={20} />
-                  </a>
-                  <a href="#" className="bg-background-300 p-3 rounded-full text-white hover:text-primary hover:bg-background-400 transition-colors">
-                    <Twitter size={20} />
-                  </a>
-                  <a href="#" className="bg-background-300 p-3 rounded-full text-white hover:text-primary hover:bg-background-400 transition-colors">
-                    <Instagram size={20} />
-                  </a>
-                </div>
-              </div>
-            </div>
-            
-            {/* Back Button */}
-            <Link href={getLocalizedHref('/news')}>
-              <Button variant="outline" className="text-white border-gray-700 hover:bg-background-300">
-                <ChevronLeft className="mr-2 h-4 w-4" /> {t('backToNews')}
-              </Button>
-            </Link>
+              <AnimatePresence>
+                {showShareTooltip && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-primary text-white text-xs py-1 px-3 rounded shadow-lg whitespace-nowrap"
+                  >
+                    {t('linkCopied')}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
           </div>
-          
-          {/* Sidebar */}
-          <div className="space-y-8">
-            {/* Related Articles */}
-            <div className="bg-background-200 rounded-lg p-6">
-              <h3 className="text-xl font-bold text-white mb-4 border-b border-gray-700 pb-3">
-                {t('relatedArticles')}
-              </h3>
-              <div className="space-y-6">
-                {relatedArticles.map((item) => (
-                  <Link key={item.id} href={getLocalizedHref(`/news/${item.slug}`)} className="block group">
-                    <div className="flex gap-4">
-                      <div className="relative h-20 w-20 flex-shrink-0 rounded-md overflow-hidden">
-                        <Image
-                          src={item.image}
-                          alt={item.title}
-                          fill
-                          className="object-cover transition-transform group-hover:scale-105 duration-300"
-                        />
-                      </div>
-                      <div>
-                        <h4 className="text-white font-medium group-hover:text-primary transition-colors line-clamp-2">
-                          {item.title}
-                        </h4>
-                        <div className="flex items-center text-gray-400 text-xs mt-1">
-                          <CalendarDays className="h-3 w-3 mr-1" />
-                          <span>{formatDate(item.date)}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-              <div className="mt-6">
-                <Link href={getLocalizedHref('/news')}>
-                  <Button variant="outline" className="w-full text-white border-gray-700 hover:bg-background-300">
-                    {t('viewAllNews')}
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            
-            {/* Categories */}
-            <div className="bg-background-200 rounded-lg p-6">
-              <h3 className="text-xl font-bold text-white mb-4 border-b border-gray-700 pb-3">
-                {t('categories.title')}
-              </h3>
-              <div className="space-y-2">
-                <Link href={getLocalizedHref('/news?category=championships')} className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
-                  {t('categories.championships')}
-                </Link>
-                <Link href={getLocalizedHref('/news?category=partnerships')} className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
-                  {t('categories.partnerships')}
-                </Link>
-                <Link href={getLocalizedHref('/news?category=development')} className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
-                  {t('categories.development')}
-                </Link>
-                <Link href={getLocalizedHref('/news?category=regulations')} className="block text-gray-300 hover:text-primary py-2 border-b border-gray-700 transition-colors">
-                  {t('categories.regulations')}
-                </Link>
-                <Link href={getLocalizedHref('/news?category=education')} className="block text-gray-300 hover:text-primary py-2 transition-colors">
-                  {t('categories.education')}
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
+        </motion.div>
+        
+        {/* Back Button */}
+        <motion.div 
+          {...fadeIn}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="mt-14"
+        >
+          <Link href={getLocalizedHref('/news')}>
+            <Button 
+              variant="outline" 
+              className="text-white border-gray-700 hover:bg-background-300 group transition-all py-6 px-8 text-base"
+            >
+              <ChevronLeft className="mr-2 h-5 w-5 group-hover:mr-3 transition-all" /> 
+              <span>{t('backToNews')}</span>
+            </Button>
+          </Link>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   )
 } 
