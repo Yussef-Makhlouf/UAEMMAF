@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Loader from './loader';
 
@@ -8,7 +8,8 @@ interface ClientPageLoaderProps {
   children: React.ReactNode;
 }
 
-const ClientPageLoader: React.FC<ClientPageLoaderProps> = ({ children }) => {
+// Create a separate component for content that uses useSearchParams
+const PageContent = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -26,6 +27,14 @@ const ClientPageLoader: React.FC<ClientPageLoaderProps> = ({ children }) => {
   }, [pathname, searchParams]);
 
   return isLoading ? <Loader /> : <>{children}</>;
+};
+
+const ClientPageLoader: React.FC<ClientPageLoaderProps> = ({ children }) => {
+  return (
+    <Suspense fallback={<Loader />}>
+      <PageContent>{children}</PageContent>
+    </Suspense>
+  );
 };
 
 export default ClientPageLoader; 
