@@ -13,6 +13,7 @@ export default function ContactPage() {
   const locale = useLocale();
   const isRTL = locale === 'ar';
   
+
   // إنشاء رابط مع اللغة
   const getLocalizedHref = (path: string) => {
     if (path === '/') {
@@ -20,6 +21,7 @@ export default function ContactPage() {
     }
     return `/${locale}${path.startsWith('/') ? path : `/${path}`}`;
   };
+  
   
   const [isLoading, setIsLoading] = useState(true);
 
