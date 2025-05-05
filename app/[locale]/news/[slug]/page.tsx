@@ -8,27 +8,38 @@ import { Button } from "@/components/ui/button"
 import { CalendarDays, ChevronLeft, Share2, Facebook, Twitter, Instagram, Clock, User, Eye } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
+import Loader from "@/components/loader"
 
 type NewsItem = {
-  id: number
-  title: string
-  excerpt: string
-  content: string
-  date: string
-  image: string
+  _id: string
+  title: {
+    ar: string
+    en: string
+  }
+  content: {
+    ar: string
+    en: string
+  }
+  image: {
+    secure_url: string
+    public_id: string
+  }
   category: string
-  author: string
-  authorImage: string
+  date: string
+  customId?: string
 }
 
 export default function NewsArticlePage() {
   const t = useTranslations('news')
   const locale = useLocale()
   const params = useParams<{ slug: string }>()
-  const slug = params?.slug
+  const newsId = params?.slug
   const [readingTime, setReadingTime] = useState<number>(0)
   const [activeSection, setActiveSection] = useState<string>('intro')
   const [showShareTooltip, setShowShareTooltip] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [newsData, setNewsData] = useState<NewsItem | null>(null)
+  const [error, setError] = useState<string | null>(null)
   
   // Create localized href
   const getLocalizedHref = (path: string) => {
@@ -38,19 +49,35 @@ export default function NewsArticlePage() {
     return `/${locale}${path.startsWith('/') ? path : `/${path}`}`;
   };
 
-  // In a real application, you would fetch the article based on the slug from an API or CMS
-  // Here we're using mock data
-  const article: NewsItem = {
-    id: 1,
-    title: t('fullArticle.title'),
-    excerpt: t('fullArticle.excerpt'),
-    content: t('fullArticle.content'),
-    date: "2025-05-15",
-    image: "/main.jpg",
-    category: "championships",
-    author: t('fullArticle.author'),
-    authorImage: "/main.jpg"
-  }
+  // Fetch news data from API
+  useEffect(() => {
+    const fetchNewsData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`https://mmaf.onrender.com/news/getnewsbyid/${newsId}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch news: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        if (data.message === "News fetched successfully") {
+          setNewsData(data.news);
+        } else {
+          throw new Error("Failed to fetch news data");
+        }
+      } catch (err) {
+        console.error("Error fetching news:", err);
+        setError(err instanceof Error ? err.message : "An unknown error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (newsId) {
+      fetchNewsData();
+    }
+  }, [newsId]);
 
   // Format date to display in a localized format
   const formatDate = (dateString: string) => {
@@ -64,10 +91,13 @@ export default function NewsArticlePage() {
 
   // Calculate reading time
   useEffect(() => {
-    const wordCount = article.content.split(/\s+/).length;
-    const time = Math.ceil(wordCount / 200); // Average reading speed: 200 words per minute
-    setReadingTime(time);
-  }, [article.content]);
+    if (newsData) {
+      const content = locale === 'ar' ? newsData.content.ar : newsData.content.en;
+      const wordCount = content.split(/\s+/).length;
+      const time = Math.ceil(wordCount / 200); // Average reading speed: 200 words per minute
+      setReadingTime(time);
+    }
+  }, [newsData, locale]);
 
   // Animation variants
   const fadeIn = {
@@ -95,6 +125,40 @@ export default function NewsArticlePage() {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background-100 flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background-100 flex flex-col items-center justify-center">
+        <h2 className="text-2xl text-white mb-4">Error loading news article</h2>
+        <p className="text-gray-300 mb-6">{error}</p>
+        <Link href={getLocalizedHref('/news')}>
+          <Button variant="outline">{t('backToNews')}</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  if (!newsData) {
+    return (
+      <div className="min-h-screen bg-background-100 flex flex-col items-center justify-center">
+        <h2 className="text-2xl text-white mb-4">News article not found</h2>
+        <Link href={getLocalizedHref('/news')}>
+          <Button variant="outline">{t('backToNews')}</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const title = locale === 'ar' ? newsData.title.ar : newsData.title.en;
+  const content = locale === 'ar' ? newsData.content.ar : newsData.content.en;
+
   return (
     <motion.div 
       initial="initial"
@@ -110,8 +174,8 @@ export default function NewsArticlePage() {
           transition={{ duration: 1.5, ease: "easeOut" }}
         >
           <Image 
-            src={article.image}
-            alt={article.title} 
+            src={newsData.image.secure_url}
+            alt={title} 
             fill 
             className="object-cover"
             priority
@@ -119,18 +183,12 @@ export default function NewsArticlePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
         </motion.div>
         <div className="relative z-10 container mx-auto px-4 pb-16 max-w-5xl">
-          <motion.div 
-            {...fadeIn}
-            className="bg-primary inline-block px-4 py-1.5 rounded-full text-sm font-medium text-white mb-5 shadow-lg shadow-primary/30"
-          >
-            {t(`categories.${article.category}`)}
-          </motion.div>
           <motion.h1 
             {...fadeIn}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight"
           >
-            {article.title}
+            {title}
           </motion.h1>
           <motion.div 
             {...fadeIn}
@@ -139,7 +197,7 @@ export default function NewsArticlePage() {
           >
             <div className="flex items-center">
               <CalendarDays className="h-4 w-4 mr-2 text-primary" />
-              <span>{formatDate(article.date)}</span>
+              <span>{formatDate(newsData.date)}</span>
             </div>
             {/* <div className="flex items-center">
               <Clock className="h-4 w-4 mr-2 text-primary" />
@@ -170,45 +228,12 @@ export default function NewsArticlePage() {
 
       {/* Article Content Section */}
       <div className="container mx-auto px-4 py-16 max-w-4xl">
-        {/* Author Info Card */}
-        {/* <motion.div 
-          {...fadeIn}
-          className="flex items-center gap-5 mb-12 p-6 bg-background-200 rounded-xl shadow-xl"
-        >
-          <div className="relative h-16 w-16 rounded-full overflow-hidden ring-2 ring-primary ring-offset-2 ring-offset-background-200">
-            <Image
-              src={article.authorImage}
-              alt={article.author}
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <User className="h-4 w-4 text-primary" />
-              <p className="text-gray-400 text-sm">{t('byAuthor')}</p>
-            </div>
-            <p className="text-white font-semibold text-lg">{article.author}</p>
-          </div>
-        </motion.div> */}
-        
-        {/* Article Intro */}
-        <motion.div 
-          {...fadeIn}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="mb-12"
-        >
-          <p className="text-gray-200 text-xl leading-relaxed font-medium italic border-l-4 border-primary pl-6 py-2">
-            {article.excerpt}
-          </p>
-        </motion.div>
-        
         {/* Article Content */}
         <motion.div 
           variants={staggerContainer}
           className="prose prose-xl prose-invert max-w-none mb-16"
         >
-          {article.content.split('\n\n').map((paragraph, index) => (
+          {content.split('\n\n').map((paragraph, index) => (
             <motion.p 
               key={index} 
               className="text-gray-300 mb-8 leading-relaxed text-lg"

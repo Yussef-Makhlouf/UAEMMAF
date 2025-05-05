@@ -9,8 +9,25 @@ import { useInView } from "react-intersection-observer"
 import { CalendarDays, ArrowRight, Flame, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react"
 import { useState, useEffect } from "react"
 
+type NewsApiItem = {
+  _id: string
+  title: {
+    ar: string
+    en: string
+  }
+  content: {
+    ar: string
+    en: string
+  }
+  image: {
+    secure_url: string
+  }
+  category: string
+  date: string
+}
+
 type NewsItem = {
-  id: number
+  id: string
   title: string
   excerpt: string
   date: string
@@ -30,6 +47,8 @@ export default function NewsSection() {
   const locale = useLocale()
   const [activeHotNews, setActiveHotNews] = useState(0)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([])
+  const [loading, setLoading] = useState(true)
   const isRtl = locale === 'ar'
   
   // Create localized links
@@ -64,36 +83,52 @@ export default function NewsSection() {
     }
   ]
 
-  // Regular news items
-  const newsItems: NewsItem[] = [
-    {
-      id: 1,
-      title: t('article1.title'),
-      excerpt: t('article1.excerpt'),
-      date: "2025-05-15",
-      image: "/main.jpg",
-      slug: "uae-mma-championship-success",
-      category: "championships"
-    },
-    {
-      id: 2,
-      title: t('article2.title'),
-      excerpt: t('article2.excerpt'),
-      date: "2025-04-28",
-      image: "/main1.jpg",
-      slug: "uaemmaf-signs-partnership-agreement-with-immaf",
-      category: "partnerships"
-    },
-    {
-      id: 3,
-      title: t('article3.title'),
-      excerpt: t('article3.excerpt'),
-      date: "2025-04-10",
-      image: "/main2.jpg",
-      slug: "youth-mma-development-program-launched",
-      category: "development"
+  // Extract an excerpt from content
+  const extractExcerpt = (content: string, maxLength: number = 150): string => {
+    if (!content) return '';
+    
+    // Remove any markdown or HTML-like syntax
+    const cleanContent = content.replace(/\n/g, ' ').replace(/\s+/g, ' ');
+    
+    if (cleanContent.length <= maxLength) {
+      return cleanContent;
     }
-  ]
+    
+    // Find the last space before maxLength
+    const lastSpace = cleanContent.substring(0, maxLength).lastIndexOf(' ');
+    return cleanContent.substring(0, lastSpace) + '...';
+  };
+
+  // Fetch news from API
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('https://mmaf.onrender.com/news/getallnews');
+        const data = await response.json();
+        
+        if (data && data.news && Array.isArray(data.news)) {
+          const formattedNews = data.news.map((item: NewsApiItem) => ({
+            id: item._id,
+            title: item.title[locale as keyof typeof item.title] || item.title.en,
+            excerpt: extractExcerpt(item.content[locale as keyof typeof item.content] || item.content.en),
+            date: item.date,
+            image: item.image.secure_url,
+            slug: item._id, // Using ID as slug for now
+            category: item.category
+          }));
+          
+          setNewsItems(formattedNews);
+        }
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchNews();
+  }, [locale]);
 
   // Auto-rotate hot news items
   useEffect(() => {
@@ -147,12 +182,16 @@ export default function NewsSection() {
 
   // Function to navigate to previous slide
   const goToPrevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + newsItems.length) % newsItems.length)
+    if (newsItems.length > 0) {
+      setCurrentSlide((prev) => (prev - 1 + newsItems.length) % newsItems.length)
+    }
   }
 
   // Function to navigate to next slide
   const goToNextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % newsItems.length)
+    if (newsItems.length > 0) {
+      setCurrentSlide((prev) => (prev + 1) % newsItems.length)
+    }
   }
 
   // Animation directions based on language direction
@@ -176,7 +215,7 @@ export default function NewsSection() {
 
   // Get the second card index
   const getSecondCardIndex = () => {
-    return (currentSlide + 1) % newsItems.length
+    return newsItems.length > 1 ? (currentSlide + 1) % newsItems.length : 0
   }
 
   // Create a NewsCard component for reuse
@@ -191,7 +230,7 @@ export default function NewsSection() {
           className="object-cover transition-transform group-hover:scale-105 duration-500"
         />
         <div className={`absolute top-3 md:top-4 ${isRtl ? 'left-3 md:left-4' : 'right-3 md:right-4'} bg-primary px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs font-medium text-white`}>
-          {t(`categories.${item.category}`)}
+          {item.category}
         </div>
       </div>
       <div className="p-4 md:p-6">
@@ -216,6 +255,43 @@ export default function NewsSection() {
       </div>
     </div>
   )
+
+  // Loading state
+  if (loading && newsItems.length === 0) {
+    return (
+      <section className="py-12 md:py-20 bg-background-200">
+        <div className="container mx-auto px-4 flex items-center justify-center">
+          <div className="animate-pulse space-y-8 w-full max-w-5xl">
+            <div className="h-16 bg-gray-800 rounded-xl w-full"></div>
+            <div className="space-y-4">
+              <div className="h-4 bg-gray-800 rounded w-3/4"></div>
+              <div className="h-10 bg-gray-800 rounded w-1/2"></div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="h-48 bg-gray-800 rounded"></div>
+                <div className="h-4 bg-gray-800 rounded w-1/4"></div>
+                <div className="h-6 bg-gray-800 rounded w-3/4"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-800 rounded"></div>
+                  <div className="h-4 bg-gray-800 rounded"></div>
+                </div>
+              </div>
+              <div className="space-y-4 hidden md:block">
+                <div className="h-48 bg-gray-800 rounded"></div>
+                <div className="h-4 bg-gray-800 rounded w-1/4"></div>
+                <div className="h-6 bg-gray-800 rounded w-3/4"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-800 rounded"></div>
+                  <div className="h-4 bg-gray-800 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="py-12 md:py-20 bg-background-200">
@@ -316,92 +392,98 @@ export default function NewsSection() {
           </Link>
         </div>
 
-        <div className="relative">
-          {/* Slider Navigation - Left Arrow */}
-          {isRtl ? (
-            <>
-              <button
-                onClick={goToNextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 md:-mr-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
-                aria-label="Next slide"
-              >
-                <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-              </button>
-              <button
-                onClick={goToPrevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 md:-ml-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
-                aria-label="Previous slide"
-              >
-                <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={goToPrevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 md:-ml-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
-                aria-label="Previous slide"
-              >
-                <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-              </button>
-              <button
-                onClick={goToNextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 md:-mr-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
-                aria-label="Next slide"
-              >
-                <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-              </button>
-            </>
-          )}
-
-          {/* News Cards Slider */}
-          <div className="overflow-hidden">
-            <motion.div
-              ref={ref}
-              variants={containerVariants}
-              initial="hidden"
-              animate={inView ? "visible" : "hidden"}
-              className="relative w-full"
-            >
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSlide}
-                  initial={{ x: isRtl ? -600 : 600, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: isRtl ? 600 : -600, opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        {newsItems.length > 0 && (
+          <div className="relative">
+            {/* Slider Navigation - Left Arrow */}
+            {isRtl ? (
+              <>
+                <button
+                  onClick={goToNextSlide}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 md:-mr-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                  aria-label="Next slide"
                 >
-                  {/* First Card - Always visible */}
-                  <div className="mx-auto w-full max-w-md">
-                    <NewsCard item={newsItems[currentSlide]} />
-                  </div>
+                  <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+                </button>
+                <button
+                  onClick={goToPrevSlide}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 md:-ml-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                  aria-label="Previous slide"
+                >
+                  <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={goToPrevSlide}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 md:-ml-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+                </button>
+                <button
+                  onClick={goToNextSlide}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 md:-mr-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+                </button>
+              </>
+            )}
 
-                  {/* Second Card - Hidden on mobile */}
-                  <div className="hidden md:block mx-auto w-full max-w-md">
-                    <NewsCard item={newsItems[getSecondCardIndex()]} />
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </motion.div>
+            {/* News Cards Slider */}
+            <div className="overflow-hidden">
+              <motion.div
+                ref={ref}
+                variants={containerVariants}
+                initial="hidden"
+                animate={inView ? "visible" : "hidden"}
+                className="relative w-full"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentSlide}
+                    initial={{ x: isRtl ? -600 : 600, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: isRtl ? 600 : -600, opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  >
+                    {/* First Card - Always visible */}
+                    <div className="mx-auto w-full max-w-md">
+                      <NewsCard item={newsItems[currentSlide]} />
+                    </div>
+
+                    {/* Second Card - Hidden on mobile */}
+                    {newsItems.length > 1 && (
+                      <div className="hidden md:block mx-auto w-full max-w-md">
+                        <NewsCard item={newsItems[getSecondCardIndex()]} />
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Slider Pagination Dots */}
-        <div className="flex justify-center mt-8">
-          <div className={`flex space-x-2 ${isRtl ? 'flex-row-reverse space-x-reverse' : ''}`}>
-            {newsItems.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentSlide(idx)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  idx === currentSlide ? "w-8 bg-primary" : "w-2 bg-gray-600 hover:bg-gray-500"
-                }`}
-                aria-label={`Go to slide ${idx + 1}`}
-              />
-            ))}
+        {newsItems.length > 0 && (
+          <div className="flex justify-center mt-8">
+            <div className={`flex space-x-2 ${isRtl ? 'flex-row-reverse space-x-reverse' : ''}`}>
+              {newsItems.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    idx === currentSlide ? "w-8 bg-primary" : "w-2 bg-gray-600 hover:bg-gray-500"
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   )

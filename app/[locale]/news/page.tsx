@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
@@ -11,13 +11,20 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 type NewsItem = {
-  id: number
-  title: string
-  excerpt: string
-  date: string
-  image: string
-  slug: string
+  _id: string
+  title: {
+    ar: string
+    en: string
+  }
+  content: {
+    ar: string
+    en: string
+  }
+  image: {
+    secure_url: string
+  }
   category: string
+  date: string
 }
 
 export default function NewsPage() {
@@ -26,8 +33,28 @@ export default function NewsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [currentCategory, setCurrentCategory] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([])
+  const [loading, setLoading] = useState(true)
   
-  // إنشاء رابط مع اللغة
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch('https://mmaf.onrender.com/news/getallnews')
+        const data = await response.json()
+        if (data.news) {
+          setNewsItems(data.news)
+        }
+      } catch (error) {
+        console.error('Error fetching news:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchNews()
+  }, [])
+  
+  // Create localized href
   const getLocalizedHref = (path: string) => {
     if (path.startsWith('http')) {
       return path;
@@ -40,89 +67,16 @@ export default function NewsPage() {
     threshold: 0.1,
   })
 
-  // Mock news data - in a real application, this would come from an API or CMS
-  const allNewsItems: NewsItem[] = [
-    {
-      id: 1,
-      title: t('article1.title'),
-      excerpt: t('article1.excerpt'),
-      date: "2025-05-15",
-      image: "/main.jpg",
-      slug: "uae-mma-championship-success",
-      category: "championships"
-    },
-    {
-      id: 2,
-      title: t('article2.title'),
-      excerpt: t('article2.excerpt'),
-      date: "2025-04-28",
-      image: "/main1.jpg",
-      slug: "uaemmaf-signs-partnership-agreement-with-immaf",
-      category: "partnerships"
-    },
-    {
-      id: 3,
-      title: t('article3.title'),
-      excerpt: t('article3.excerpt'),
-      date: "2025-04-10",
-      image: "/main2.jpg",
-      slug: "youth-mma-development-program-launched",
-      category: "development"
-    },
-    {
-      id: 4,
-      title: t('article4.title'),
-      excerpt: t('article4.excerpt'),
-      date: "2025-03-22",
-      image: "/main3.jpg",
-      slug: "mma-equipment-safety-standards-updated",
-      category: "regulations"
-    },
-    {
-      id: 5,
-      title: t('article5.title'),
-      excerpt: t('article5.excerpt'),
-      date: "2025-03-15",
-      image: "/main4.jpg",
-      slug: "women-mma-fighters-excel-at-regional-championships",
-      category: "championships"
-    },
-    {
-      id: 6,
-      title: t('article6.title'),
-      excerpt: t('article6.excerpt'),
-      date: "2025-02-28",
-      image: "/main5.jpg",
-      slug: "referee-training-program-graduates-first-class",
-      category: "education"
-    },
-    {
-      id: 7,
-      title: t('article7.title'),
-      excerpt: t('article7.excerpt'),
-      date: "2025-02-15",
-      image: "/main6.jpg",
-      slug: "new-mma-regulations-effective-soon",
-      category: "regulations"
-    }
-  ]
-
-  // const categories = [
-  //   { id: "all", label: t('categories.all') },
-  //   { id: "championships", label: t('categories.championships') },
-  //   { id: "partnerships", label: t('categories.partnerships') },
-  //   { id: "development", label: t('categories.development') },
-  //   { id: "regulations", label: t('categories.regulations') },
-  //   { id: "education", label: t('categories.education') }
-  // ]
-
   const itemsPerPage = 6
   
   // Filter news items based on search query and category
-  const filteredNewsItems = allNewsItems.filter(item => {
+  const filteredNewsItems = newsItems.filter(item => {
+    const itemTitle = locale === 'ar' ? item.title.ar : item.title.en
+    const itemContent = locale === 'ar' ? item.content.ar : item.content.en
+    
     const matchesSearch = searchQuery === "" || 
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
+      itemTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      itemContent.toLowerCase().includes(searchQuery.toLowerCase())
     
     const matchesCategory = currentCategory === "all" || item.category === currentCategory
     
@@ -164,12 +118,21 @@ export default function NewsPage() {
 
   // Format date to display in a localized format
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat(locale, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }).format(date)
+    try {
+      const date = new Date(dateString)
+      return new Intl.DateTimeFormat(locale, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }).format(date)
+    } catch (error) {
+      return dateString
+    }
+  }
+
+  // Extract excerpt from content (first 150 characters)
+  const getExcerpt = (content: string) => {
+    return content.substring(0, 150) + '...'
   }
 
   return (
@@ -208,6 +171,7 @@ export default function NewsPage() {
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
           </div>
           
+          {/* Categories can be uncommented and adapted if needed based on API categories */}
           {/* <div className="flex flex-wrap gap-2">
             {categories.map(category => (
               <Button
@@ -228,8 +192,12 @@ export default function NewsPage() {
           </div> */}
         </div>
 
-        {/* News Grid */}
-        {filteredNewsItems.length > 0 ? (
+        {/* Loading state */}
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        ) : filteredNewsItems.length > 0 ? (
           <>
             <motion.div
               ref={ref}
@@ -240,20 +208,20 @@ export default function NewsPage() {
             >
               {paginatedItems.map((item) => (
                 <motion.div
-                  key={item.id}
+                  key={item._id}
                   variants={itemVariants}
                   className="bg-background-200 rounded-lg overflow-hidden border border-gray-800 hover:border-primary/50 transition-colors group"
                 >
                   <div className="relative h-56 w-full overflow-hidden">
                     <Image
-                      src={item.image}
-                      alt={item.title}
+                      src={item.image.secure_url}
+                      alt={locale === 'ar' ? item.title.ar : item.title.en}
                       fill
                       loading="lazy"
                       className="object-cover transition-transform group-hover:scale-105 duration-500"
                     />
                     <div className="absolute top-4 right-4 bg-primary px-3 py-1 rounded-full text-xs font-medium text-white">
-                      {t(`categories.${item.category}`)}
+                      {item.category}
                     </div>
                   </div>
                   <div className="p-6">
@@ -262,12 +230,12 @@ export default function NewsPage() {
                       <span>{formatDate(item.date)}</span>
                     </div>
                     <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                      {item.title}
+                      {locale === 'ar' ? item.title.ar : item.title.en}
                     </h3>
                     <p className="text-gray-400 mb-4 line-clamp-3">
-                      {item.excerpt}
+                      {getExcerpt(locale === 'ar' ? item.content.ar : item.content.en)}
                     </p>
-                    <Link href={getLocalizedHref(`/news/${item.slug}`)} className="text-primary font-medium inline-flex items-center group-hover:underline">
+                    <Link href={getLocalizedHref(`/news/${item._id}`)} className="text-primary font-medium inline-flex items-center group-hover:underline">
                       {t('readMore')}
                       <ChevronRight className="ml-1 h-4 w-4" />
                     </Link>
@@ -276,7 +244,7 @@ export default function NewsPage() {
               ))}
             </motion.div>
 
-            {/* Pagination - Updated to match events page style */}
+            {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex items-center justify-center mt-12 gap-2">
                 <Button
