@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import ContactSection from "@/components/contact-section"
-
+import AboutSection from "@/components/about-section"
 export default function AboutPage() {
   const t = useTranslations('aboutPage')
   const locale = useLocale()
@@ -71,10 +71,10 @@ export default function AboutPage() {
       {/* Hero Banner */}
       <div className="relative h-[300px] bg-background-300 flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
-            <Image 
-              src="/main5.jpg"
-              alt={t('heroTitle')} 
-              fill 
+            <Image
+              src="/subhero.png"
+              alt={t('heroTitle')}
+              fill
               className="object-cover opacity-20 transition-transform duration-[15000ms] hover:scale-105"
               priority
               quality={85}
@@ -131,18 +131,19 @@ export default function AboutPage() {
               <p className="text-white italic">
                 {t('aboutUs.mission')}
               </p>
-            </div>
-            
-            <p className="text-gray-300">
+              <p className="text-gray-300">
               {t('aboutUs.paragraph1')}
             </p>
             
             <p className="text-gray-300">
               {t('aboutUs.paragraph2')}
             </p>
+            </div>
+            
+       
           </motion.div>
         </motion.div>
-
+{/* <AboutSection /> */}
 
         {/* Vision and Goals */}
         <motion.div

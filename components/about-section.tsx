@@ -50,7 +50,7 @@ export default function AboutSection() {
           <motion.div variants={itemVariants} className="relative">
             <div className="relative h-[500px] w-full rounded-lg overflow-hidden">
               <Image
-                src="./main5.jpg"
+                src="./about.jpg"
                 alt={t('imageAlt')}
                 fill
                 className="object-cover"
@@ -75,20 +75,21 @@ export default function AboutSection() {
             </div>
             
             <div className="bg-background-300 p-6 rounded-lg border-l-4 border-primary">
-              <p className="text-white italic">
+              {/* <p className="text-white italic">
                 {t('mission')}
-              </p>
-            </div>
-            
-            <p className="text-gray-300">
+              </p> */}
+              <p className="text-gray-300">
               {t('description1')}
             </p>
             
             <p className="text-gray-300">
               {t('description2')}
             </p>
+            </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          
+            
+            {/* <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link href="/about">
                 <Button className="bg-primary hover:bg-primary-dark text-white">
                   {t('learnMore')}
@@ -99,9 +100,9 @@ export default function AboutSection() {
                   {t('joinUs')}
                 </Button>
               </Link>
-            </div>
+            </div> */}
             
-            <div className="grid grid-cols-2 gap-6 mt-6">
+            {/* <div className="grid grid-cols-2 gap-6 mt-6">
               <div className="flex items-center space-x-3">
                 <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center px-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
@@ -125,7 +126,7 @@ export default function AboutSection() {
                   <p className="text-gray-400 text-sm">{t('feature2.description')}</p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </motion.div>
         </motion.div>
       </div>

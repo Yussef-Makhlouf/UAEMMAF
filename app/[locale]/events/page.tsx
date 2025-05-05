@@ -218,7 +218,7 @@ function EventsContent() {
       <div className="relative h-[300px] bg-background-300 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image 
-            src="/main.jpg"
+            src="/subhero.png"
             alt={t('title')} 
             fill 
             className="object-cover opacity-20"

@@ -72,14 +72,28 @@ export default function Footer() {
                   <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z" />
                 </svg>
               </a>
+              <a 
+                href="https://youtube.com/@UAEMMAF" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-[#E31E24] transition-colors"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="sm:w-[18px] sm:h-[18px]">
+                  <path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z" />
+                </svg>
+              </a>
             </div>
           </div>
 
           {/* Column 2 - Quick Links */}
           <div className="flex flex-col gap-3 sm:gap-4 mt-2 sm:mt-0">
             <h3 className="text-base sm:text-lg font-bold mb-1">{t('quickLinks')}</h3>
-            <Link href="/about" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
-              {t('about')}
+            <Link href="/mission" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
+              {t('mission')}
+            </Link>
+            <Link href="/leadership" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
+              {t('leadership')}
             </Link>
             <Link href="/events" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
               {t('events')}
@@ -102,7 +116,7 @@ export default function Footer() {
               {t('description')}
             </p> */}
             <p className="text-gray-400 text-sm sm:text-base">
-              Telephone: <a href="tel:97123336111" className="hover:text-white transition-colors">97123336111</a>
+              Telephone: <a href="tel:+97123336111" className="hover:text-white transition-colors">+97123336111</a>
             </p>
             <p className="text-gray-400 text-sm sm:text-base">
               Email: <a href="mailto:info@uaemmaf.com" className="hover:text-white transition-colors">info@uaemmaf.com</a>
@@ -137,15 +151,15 @@ export default function Footer() {
             © {new Date().getFullYear()} UAEMMAF {t('allRightsReserved')}
           </p>
           <div className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6">
-            <Link href="/terms" className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors">
+            <span  className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors">
               {t('terms')}
-            </Link>
-            <Link href="/privacy" className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors">
+            </span>
+            <span  className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors">
               {t('privacyPolicy')}
-            </Link>
-            <Link href="/cookies" className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors">
+            </span>
+            <span className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors">
               {t('cookies')}
-            </Link>
+            </span>
           </div>
         </div>
       </div>

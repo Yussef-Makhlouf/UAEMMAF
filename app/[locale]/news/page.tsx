@@ -178,7 +178,7 @@ export default function NewsPage() {
       <div className="relative h-[300px] bg-background-300 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image 
-            src="/main7.jpg"
+            src="/subhero.png"
             alt={t('pageTitle')} 
             fill 
             className="object-cover opacity-20"

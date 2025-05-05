@@ -113,7 +113,7 @@ export default function ContactSection() {
                 <div>
                   <h4 className="text-white font-medium">{t('phone')}</h4>
                   <a href="tel:+97123456789" className="text-gray-300 hover:text-primary transition-colors">
-                    97123336111
+                    +97123336111
                   </a>
                 </div>
               </div>
