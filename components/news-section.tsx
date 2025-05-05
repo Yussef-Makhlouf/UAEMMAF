@@ -36,18 +36,13 @@ type NewsItem = {
   category: string
 }
 
-type HotNewsItem = {
-  id: number
-  titleKey: string
-  slug: string
-}
-
 export default function NewsSection() {
   const t = useTranslations('news')
   const locale = useLocale()
   const [activeHotNews, setActiveHotNews] = useState(0)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [newsItems, setNewsItems] = useState<NewsItem[]>([])
+  const [hotNewsItems, setHotNewsItems] = useState<NewsItem[]>([])
   const [loading, setLoading] = useState(true)
   const isRtl = locale === 'ar'
   
@@ -63,25 +58,6 @@ export default function NewsSection() {
     triggerOnce: true,
     threshold: 0.1,
   })
-
-  // Hot news items - using translation keys instead of hardcoded text
-  const hotNewsItems: HotNewsItem[] = [
-    {
-      id: 1,
-      titleKey: 'hotNews.item1',
-      slug: "uae-mma-new-tournament",
-    },
-    {
-      id: 2,
-      titleKey: 'hotNews.item2',
-      slug: "national-team-trials",
-    },
-    {
-      id: 3,
-      titleKey: 'hotNews.item3',
-      slug: "sports-medicine-partnership",
-    }
-  ]
 
   // Extract an excerpt from content
   const extractExcerpt = (content: string, maxLength: number = 150): string => {
@@ -119,6 +95,9 @@ export default function NewsSection() {
           }));
           
           setNewsItems(formattedNews);
+          
+          // Also set hot news items - take first 3 items or all if less than 3
+          setHotNewsItems(formattedNews.slice(0, 3));
         }
       } catch (error) {
         console.error('Error fetching news:', error);
@@ -310,27 +289,29 @@ export default function NewsSection() {
             {/* News Content - Full width on mobile */}
             <div className="flex-1 relative overflow-hidden w-full sm:w-auto h-10 sm:h-full mx-0 sm:mx-3 mb-2 sm:mb-0 order-3 sm:order-2">
               <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeHotNews}
-                  initial={slideAnimation.initial}
-                  animate={slideAnimation.animate}
-                  exit={slideAnimation.exit}
-                  transition={{ duration: 0.4 }}
-                  className="flex items-center justify-center sm:justify-start h-full"
-                >
-                  <Link 
-                    href={getLocalizedHref(`/news/${hotNewsItems[activeHotNews].slug}`)}
-                    className={`text-sm md:text-base font-medium text-white hover:text-primary transition-colors flex items-center w-full ${isRtl ? 'flex-row-reverse text-right' : 'text-left'}`}
+                {hotNewsItems.length > 0 && (
+                  <motion.div
+                    key={activeHotNews}
+                    initial={slideAnimation.initial}
+                    animate={slideAnimation.animate}
+                    exit={slideAnimation.exit}
+                    transition={{ duration: 0.4 }}
+                    className="flex items-center justify-center sm:justify-start h-full"
                   >
-                    <span className={`inline-block h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-red-500 animate-pulse ${isRtl ? 'ml-2 md:ml-3' : 'mr-2 md:mr-3'}`}></span>
-                    {t(hotNewsItems[activeHotNews].titleKey)}
-                    {isRtl ? (
-                      <ArrowLeft className="mr-1.5 md:mr-2 h-3.5 w-3.5 md:h-4 md:w-4 opacity-80" />
-                    ) : (
-                      <ArrowLeft className="ml-1.5 md:ml-2 h-3.5 w-3.5 md:h-4 md:w-4 opacity-80" />
-                    )}
-                  </Link>
-                </motion.div>
+                    <Link 
+                      href={getLocalizedHref(`/news/${hotNewsItems[activeHotNews]?.slug || ''}`)}
+                      className={`text-sm md:text-base font-medium text-white hover:text-primary transition-colors flex items-center w-full ${isRtl ? 'flex-row-reverse text-right' : 'text-left'}`}
+                    >
+                      <span className={`inline-block h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-red-500 animate-pulse ${isRtl ? 'ml-2 md:ml-3' : 'mr-2 md:mr-3'}`}></span>
+                      {hotNewsItems[activeHotNews]?.title || ''}
+                      {isRtl ? (
+                        <ArrowLeft className="mr-1.5 md:mr-2 h-3.5 w-3.5 md:h-4 md:w-4 opacity-80" />
+                      ) : (
+                        <ArrowLeft className="ml-1.5 md:ml-2 h-3.5 w-3.5 md:h-4 md:w-4 opacity-80" />
+                      )}
+                    </Link>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
 

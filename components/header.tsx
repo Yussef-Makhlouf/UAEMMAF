@@ -19,6 +19,9 @@ export default function Header() {
   const joinUsRef = useRef<HTMLDivElement>(null)
   const aboutRef = useRef<HTMLDivElement>(null)
   
+  // Refs for timeout IDs to be able to clear them
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  
   const t = useTranslations('nav')
   const pathname = usePathname()
   const locale = useLocale()
@@ -120,12 +123,38 @@ export default function Header() {
     setIsAboutOpen(false)
   }
 
-  // Add delay before closing dropdown to improve UX
+  // Handle dropdown opening - close others when one is opened
+  const handleDropdownOpen = (
+    dropdownName: 'events' | 'joinUs' | 'about',
+    setter: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    // Clear any existing timeout
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
+    }
+
+    // Close other dropdowns
+    if (dropdownName !== 'events') setIsEventsOpen(false)
+    if (dropdownName !== 'joinUs') setIsJoinUsOpen(false)
+    if (dropdownName !== 'about') setIsAboutOpen(false)
+    
+    // Open this dropdown
+    setter(true)
+  }
+
+  // Enhanced delay before closing dropdown to improve UX
   const handleDropdownMouseLeave = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
-    // Small delay before closing to allow user to move cursor to dropdown content
-    setTimeout(() => {
+    // Clear any existing timeout
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+    }
+    
+    // Longer delay before closing to allow user to move cursor to dropdown content
+    closeTimeoutRef.current = setTimeout(() => {
       setter(false)
-    }, 150)
+      closeTimeoutRef.current = null
+    }, 300) // Increased from 150ms to 300ms for better UX
   }
 
   // Handle clicks outside dropdown to close them
@@ -145,6 +174,10 @@ export default function Header() {
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
+      // Clear any pending timeouts when component unmounts
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
     }
   }, [])
 
@@ -207,7 +240,7 @@ export default function Header() {
               <div 
                 ref={aboutRef}
                 className="relative group"
-                onMouseEnter={() => setIsAboutOpen(true)}
+                onMouseEnter={() => handleDropdownOpen('about', setIsAboutOpen)}
                 onMouseLeave={() => handleDropdownMouseLeave(setIsAboutOpen)}
               >
                 <button 
@@ -263,7 +296,7 @@ export default function Header() {
               <div 
                 ref={eventsRef}
                 className="relative group"
-                onMouseEnter={() => setIsEventsOpen(true)}
+                onMouseEnter={() => handleDropdownOpen('events', setIsEventsOpen)}
                 onMouseLeave={() => handleDropdownMouseLeave(setIsEventsOpen)}
               >
                 <button 
@@ -312,7 +345,7 @@ export default function Header() {
               <div 
                 ref={joinUsRef}
                 className="relative group"
-                onMouseEnter={() => setIsJoinUsOpen(true)}
+                onMouseEnter={() => handleDropdownOpen('joinUs', setIsJoinUsOpen)}
                 onMouseLeave={() => handleDropdownMouseLeave(setIsJoinUsOpen)}
               >
                 <button 
@@ -419,7 +452,11 @@ export default function Header() {
                       
                       <div className="py-3 border-b border-gray-800">
                         <button 
-                          onClick={() => setIsAboutOpen(!isAboutOpen)}
+                          onClick={() => {
+                            setIsEventsOpen(false);
+                            setIsJoinUsOpen(false);
+                            setIsAboutOpen(!isAboutOpen);
+                          }}
                           className="flex items-center justify-between w-full font-medium text-white hover:text-primary transition-colors duration-200"
                           aria-expanded={isAboutOpen}
                         >
@@ -467,7 +504,11 @@ export default function Header() {
                       
                       <div className="py-3 border-b border-gray-800">
                         <button 
-                          onClick={() => setIsEventsOpen(!isEventsOpen)}
+                          onClick={() => {
+                            setIsAboutOpen(false);
+                            setIsJoinUsOpen(false);
+                            setIsEventsOpen(!isEventsOpen);
+                          }}
                           className="flex items-center justify-between w-full font-medium text-white hover:text-primary transition-colors duration-200"
                           aria-expanded={isEventsOpen}
                         >
@@ -507,7 +548,11 @@ export default function Header() {
                       
                       <div className="py-3 border-b border-gray-800">
                         <button 
-                          onClick={() => setIsJoinUsOpen(!isJoinUsOpen)}
+                          onClick={() => {
+                            setIsAboutOpen(false);
+                            setIsEventsOpen(false);
+                            setIsJoinUsOpen(!isJoinUsOpen);
+                          }}
                           className="flex items-center justify-between w-full font-medium text-white hover:text-primary transition-colors duration-200"
                           aria-expanded={isJoinUsOpen}
                         >
