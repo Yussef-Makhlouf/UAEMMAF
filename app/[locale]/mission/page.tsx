@@ -197,12 +197,14 @@ export default function MissionPage() {
                   
                   {/* Title */}
                   <h2 className="text-2xl md:text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 mb-6">
-                    الرؤية
+                    {locale === 'ar' ? 'الرؤية' : 'Vision'}
                   </h2>
                   
                   {/* Content */}
                   <p className="text-white text-center text-xl font-semibold leading-relaxed">
-                    الريادة العالمية في رياضة الفنون القتالية المختلطة
+                    {locale === 'ar' 
+                      ? 'الريادة العالمية في رياضة الفنون القتالية المختلطة'
+                      : 'Global leadership in mixed martial arts'}
                   </p>
                   
                   {/* Background Element */}
@@ -236,12 +238,14 @@ export default function MissionPage() {
                   
                   {/* Title */}
                   <h2 className="text-2xl md:text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 mb-6">
-                    الرسالة
+                    {locale === 'ar' ? 'الرسالة' : 'Mission'}
                   </h2>
                   
                   {/* Content */}
                   <p className="text-white text-lg leading-relaxed">
-                    تعزيز نمو رياضة الفنون القتالية المختلطة من خلال البرامج التدريبية الهادفة إلى تنمية قدرات الرياضيين في جميع الفئات بهدف تحقيق الانجازات في المحافل العالمية، وتنظيم واستضافة بطولات محلية ودولية وفقاً لأفضل المعايير العالمية.
+                    {locale === 'ar'
+                      ? 'تعزيز نمو رياضة الفنون القتالية المختلطة من خلال البرامج التدريبية الهادفة إلى تنمية قدرات الرياضيين في جميع الفئات بهدف تحقيق الانجازات في المحافل العالمية، وتنظيم واستضافة بطولات محلية ودولية وفقاً لأفضل المعايير العالمية.'
+                      : 'Promoting the growth of mixed martial arts through training programs aimed at developing the capabilities of athletes in all categories with the goal of achieving accomplishments in global forums, and organizing and hosting local and international championships according to the best international standards.'}
                   </p>
                   
                   {/* Background Element */}
