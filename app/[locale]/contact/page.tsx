@@ -31,14 +31,14 @@ export default function ContactPage() {
 
   return (
     <div className="bg-[#FAFAFA] relative" dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="w-full h-full pb-20">
+      <div className="w-full h-full ">
         <Header />
       </div>
       {/* Hero Banner */}
       <div className="relative h-[300px] bg-background-300 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image 
-            src="/main4.jpg"
+            src="/subhero.png"
             alt={t('heroTitle')} 
             fill 
             className="object-cover opacity-20 transition-transform duration-[15000ms] hover:scale-105"

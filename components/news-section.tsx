@@ -4,12 +4,30 @@ import { useTranslations, useLocale } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import { CalendarDays, ArrowRight } from "lucide-react"
+import { CalendarDays, ArrowRight, Flame, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react"
+import { useState, useEffect } from "react"
+
+type NewsApiItem = {
+  _id: string
+  title: {
+    ar: string
+    en: string
+  }
+  content: {
+    ar: string
+    en: string
+  }
+  image: {
+    secure_url: string
+  }
+  category: string
+  date: string
+}
 
 type NewsItem = {
-  id: number
+  id: string
   title: string
   excerpt: string
   date: string
@@ -21,8 +39,14 @@ type NewsItem = {
 export default function NewsSection() {
   const t = useTranslations('news')
   const locale = useLocale()
+  const [activeHotNews, setActiveHotNews] = useState(0)
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([])
+  const [hotNewsItems, setHotNewsItems] = useState<NewsItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const isRtl = locale === 'ar'
   
-  // إنشاء رابط مع اللغة
+  // Create localized links
   const getLocalizedHref = (path: string) => {
     if (path.startsWith('http')) {
       return path
@@ -35,35 +59,64 @@ export default function NewsSection() {
     threshold: 0.1,
   })
 
-  const newsItems: NewsItem[] = [
-    {
-      id: 1,
-      title: t('article1.title'),
-      excerpt: t('article1.excerpt'),
-      date: "2025-05-15",
-      image: "/main.jpg",
-      slug: "uae-mma-championship-success",
-      category: "championships"
-    },
-    {
-      id: 2,
-      title: t('article2.title'),
-      excerpt: t('article2.excerpt'),
-      date: "2025-04-28",
-      image: "/main1.jpg",
-      slug: "uaemmaf-signs-partnership-agreement-with-immaf",
-      category: "partnerships"
-    },
-    {
-      id: 3,
-      title: t('article3.title'),
-      excerpt: t('article3.excerpt'),
-      date: "2025-04-10",
-      image: "/main2.jpg",
-      slug: "youth-mma-development-program-launched",
-      category: "development"
+  // Extract an excerpt from content
+  const extractExcerpt = (content: string, maxLength: number = 150): string => {
+    if (!content) return '';
+    
+    // Remove any markdown or HTML-like syntax
+    const cleanContent = content.replace(/\n/g, ' ').replace(/\s+/g, ' ');
+    
+    if (cleanContent.length <= maxLength) {
+      return cleanContent;
     }
-  ]
+    
+    // Find the last space before maxLength
+    const lastSpace = cleanContent.substring(0, maxLength).lastIndexOf(' ');
+    return cleanContent.substring(0, lastSpace) + '...';
+  };
+
+  // Fetch news from API
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('https://mmaf.onrender.com/news/getallnews');
+        const data = await response.json();
+        
+        if (data && data.news && Array.isArray(data.news)) {
+          const formattedNews = data.news.map((item: NewsApiItem) => ({
+            id: item._id,
+            title: item.title[locale as keyof typeof item.title] || item.title.en,
+            excerpt: extractExcerpt(item.content[locale as keyof typeof item.content] || item.content.en),
+            date: item.date,
+            image: item.image.secure_url,
+            slug: item._id, // Using ID as slug for now
+            category: item.category
+          }));
+          
+          setNewsItems(formattedNews);
+          
+          // Also set hot news items - take first 3 items or all if less than 3
+          setHotNewsItems(formattedNews.slice(0, 3));
+        }
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchNews();
+  }, [locale]);
+
+  // Auto-rotate hot news items
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveHotNews((prev) => (prev + 1) % hotNewsItems.length)
+    }, 6000)
+    
+    return () => clearInterval(interval)
+  }, [hotNewsItems.length])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -96,68 +149,322 @@ export default function NewsSection() {
     }).format(date)
   }
 
+  // Function to navigate to previous hot news item
+  const goToPrevHotNews = () => {
+    setActiveHotNews((prev) => (prev - 1 + hotNewsItems.length) % hotNewsItems.length)
+  }
+
+  // Function to navigate to next hot news item
+  const goToNextHotNews = () => {
+    setActiveHotNews((prev) => (prev + 1) % hotNewsItems.length)
+  }
+
+  // Function to navigate to previous slide
+  const goToPrevSlide = () => {
+    if (newsItems.length > 0) {
+      setCurrentSlide((prev) => (prev - 1 + newsItems.length) % newsItems.length)
+    }
+  }
+
+  // Function to navigate to next slide
+  const goToNextSlide = () => {
+    if (newsItems.length > 0) {
+      setCurrentSlide((prev) => (prev + 1) % newsItems.length)
+    }
+  }
+
+  // Animation directions based on language direction
+  const getSlideAnimation = (direction: 'in' | 'out') => {
+    if (direction === 'in') {
+      return { 
+        initial: { x: isRtl ? -20 : 20, opacity: 0 },
+        animate: { x: 0, opacity: 1 },
+        exit: { x: isRtl ? 20 : -20, opacity: 0 }
+      }
+    } else {
+      return {
+        initial: { x: isRtl ? 20 : -20, opacity: 0 },
+        animate: { x: 0, opacity: 1 },
+        exit: { x: isRtl ? -20 : 20, opacity: 0 }
+      }
+    }
+  }
+
+  const slideAnimation = getSlideAnimation('in')
+
+  // Get the second card index
+  const getSecondCardIndex = () => {
+    return newsItems.length > 1 ? (currentSlide + 1) % newsItems.length : 0
+  }
+
+  // Create a NewsCard component for reuse
+  const NewsCard = ({ item }: { item: NewsItem }) => (
+    <div className={`bg-background-300 rounded-lg overflow-hidden border border-gray-800 hover:border-primary/50 transition-colors group ${isRtl ? 'rtl' : ''} w-full max-w-md mx-auto`}>
+      <div className="relative h-40 sm:h-48 w-full overflow-hidden">
+        <Image
+          src={item.image}
+          alt={item.title}
+          fill
+          loading="lazy"
+          className="object-cover transition-transform group-hover:scale-105 duration-500"
+        />
+        <div className={`absolute top-3 md:top-4 ${isRtl ? 'left-3 md:left-4' : 'right-3 md:right-4'} bg-primary px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs font-medium text-white`}>
+          {item.category}
+        </div>
+      </div>
+      <div className="p-4 md:p-6">
+        <div className={`flex items-center text-gray-400 text-xs md:text-sm mb-2 md:mb-3 ${isRtl ? 'flex-row-reverse' : ''}`}>
+          <CalendarDays className={`h-3 w-3 md:h-4 md:w-4 ${isRtl ? 'ml-1.5 md:ml-2' : 'mr-1.5 md:mr-2'}`} />
+          <span>{formatDate(item.date)}</span>
+        </div>
+        <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3 group-hover:text-primary transition-colors line-clamp-2">
+          {item.title}
+        </h3>
+        <p className="text-sm md:text-base text-gray-400 mb-3 md:mb-4 line-clamp-3">
+          {item.excerpt}
+        </p>
+        <Link href={getLocalizedHref(`/news/${item.slug}`)} className={`text-sm md:text-base text-primary font-medium inline-flex items-center group-hover:underline ${isRtl ? 'flex-row-reverse' : ''}`}>
+          {t('readMore')}
+          {isRtl ? (
+            <ArrowRight className="mr-1 md:mr-1 h-3 w-3 md:h-4 md:w-4 rotate-180" />
+          ) : (
+            <ArrowRight className="ml-1 md:ml-1 h-3 w-3 md:h-4 md:w-4" />
+          )}
+        </Link>
+      </div>
+    </div>
+  )
+
+  // Loading state
+  if (loading && newsItems.length === 0) {
+    return (
+      <section className="py-12 md:py-20 bg-background-200">
+        <div className="container mx-auto px-4 flex items-center justify-center">
+          <div className="animate-pulse space-y-8 w-full max-w-5xl">
+            <div className="h-16 bg-gray-800 rounded-xl w-full"></div>
+            <div className="space-y-4">
+              <div className="h-4 bg-gray-800 rounded w-3/4"></div>
+              <div className="h-10 bg-gray-800 rounded w-1/2"></div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="h-48 bg-gray-800 rounded"></div>
+                <div className="h-4 bg-gray-800 rounded w-1/4"></div>
+                <div className="h-6 bg-gray-800 rounded w-3/4"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-800 rounded"></div>
+                  <div className="h-4 bg-gray-800 rounded"></div>
+                </div>
+              </div>
+              <div className="space-y-4 hidden md:block">
+                <div className="h-48 bg-gray-800 rounded"></div>
+                <div className="h-4 bg-gray-800 rounded w-1/4"></div>
+                <div className="h-6 bg-gray-800 rounded w-3/4"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-800 rounded"></div>
+                  <div className="h-4 bg-gray-800 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
-    <section className="py-20 bg-background-200">
+    <section className="py-12 md:py-20 bg-background-200">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
+        {/* Hot News Line - Redesigned */}
+        <div className="mb-6 md:mb-10 overflow-hidden rounded-xl border border-primary/30 bg-gradient-to-r from-background-300/90 via-background-300/70 to-background-300/90 backdrop-blur-sm shadow-lg">
+          <div className={`flex flex-col sm:flex-row items-center py-3 px-3 sm:py-0 sm:h-16 sm:px-4 ${isRtl ? 'sm:flex-row-reverse' : ''}`}>
+            {/* Breaking News Label */}
+            <div className={`flex-shrink-0 w-full sm:w-auto mb-2 sm:mb-0 ${isRtl ? 'sm:ml-3 md:ml-4' : 'sm:mr-3 md:mr-4'}`}>
+              <div className={`flex items-center justify-center sm:justify-start gap-1.5 md:gap-2 bg-primary px-3 py-1.5 rounded-md text-sm font-semibold text-white shadow-md ${isRtl ? 'flex-row-reverse' : ''}`}>
+                <Flame className="h-4 w-4 animate-pulse" />
+                <span>{t('breaking')}</span>
+              </div>
+            </div>
+
+            {/* News Content - Full width on mobile */}
+            <div className="flex-1 relative overflow-hidden w-full sm:w-auto h-10 sm:h-full mx-0 sm:mx-3 mb-2 sm:mb-0 order-3 sm:order-2">
+              <AnimatePresence mode="wait">
+                {hotNewsItems.length > 0 && (
+                  <motion.div
+                    key={activeHotNews}
+                    initial={slideAnimation.initial}
+                    animate={slideAnimation.animate}
+                    exit={slideAnimation.exit}
+                    transition={{ duration: 0.4 }}
+                    className="flex items-center justify-center sm:justify-start h-full"
+                  >
+                    <Link 
+                      href={getLocalizedHref(`/news/${hotNewsItems[activeHotNews]?.slug || ''}`)}
+                      className={`text-sm md:text-base font-medium text-white hover:text-primary transition-colors flex items-center w-full ${isRtl ? 'flex-row-reverse text-right' : 'text-left'}`}
+                    >
+                      <span className={`inline-block h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-red-500 animate-pulse ${isRtl ? 'ml-2 md:ml-3' : 'mr-2 md:mr-3'}`}></span>
+                      {hotNewsItems[activeHotNews]?.title || ''}
+                      {isRtl ? (
+                        <ArrowLeft className="mr-1.5 md:mr-2 h-3.5 w-3.5 md:h-4 md:w-4 opacity-80" />
+                      ) : (
+                        <ArrowLeft className="ml-1.5 md:ml-2 h-3.5 w-3.5 md:h-4 md:w-4 opacity-80" />
+                      )}
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Controls in a row on mobile */}
+            <div className={`flex items-center order-2 sm:order-3 mb-1 sm:mb-0 ${isRtl ? 'flex-row-reverse' : ''}`}>
+              {/* Arrow Navigation - Left/Previous */}
+              <button 
+                onClick={goToPrevHotNews}
+                className="h-8 w-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                aria-label={isRtl ? "Next news" : "Previous news"}
+              >
+                {isRtl ? <ChevronLeft className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+              </button>
+
+              {/* Pagination Dots */}
+              <div className={`flex-shrink-0 mx-2 md:mx-3`}>
+                <div className={`flex space-x-1.5 md:space-x-2 ${isRtl ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                  {hotNewsItems.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveHotNews(idx)}
+                      className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
+                        idx === activeHotNews ? "w-5 md:w-6 bg-primary" : "w-1.5 md:w-2 bg-gray-600 hover:bg-gray-500"
+                      }`}
+                      aria-label={`Go to news item ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Arrow Navigation - Right/Next */}
+              <button 
+                onClick={goToNextHotNews}
+                className="h-8 w-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                aria-label={isRtl ? "Previous news" : "Next news"}
+              >
+                {isRtl ? <ChevronRight className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className={`flex flex-col md:flex-row justify-between items-start md:items-center mb-8 md:mb-12 ${isRtl ? 'rtl' : ''}`}>
           <div>
-            <h2 className="text-primary text-lg font-medium">{t('latestNews')}</h2>
-            <h3 className="text-3xl md:text-4xl font-bold text-white mt-2">
+            <h2 className="text-primary text-base md:text-lg font-medium">{t('latestNews')}</h2>
+            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mt-1 md:mt-2">
               {t('title')}
             </h3>
           </div>
           <Link href={getLocalizedHref('/news')} className="mt-4 md:mt-0">
-            <Button variant="outline" className="text-white border-primary hover:bg-primary/10 group">
+            <Button variant="outline" className={`text-sm md:text-base text-white border-primary hover:bg-primary/10 group ${isRtl ? 'flex flex-row-reverse' : ''}`}>
               {t('viewAll')}
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              {isRtl ? (
+                <ArrowRight className="mr-1.5 md:mr-2 h-3 w-3 md:h-4 md:w-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
+              ) : (
+                <ArrowRight className="ml-1.5 md:ml-2 h-3 w-3 md:h-4 md:w-4 group-hover:translate-x-1 transition-transform" />
+              )}
             </Button>
           </Link>
         </div>
 
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {newsItems.map((item) => (
-            <motion.div
-              key={item.id}
-              variants={itemVariants}
-              className="bg-background-300 rounded-lg overflow-hidden border border-gray-800 hover:border-primary/50 transition-colors group"
-            >
-              <div className="relative h-48 w-full overflow-hidden">
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  loading="lazy"
-                  className="object-cover transition-transform group-hover:scale-105 duration-500"
+        {newsItems.length > 0 && (
+          <div className="relative">
+            {/* Slider Navigation - Left Arrow */}
+            {isRtl ? (
+              <>
+                <button
+                  onClick={goToNextSlide}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 md:-mr-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                  aria-label="Next slide"
+                >
+                  <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+                </button>
+                <button
+                  onClick={goToPrevSlide}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 md:-ml-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                  aria-label="Previous slide"
+                >
+                  <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={goToPrevSlide}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 md:-ml-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
+                </button>
+                <button
+                  onClick={goToNextSlide}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 md:-mr-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
+                </button>
+              </>
+            )}
+
+            {/* News Cards Slider */}
+            <div className="overflow-hidden">
+              <motion.div
+                ref={ref}
+                variants={containerVariants}
+                initial="hidden"
+                animate={inView ? "visible" : "hidden"}
+                className="relative w-full"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentSlide}
+                    initial={{ x: isRtl ? -600 : 600, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: isRtl ? 600 : -600, opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  >
+                    {/* First Card - Always visible */}
+                    <div className="mx-auto w-full max-w-md">
+                      <NewsCard item={newsItems[currentSlide]} />
+                    </div>
+
+                    {/* Second Card - Hidden on mobile */}
+                    {newsItems.length > 1 && (
+                      <div className="hidden md:block mx-auto w-full max-w-md">
+                        <NewsCard item={newsItems[getSecondCardIndex()]} />
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
+            </div>
+          </div>
+        )}
+
+        {/* Slider Pagination Dots */}
+        {newsItems.length > 0 && (
+          <div className="flex justify-center mt-8">
+            <div className={`flex space-x-2 ${isRtl ? 'flex-row-reverse space-x-reverse' : ''}`}>
+              {newsItems.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    idx === currentSlide ? "w-8 bg-primary" : "w-2 bg-gray-600 hover:bg-gray-500"
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
                 />
-                <div className="absolute top-4 right-4 bg-primary px-3 py-1 rounded-full text-xs font-medium text-white">
-                  {t(`categories.${item.category}`)}
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="flex items-center text-gray-400 text-sm mb-3">
-                  <CalendarDays className="h-4 w-4 mr-2" />
-                  <span>{formatDate(item.date)}</span>
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                  {item.title}
-                </h3>
-                <p className="text-gray-400 mb-4 line-clamp-3">
-                  {item.excerpt}
-                </p>
-                <Link href={getLocalizedHref(`/news/${item.slug}`)} className="text-primary font-medium inline-flex items-center group-hover:underline">
-                  {t('readMore')}
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )
