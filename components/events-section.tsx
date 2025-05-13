@@ -1,177 +1,324 @@
-"use client"
+"use client";
 
-import { useTranslations } from "next-intl"
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
-import { useInView } from "react-intersection-observer"
-import { CalendarDays, MapPin, Clock, Users, ArrowRight } from "lucide-react"
-
-type EventItem = {
-  id: number
-  title: string
-  description: string
-  date: string
-  time: string
-  location: string
-  participants: string
-  image: string
-  slug: string
-}
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { ExternalLink, Sparkles, Calendar, Trophy } from "lucide-react";
+import { useLocale } from "next-intl";
+import Image from "next/image";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaTwitter,
+  FaYoutube,
+  FaTiktok,
+} from "react-icons/fa";
 
 export default function EventsSection() {
-  const t = useTranslations('events')
+  const t = useTranslations("events");
+  const locale = useLocale();
+  const isRtl = locale === "ar";
   
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
-  })
-
-  const events: EventItem[] = [
-    {
-      id: 1,
-      title: t('event1.title'),
-      description: t('event1.description'),
-      date: "2025-06-20",
-      time: "18:00",
-      location: "Etihad Arena, Abu Dhabi",
-      participants: "250+",
-      image: "/main.jpg",
-      slug: "uae-mma-championship-2025"
-    },
-    {
-      id: 2,
-      title: t('event2.title'),
-      description: t('event2.description'),
-      date: "2025-07-15",
-      time: "16:00",
-      location: "Dubai World Trade Centre",
-      participants: "180+",
-      image: "/main2.jpg",
-      slug: "immaf-world-championship-qualifiers-2025"
-    }
-  ]
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.2,
       },
     },
-  }
+  };
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 30, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.5,
+        duration: 0.6,
+        ease: "easeOut",
       },
     },
-  }
+  };
 
-  // Format date to display in a localized format
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }).format(date)
-  }
+  const shimmerEffect = {
+    initial: { backgroundPosition: "0 0" },
+    animate: { 
+      backgroundPosition: ["0 0", "200% 0"],
+      transition: {
+        repeat: Infinity,
+        repeatType: "mirror" as const,
+        duration: 3,
+        ease: "linear",
+      }
+    }
+  };
 
   return (
-    <section className="py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
-          <div>
-            <h2 className="text-primary text-lg font-medium">{t('upcomingEvents')}</h2>
-            <h3 className="text-3xl md:text-4xl font-bold text-white mt-2">
-              {t('title')}
-            </h3>
-          </div>
-          <Link href="/events" className="mt-4 md:mt-0">
-            <Button variant="outline" className="text-white border-primary hover:bg-primary/10 group">
-              {t('viewAll')}
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
-        </div>
+    <section className="py-24 relative overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image 
+          src="/event.jpg" 
+          alt="Events background" 
+          fill 
+          className="object-cover object-center opacity-20 h-full w-full bg-no-repeat"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/90 to-background/70 backdrop-blur-sm"></div>
+      </div>
+
+      {/* Decorative elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <motion.div 
+          className="absolute -top-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{ 
+            duration: 8, 
+            repeat: Infinity,
+            repeatType: "mirror" 
+          }}
+        />
+        <motion.div 
+          className="absolute -bottom-20 -left-20 w-60 h-60 bg-primary/10 rounded-full blur-3xl"
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{ 
+            duration: 10, 
+            repeat: Infinity,
+            repeatType: "mirror",
+            delay: 1 
+          }}
+        />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-block"
+          >
+            <span className="bg-primary/10 text-primary text-sm font-medium px-4 py-1.5 rounded-full inline-flex items-center gap-2 mb-4">
+              <Sparkles className="h-4 w-4" />
+              {t("upcomingEvents")}
+            </span>
+          </motion.div>
+          
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+            {t("title")}
+          </h2>
+          
+          <motion.p 
+            className="text-gray-400 max-w-2xl mx-auto text-lg"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
+            {t("eventsDescription") || 
+              "All our events are managed through Smoothcomp. Click the links below to view and register for upcoming events or check past events."}
+          </motion.p>
+        </motion.div>
 
         <motion.div
           ref={ref}
           variants={containerVariants}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
         >
-          {events.map((event) => (
-            <motion.div
-              key={event.id}
-              variants={itemVariants}
-              className="bg-background-300 rounded-lg overflow-hidden border border-gray-800 hover:border-primary/50 transition-colors group"
-            >
-              <div className="flex flex-col md:flex-row">
-                <div className="relative h-64 md:h-auto md:w-2/5 overflow-hidden">
-                  <Image
-                    src={event.image}
-                    alt={event.title}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-105 duration-500"
-                  />
-                  <div className="absolute top-4 left-4 bg-primary text-white text-sm font-medium px-3 py-1 rounded">
-                    {t('upcoming')}
-                  </div>
+          {/* Upcoming Events Card */}
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            className="relative group h-full"
+          >
+            {/* <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary-dark/40 rounded-2xl blur-sm group-hover:blur-md transform group-hover:scale-[1.02] transition-all duration-300"></div> */}
+            <div className="relative bg-background-300/80 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 group-hover:border-primary/40 transition-colors h-full flex flex-col">
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent"
+                {...shimmerEffect}
+              />
+              
+              <div className="p-8 flex flex-col flex-grow">
+                <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                  <Calendar className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
                 </div>
-                <div className="p-6 md:w-3/5">
-                  <h4 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors">
-                    {event.title}
-                  </h4>
-                  <p className="text-gray-400 mb-4 line-clamp-2">
-                    {event.description}
-                  </p>
-                  
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center text-gray-300">
-                      <CalendarDays className="h-4 w-4 mr-3 text-primary" />
-                      <span>{formatDate(event.date)}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Clock className="h-4 w-4 mr-3 text-primary" />
-                      <span>{event.time}</span>
-                    </div>
-                    <div className="flex items-start text-gray-300">
-                      <MapPin className="h-4 w-4 mr-3 text-primary mt-1" />
-                      <span>{event.location}</span>
-                    </div>
-                    <div className="flex items-center text-gray-300">
-                      <Users className="h-4 w-4 mr-3 text-primary" />
-                      <span>{event.participants} {t('competitors')}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-3">
-                    <Link href={`/events/${event.slug}`}>
-                      <Button className="bg-primary hover:bg-primary-dark text-white">
-                        {t('learnMore')}
-                      </Button>
-                    </Link>
-                    <Link href="https://uaemmaf.smoothcomp.com/en/federation/187/events/upcoming">
-                      <Button variant="outline" className="text-white border-white hover:bg-background-400">
-                        {t('register')}
-                      </Button>
-                    </Link>
-                  </div>
+                
+                <h3 className="text-2xl font-bold text-white mb-4 text-center">
+                  {t("upcomingEvents")}
+                </h3>
+                
+                <p className="text-gray-300 mb-8 text-center flex-grow">
+                  {t("upcomingEventsDescription") ||
+                    "View and register for all upcoming UAE MMA Federation events."}
+                </p>
+                
+                <div className="flex justify-center mt-auto">
+                  <Link
+                    href="https://uaemmaf.smoothcomp.com/en/federation/187/events/upcoming"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="bg-primary hover:bg-primary-dark text-white px-6 py-3 h-auto text-lg rounded-xl group">
+                      <span>{t("viewUpcoming")}</span>
+                      <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                 </div>
               </div>
-            </motion.div>
-          ))}
+            </div>
+          </motion.div>
+
+          {/* Past Events Card */}
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            className="relative group h-full"
+          >
+            {/* <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/40 to-primary/30 rounded-2xl blur-sm group-hover:blur-md transform group-hover:scale-[1.02] transition-all duration-300"></div> */}
+            <div className="relative bg-background-300/80 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 group-hover:border-primary/40 transition-colors h-full flex flex-col">
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent"
+                {...shimmerEffect}
+              />
+              
+              <div className="p-8 flex flex-col flex-grow">
+                <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                  <Trophy className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
+                </div>
+                
+                <h3 className="text-2xl font-bold text-white mb-4 text-center">
+                  {t("pastEvents")}
+                </h3>
+                
+                <p className="text-gray-300 mb-8 text-center flex-grow">
+                  {t("pastEventsDescription") ||
+                    "Browse our past events, results, and achievements."}
+                </p>
+                
+                <div className="flex justify-center mt-auto">
+                  <Link
+                    href="https://uaemmaf.smoothcomp.com/en/federation/187/events"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button
+                      variant="outline"
+                      className="border-2 border-primary/50 text-white hover:bg-primary/20 px-6 py-3 h-auto text-lg rounded-xl group"
+                    >
+                      <span>{t("viewPast")}</span>
+                      <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Social Media Links */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.7 }}
+          className="mt-20 text-center"
+        >
+          <h4 className="text-xl font-bold text-white mb-8">
+            {t("followUs") || "Follow Us"}
+          </h4>
+          <div className={`flex flex-nowrap justify-center ${isRtl ? 'gap-4' : 'space-x-6'}`}>
+            <Link
+              href="https://www.facebook.com/share/1KqkSucYDU/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group ${isRtl ? 'mx-2' : ''}`}
+            >
+              <motion.div 
+                whileHover={{ y: -5, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="bg-background-300/80 backdrop-blur-sm p-4 rounded-full border border-gray-800 group-hover:border-primary/50 group-hover:bg-background-400/80"
+              >
+                <FaFacebook className="h-6 w-6 text-gray-400 group-hover:text-primary" />
+              </motion.div>
+            </Link>
+            <Link
+              href="https://www.instagram.com/uaemmaf?igsh=MTZ6c2xic2tzZWV5dA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group ${isRtl ? 'mx-2' : ''}`}
+            >
+              <motion.div 
+                whileHover={{ y: -5, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="bg-background-300/80 backdrop-blur-sm p-4 rounded-full border border-gray-800 group-hover:border-primary/50 group-hover:bg-background-400/80"
+              >
+                <FaInstagram className="h-6 w-6 text-gray-400 group-hover:text-primary" />
+              </motion.div>
+            </Link>
+            <Link
+              href="https://x.com/UAEMMAF?t=Zw8Gkof-X7A9XRbinT1PLA&s=09"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group ${isRtl ? 'mx-2' : ''}`}
+            >
+              <motion.div 
+                whileHover={{ y: -5, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="bg-background-300/80 backdrop-blur-sm p-4 rounded-full border border-gray-800 group-hover:border-primary/50 group-hover:bg-background-400/80"
+              >
+                <FaTwitter className="h-6 w-6 text-gray-400 group-hover:text-primary" />
+              </motion.div>
+            </Link>
+            <Link
+              href="https://youtube.com/@UAEMMAF"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group ${isRtl ? 'mx-2' : ''}`}
+            >
+              <motion.div 
+                whileHover={{ y: -5, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="bg-background-300/80 backdrop-blur-sm p-4 rounded-full border border-gray-800 group-hover:border-primary/50 group-hover:bg-background-400/80"
+              >
+                <FaYoutube className="h-6 w-6 text-gray-400 group-hover:text-primary" />
+              </motion.div>
+            </Link>
+            <Link
+              href="https://www.tiktok.com/@uaemmaf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group ${isRtl ? 'mx-2' : ''}`}
+            >
+              <motion.div 
+                whileHover={{ y: -5, scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="bg-background-300/80 backdrop-blur-sm p-4 rounded-full border border-gray-800 group-hover:border-primary/50 group-hover:bg-background-400/80"
+              >
+                <FaTiktok className="h-6 w-6 text-gray-400 group-hover:text-primary" />
+              </motion.div>
+            </Link>
+          </div>
         </motion.div>
       </div>
     </section>
-  )
+  );
 } 

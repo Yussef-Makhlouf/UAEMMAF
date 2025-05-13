@@ -35,7 +35,7 @@
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-start-rgb));
-  font-family: 'Lama Sans', Arial, sans-serif;
+  font-family: "Noto Kufi Arabic", sans-serif;
 }
 
 @layer base {

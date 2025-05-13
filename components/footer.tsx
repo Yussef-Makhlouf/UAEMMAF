@@ -10,7 +10,7 @@ export default function Footer() {
   const t = useTranslations('footer')
 
   return (
-    <footer className="bg-black text-white pt-10 sm:pt-16 pb-6 sm:pb-8">
+    <footer className="bg-black text-white pt-10 sm:pt-16 pb-6 sm:pb-8 border-t border-primary/45">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-[100px]">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 xl:gap-12">
@@ -128,8 +128,8 @@ export default function Footer() {
             <h3 className="text-base sm:text-lg font-bold">{t('location')}</h3>
             <div className="w-full h-[180px] sm:h-[200px] rounded-lg overflow-hidden">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3631.1732548910946!2d54.35815838499814!3d24.48635788423549!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e665e5958e43d%3A0x3304142dbc8c83a9!2sCapital%20Tower%20-%20Abu%20Dhabi%20-%20United%20Arab%20Emirates!5e0!3m2!1sen!2sus!4v1650000000000!5m2!1sen!2sus" 
-                width="100%" 
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d68949.90053632692!2d54.442805!3d24.418652!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e42167a9cd0f1%3A0x7986ec2b7a18e80f!2sUAE%20Jiu-Jitsu%20Federation!5e1!3m2!1sar!2sus!4v1747085469086!5m2!1sar!2sus" 
+              width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 
                 allowFullScreen 
@@ -161,6 +161,21 @@ export default function Footer() {
               {t('cookies')}
             </span>
           </div>
+        </div>
+        
+        {/* Developer Credit */}
+        <div className="mt-4 text-center">
+          <p className="text-gray-500 text-xs sm:text-sm">
+            {t('developedBy', {defaultValue: 'Developed by'})}{' '}
+            <a 
+              href="https://logixpro.ae/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              Logixpro
+            </a>
+          </p>
         </div>
       </div>
     </footer>

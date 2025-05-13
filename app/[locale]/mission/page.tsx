@@ -130,7 +130,7 @@ export default function MissionPage() {
   return (
     <div className={`min-h-screen bg-background-100 ${locale === 'ar' ? 'rtl' : 'ltr'}`}>
       {/* Hero Banner */}
-      <div className="relative h-[350px] bg-background-300 flex items-center justify-center overflow-hidden">
+      <div className="relative h-[450px] bg-background-300 flex items-center justify-center overflow-hidden border-b border-primary/30">
         <div className="absolute inset-0">
           <Image
             src="/subhero.png"
@@ -150,123 +150,15 @@ export default function MissionPage() {
               {t('breadcrumbs.home')}
             </Link>
             <span>/</span>
-            <Link href={getLocalizedHref('/about')} className="hover:text-primary transition-colors">
+            {/* <Link href={getLocalizedHref('/about')} className="hover:text-primary transition-colors">
               {t('breadcrumbs.about')}
-            </Link>
-            <span>/</span>
-            <span className="text-white">{locale === 'ar' ? 'عن اتحاد الإمارات للفنون القتالية المختلطة' : 'About UAEMMAF'}</span>
+            </Link> */}
+           
+            <span className="text-white truncate max-w-[200px] md:max-w-[300px]">{locale === 'ar' ? 'عن اتحاد الإمارات للفنون القتالية المختلطة' : 'About UAEMMAF'}</span>
+            
           </div>
         </div>
       </div>
-
-      {/* VIP Vision & Mission Section */}
-      <motion.div 
-        ref={refVIP}
-        variants={containerVariants}
-        initial="hidden"
-        animate={inViewVIP ? "visible" : "hidden"}
-        className="bg-gradient-to-r from-background-300 to-background-400 py-16 border-y border-primary/30"
-      >
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            {/* Gold Accent Divider */}
-            <div className="flex items-center justify-center mb-12">
-              <div className="h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent w-full"></div>
-            </div>
-            
-            {/* Vision & Mission Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {/* Vision Card */}
-              <motion.div 
-                variants={itemVariants}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-background-300 to-background-400 border border-primary/30 group"
-              >
-                {/* Corner Decorations */}
-                <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-primary/60"></div>
-                <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary/60"></div>
-                
-                <div className="p-8 relative z-10">
-                  {/* Icon */}
-                  <motion.div 
-                    variants={floatVariants}
-                    animate="visible"
-                    className="w-20 h-20 bg-gradient-to-br from-primary to-primary/60 rounded-full mx-auto flex items-center justify-center mb-6 shadow-lg shadow-primary/20"
-                  >
-                    <Eye className="h-10 w-10 text-background-300" />
-                  </motion.div>
-                  
-                  {/* Title */}
-                  <h2 className="text-2xl md:text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 mb-6">
-                    {locale === 'ar' ? 'الرؤية' : 'Vision'}
-                  </h2>
-                  
-                  {/* Content */}
-                  <p className="text-white text-center text-xl font-semibold leading-relaxed">
-                    {locale === 'ar' 
-                      ? 'الريادة العالمية في رياضة الفنون القتالية المختلطة'
-                      : 'Global leadership in mixed martial arts'}
-                  </p>
-                  
-                  {/* Background Element */}
-                  <div className="absolute -bottom-8 -right-8 opacity-10">
-                    <Eye className="w-32 h-32 text-primary" />
-                  </div>
-                </div>
-                
-                {/* Shiny Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              </motion.div>
-              
-              {/* Mission Card */}
-              <motion.div 
-                variants={itemVariants}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-background-300 to-background-400 border border-primary/30 group"
-              >
-                {/* Corner Decorations */}
-                <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-primary/60"></div>
-                <div className="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-primary/60"></div>
-                
-                <div className="p-8 relative z-10">
-                  {/* Icon */}
-                  <motion.div 
-                    variants={floatVariants}
-                    animate="visible"
-                    className="w-20 h-20 bg-gradient-to-br from-primary to-primary/60 rounded-full mx-auto flex items-center justify-center mb-6 shadow-lg shadow-primary/20"
-                  >
-                    <Target className="h-10 w-10 text-background-300" />
-                  </motion.div>
-                  
-                  {/* Title */}
-                  <h2 className="text-2xl md:text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 mb-6">
-                    {locale === 'ar' ? 'الرسالة' : 'Mission'}
-                  </h2>
-                  
-                  {/* Content */}
-                  <p className="text-white text-lg leading-relaxed">
-                    {locale === 'ar'
-                      ? 'تعزيز نمو رياضة الفنون القتالية المختلطة من خلال البرامج التدريبية الهادفة إلى تنمية قدرات الرياضيين في جميع الفئات بهدف تحقيق الانجازات في المحافل العالمية، وتنظيم واستضافة بطولات محلية ودولية وفقاً لأفضل المعايير العالمية.'
-                      : 'Promoting the growth of mixed martial arts through training programs aimed at developing the capabilities of athletes in all categories with the goal of achieving accomplishments in global forums, and organizing and hosting local and international championships according to the best international standards.'}
-                  </p>
-                  
-                  {/* Background Element */}
-                  <div className="absolute -bottom-8 -right-8 opacity-10">
-                    <Target className="w-32 h-32 text-primary" />
-                  </div>
-                </div>
-                
-                {/* Shiny Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              </motion.div>
-            </div>
-            
-            {/* Gold Accent Divider */}
-            <div className="flex items-center justify-center mt-12">
-              <div className="h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent w-full"></div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
       <div className="container mx-auto px-4 py-16">
         {/* Values Section Title */}
         <motion.div
@@ -335,27 +227,117 @@ export default function MissionPage() {
           })}
         </motion.div>
         
-        {/* Call To Action */}
-        {/* <motion.div
-          ref={ref3}
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView3 ? "visible" : "hidden"}
-          className="bg-gradient-to-r from-primary/20 to-background-300 rounded-xl p-8 text-center"
-        >
-          <motion.h2 variants={itemVariants} className="text-3xl font-bold text-white mb-4">
-            {locale === 'ar' ? 'انضم إلى مسيرتنا' : 'Join Our Journey'}
-          </motion.h2>
-          <motion.p variants={itemVariants} className="text-gray-300 mb-8 max-w-3xl mx-auto">
-            {locale === 'ar'
-              ? 'نحن ملتزمون بتطوير مستقبل فنون القتال المختلطة في الإمارات العربية المتحدة من خلال التمسك بقيمنا الأساسية. انضم إلينا في هذه الرحلة.'
-              : 'We are committed to developing the future of mixed martial arts in the UAE by adhering to our core values. Join us on this journey.'}
-          </motion.p>
-          <motion.button variants={itemVariants} className="bg-primary hover:bg-primary/80 text-white font-bold py-3 px-8 rounded-full transition-colors">
-            {locale === 'ar' ? 'اتصل بنا' : 'Contact Us'}
-          </motion.button>
-        </motion.div> */}
+
       </div>
+      {/* VIP Vision & Mission Section */}
+      <motion.div 
+        ref={refVIP}
+        variants={containerVariants}
+        initial="hidden"
+        animate={inViewVIP ? "visible" : "hidden"}
+        className="bg-gradient-to-r from-background-300 to-background-400 py-16 border-y border-primary/30"
+      >
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            {/* Gold Accent Divider */}
+            <div className="flex items-center justify-center mb-12">
+              <div className="h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent w-full"></div>
+            </div>
+            
+            {/* Vision & Mission Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              {/* Vision Card */}
+              <motion.div 
+                variants={itemVariants}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-background-300 to-background-400 border border-primary/30 group"
+              >
+                {/* Corner Decorations */}
+                <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-primary/60"></div>
+                <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary/60"></div>
+                
+                <div className="p-8 relative z-10">
+                  {/* Icon */}
+                  <motion.div 
+                    variants={floatVariants}
+                    animate="visible"
+                    className="w-20 h-20 bg-gradient-to-br from-primary to-primary/60 rounded-full mx-auto flex items-center justify-center mb-6 shadow-lg shadow-primary/20"
+                  >
+                    <Eye className="h-10 w-10 text-background-300" />
+                  </motion.div>
+                  
+                  {/* Title */}
+                  <h2 className="text-2xl md:text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 mb-6">
+                    {locale === 'ar' ? 'الرؤية' : 'Vision'}
+                  </h2>
+                  
+                  {/* Content */}
+                  <p className="text-white text-center text-xl font-semibold leading-relaxed">
+                    {locale === 'ar' 
+                      ? 'الريادة العالمية في رياضة الفنون القتالية المختلطة'
+                      : 'Becoming a Global Leader in MMA Sports'}
+                  </p>
+                  
+                  {/* Background Element */}
+                  <div className="absolute -bottom-8 -right-8 opacity-10">
+                    <Eye className="w-32 h-32 text-primary" />
+                  </div>
+                </div>
+                
+                {/* Shiny Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              </motion.div>
+              
+              {/* Mission Card */}
+              <motion.div 
+                variants={itemVariants}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-background-300 to-background-400 border border-primary/30 group"
+              >
+                {/* Corner Decorations */}
+                <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-primary/60"></div>
+                <div className="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-primary/60"></div>
+                
+                <div className="p-8 relative z-10">
+                  {/* Icon */}
+                  <motion.div 
+                    variants={floatVariants}
+                    animate="visible"
+                    className="w-20 h-20 bg-gradient-to-br from-primary to-primary/60 rounded-full mx-auto flex items-center justify-center mb-6 shadow-lg shadow-primary/20"
+                  >
+                    <Target className="h-10 w-10 text-background-300" />
+                  </motion.div>
+                  
+                  {/* Title */}
+                  <h2 className="text-2xl md:text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60 mb-6">
+                    {locale === 'ar' ? 'الرسالة' : 'Mission'}
+                  </h2>
+                  
+                  {/* Content */}
+                  <p className="text-white text-lg leading-relaxed">
+                    {locale === 'ar'
+                      ? 'تعزيز نمو رياضة الفنون القتالية المختلطة من خلال البرامج التدريبية الهادفة إلى تنمية قدرات الرياضيين في جميع الفئات بهدف تحقيق الانجازات في المحافل العالمية، وتنظيم واستضافة بطولات محلية ودولية وفقاً لأفضل المعايير العالمية.'
+                      : 'Organize national and international MMA competitions, nurture MMA athletes across all categories, and foster the growth of MMA within the local community.'}
+                  </p>
+                  
+                  {/* Background Element */}
+                  <div className="absolute -bottom-8 -right-8 opacity-10">
+                    <Target className="w-32 h-32 text-primary" />
+                  </div>
+                </div>
+                
+                {/* Shiny Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              </motion.div>
+            </div>
+            
+            {/* Gold Accent Divider */}
+            <div className="flex items-center justify-center mt-12">
+              <div className="h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent w-full"></div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+
     </div>
   )
 } 

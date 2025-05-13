@@ -277,11 +277,11 @@ PO Box 110007 Abu Dhabi, UAE
           </h3>
           <div className="rounded-lg overflow-hidden shadow-lg h-[400px] w-full">
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3631.3642045848505!2d54.584387512416!3d24.469566068103085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e67e380e2c4e3%3A0x5f6123c8a9aed42d!2sUAEJJF%2C%20Abu%20Dhabi!5e0!3m2!1sen!2sus!4v1718644834987!5m2!1sen!2sus" 
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d68949.90053632692!2d54.442805!3d24.418652!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e42167a9cd0f1%3A0x7986ec2b7a18e80f!2sUAE%20Jiu-Jitsu%20Federation!5e1!3m2!1sar!2sus!4v1747085469086!5m2!1sar!2sus" 
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 
-              allowFullScreen={false} 
+              allowFullScreen={true} 
               loading="lazy" 
               referrerPolicy="no-referrer-when-downgrade"
               title="UAE Mixed Martial Arts Federation Location"

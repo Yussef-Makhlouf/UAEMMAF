@@ -5,10 +5,31 @@ import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
+import { useState, useEffect } from "react"
+
+type Member = {
+  _id: string
+  name: {
+    ar: string
+    en: string
+  }
+  image: {
+    secure_url: string
+    public_id: string
+  }
+  position: {
+    ar: string
+    en: string
+  }
+  customId?: string
+}
 
 export default function LeadershipPage() {
   const t = useTranslations('aboutPage')
   const locale = useLocale()
+  const [members, setMembers] = useState<Member[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   
   // Create link with language
   const getLocalizedHref = (path: string) => {
@@ -49,10 +70,60 @@ export default function LeadershipPage() {
     },
   }
 
+  // Fetch members data from API
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('https://mmaf.onrender.com/members/getallmembers')
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch members: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        if (data.members) {
+          setMembers(data.members)
+        } else {
+          throw new Error("Failed to fetch members data")
+        }
+      } catch (err) {
+        console.error("Error fetching members:", err)
+        setError(err instanceof Error ? err.message : "An unknown error occurred")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMembers()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-r-transparent align-[-0.125em]" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+          <p className="mt-4 text-gray-300">Loading members...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background-100 flex flex-col items-center justify-center">
+        <h2 className="text-2xl text-white mb-4">Error loading members</h2>
+        <p className="text-gray-300 mb-6">{error}</p>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background-100">
       {/* Hero Banner */}
-      <div className="relative h-[300px] bg-background-300 flex items-center justify-center overflow-hidden">
+      <div className="relative h-[450px] bg-background-300 flex items-center justify-center overflow-hidden border-y border-primary/30">
         <div className="absolute inset-0">
           <Image
             src="/subhero.png"
@@ -70,10 +141,10 @@ export default function LeadershipPage() {
               {t('breadcrumbs.home')}
             </Link>
             <span>/</span>
-            <Link href={getLocalizedHref('/about')} className="hover:text-primary transition-colors">
+            {/* <Link href={getLocalizedHref('/about')} className="hover:text-primary transition-colors">
               {t('breadcrumbs.about')}
             </Link>
-            <span>/</span>
+            <span>/</span> */}
             <span className="text-white">{t('leadership.title')}</span>
           </div>
         </div>
@@ -90,7 +161,7 @@ export default function LeadershipPage() {
         >
           <motion.div variants={itemVariants} className="flex flex-col space-y-6 order-2 lg:order-1">
             <div>
-              <h2 className="text-primary text-lg font-medium">{t('presidentMessage.badge')}</h2>
+              {/* <h2 className="text-primary text-lg font-medium">{t('presidentMessage.badge')}</h2> */}
               <h3 className="text-3xl md:text-4xl font-bold text-white mt-2">
                 {t('presidentMessage.title')}
               </h3>
@@ -100,29 +171,26 @@ export default function LeadershipPage() {
               <p className="text-white text-xl">
                 {t('presidentMessage.message1')}
               </p>
-            </div>
-            
-            <p className="text-gray-300">
+              <br /> <br />
+              <p className="text-gray-300">
               {t('presidentMessage.message2')}
             </p>
-            
             <div className="text-white">
               <p className="font-bold text-lg">{t('presidentMessage.name')}</p>
               <p className="text-primary">{t('presidentMessage.position')}</p>
-              <a href={`mailto:${t('presidentMessage.email')}`} className="inline-flex items-center gap-2 text-primary hover:text-primary-dark transition-colors mt-2 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
-                </svg>
-                {t('presidentMessage.email')}
-              </a>
+         
             </div>
+            </div>
+            
+         
+          
           </motion.div>
 
           <motion.div variants={itemVariants} className="relative order-1 lg:order-2">
             <div className="relative h-[400px] w-full mx-auto flex items-center justify-center">
               <div className="relative h-[350px] w-[350px] rounded-full border-4 border-primary overflow-hidden">
                 <Image
-                  src="/mainperson.png"
+                  src="/user.jpg"
                   alt={t('presidentMessage.imageAlt')}
                   fill
                   className="object-cover object-center"
@@ -154,9 +222,9 @@ export default function LeadershipPage() {
             variants={containerVariants}
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
           >
-            {[0, 1, 2, 3, 4, 5, 6].map(index => (
+            {members.map((member) => (
               <motion.div 
-                key={index}
+                key={member._id}
                 variants={itemVariants}
                 className="bg-background-200 rounded-lg p-6 text-center hover:bg-background-300 transition-colors duration-300"
               >
@@ -164,8 +232,8 @@ export default function LeadershipPage() {
                   <div className="absolute inset-0 rounded-full border-2 border-primary p-2">
                     <div className="relative w-full h-full rounded-full overflow-hidden">
                       <Image
-                        src={`/person${index + 1}.jpg`}
-                        alt={t(`leadership.members.${index}.name`, {fallback: `Team Member ${index + 1}`})}
+                        src={member.image.secure_url}
+                        alt={locale === 'ar' ? member.name.ar : member.name.en}
                         fill
                         className="object-cover object-center"
                         style={{ objectPosition: '50% 25%' }}
@@ -173,8 +241,12 @@ export default function LeadershipPage() {
                     </div>
                   </div>
                 </div>
-                <h4 className="text-xl font-bold text-white mb-1">{t(`leadership.members.${index}.name`, {fallback: `Team Member ${index + 1}`})}</h4>
-                <p className="text-primary mb-2">{t(`leadership.members.${index}.position`, {fallback: 'Team Member'})}</p>
+                <h4 className="text-xl font-bold text-white mb-1">
+                  {locale === 'ar' ? member.name.ar : member.name.en}
+                </h4>
+                <p className="text-primary mb-2">
+                  {locale === 'ar' ? member.position.ar : member.position.en}
+                </p>
               </motion.div>
             ))}
           </motion.div>

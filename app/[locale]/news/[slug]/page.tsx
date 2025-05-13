@@ -5,7 +5,7 @@ import { useParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { CalendarDays, ChevronLeft, Share2, Facebook, Twitter, Instagram, Clock, User, Eye } from "lucide-react"
+import { CalendarDays, ChevronLeft, Share2, Facebook, Twitter, Instagram, Clock, User, Eye, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
 import Loader from "@/components/loader"
@@ -20,10 +20,11 @@ type NewsItem = {
     ar: string
     en: string
   }
-  image: {
+  image: Array<{
     secure_url: string
     public_id: string
-  }
+    _id: string
+  }>
   category: string
   date: string
   customId?: string
@@ -40,6 +41,7 @@ export default function NewsArticlePage() {
   const [loading, setLoading] = useState<boolean>(true)
   const [newsData, setNewsData] = useState<NewsItem | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
   
   // Create localized href
   const getLocalizedHref = (path: string) => {
@@ -62,6 +64,7 @@ export default function NewsArticlePage() {
         
         const data = await response.json();
         if (data.message === "News fetched successfully") {
+          console.log('News Data Images:', data.news.image);
           setNewsData(data.news);
         } else {
           throw new Error("Failed to fetch news data");
@@ -166,31 +169,19 @@ export default function NewsArticlePage() {
       className="min-h-screen bg-background-100"
     >
       {/* Hero Banner with Parallax Effect */}
-      <div className="relative h-[60vh] lg:h-[80vh] bg-background-300 flex items-end overflow-hidden">
-        <motion.div 
-          className="absolute inset-0"
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        >
+      <div className="relative h-[450px] bg-background-300 flex items-center justify-center overflow-hidden ">
+        <div className="absolute inset-0">
           <Image 
-            src={newsData.image.secure_url}
+            src="/subhero.png"
             alt={title} 
             fill 
-            className="object-cover"
+            className="object-cover opacity-20"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
-        </motion.div>
-        <div className="relative z-10 container mx-auto px-4 pb-12 max-w-5xl">
-          <motion.h1 
-            {...fadeIn}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-3xl md:text-3xl sm:text-2xl font-bold text-white leading-tight tracking-tight"
-          >
-            {title}
-          </motion.h1>
-     
+        </div>
+        <div className="relative z-10 text-center px-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{title}</h1>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">{formatDate(newsData.date)}</p>
         </div>
       </div>
 
@@ -211,11 +202,58 @@ export default function NewsArticlePage() {
 
       {/* Article Content Section */}
       <div className="container mx-auto px-4 py-16 max-w-4xl">
+
         {/* Article Content */}
         <motion.div 
           variants={staggerContainer}
           className="prose prose-xl prose-invert max-w-none mb-16"
         >
+          {/* Article Featured Image or Image Gallery */}
+          {newsData.image.length === 1 ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="relative w-full h-[450px] mb-12 rounded-2xl overflow-hidden"
+            >
+              <Image 
+                src={newsData.image[0].secure_url}
+                alt={title} 
+                fill
+                className="object-contain hover:scale-105 transition-transform duration-700 rounded-2xl"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background-100/80 to-transparent"></div>
+            </motion.div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className="flex overflow-x-auto md:grid md:grid-cols-3 gap-4 mb-12 pb-2"
+            >
+              {newsData.image.map((img, index) => (
+                <motion.div
+                  key={img._id}
+                  className="relative h-[280px] min-w-[280px] md:min-w-0 overflow-hidden rounded-xl cursor-pointer"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                  onClick={() => setSelectedImage(img.secure_url)}
+                >
+                  <Image
+                    src={img.secure_url}
+                    alt={`${title} - image ${index + 1}`}
+                    fill
+                    className="object-cover transition-transform duration-500 hover:scale-110 "
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background-100/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
           {content.split('\n\n').map((paragraph, index) => (
             <motion.p 
               key={index} 
@@ -285,6 +323,47 @@ export default function NewsArticlePage() {
           </Link>
         </motion.div>
       </div>
+
+      {/* Image Modal */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+            onClick={() => setSelectedImage(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              className="relative max-w-5xl max-h-[90vh] w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="relative w-full h-[80vh]">
+                <Image 
+                  src={selectedImage}
+                  alt="Expanded image"
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, 80vw"
+                  priority
+                />
+              </div>
+              <Button 
+                className="absolute -top-4 -right-4 rounded-full p-2 bg-primary hover:bg-primary/90" 
+                size="icon"
+                onClick={() => setSelectedImage(null)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 } 

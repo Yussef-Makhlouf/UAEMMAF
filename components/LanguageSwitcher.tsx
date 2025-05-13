@@ -91,7 +91,7 @@ export default function LanguageSwitcher() {
         className={`px-4 py-2 rounded-full transition-all duration-300 ${
           locale === 'en'
             ? 'bg-primary text-white shadow-md scale-105'
-            : 'text-gray-600 hover:text-primary hover:bg-gray-100'
+            : 'text-white hover:text-primary hover:bg-gray-100'
         }`}
       >
         <span className="font-medium">EN</span>
@@ -103,7 +103,7 @@ export default function LanguageSwitcher() {
         className={`px-4 py-2 rounded-full transition-all duration-300 ${
           locale === 'ar'
             ? 'bg-primary text-white shadow-md scale-105'
-            : 'text-gray-600 hover:text-primary hover:bg-gray-100'
+            : 'text-white hover:text-primary hover:bg-gray-100'
         }`}
       >
         <span className="font-medium">AR</span>

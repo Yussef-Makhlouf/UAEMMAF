@@ -86,6 +86,26 @@ export default function Header() {
     }
   }
 
+  // Underline animation variants
+  const underlineVariants = {
+    hidden: { 
+      width: 0,
+      left: "50%",
+      transition: { 
+        duration: 0.2,
+        ease: "easeInOut" 
+      }
+    },
+    visible: { 
+      width: "100%",
+      left: 0,
+      transition: { 
+        duration: 0.3,
+        ease: "easeOut" 
+      }
+    }
+  }
+
   const getLocalizedHref = (path: string) => {
     // For external URLs (absolute URLs), return as is
     if (path.startsWith('http')) {
@@ -188,7 +208,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full">
-      <nav className="bg-black py-3">
+      <nav className="bg-gradient-to-r from-red-900 to-red-950 py-3">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             {/* Logo */}
@@ -197,14 +217,16 @@ export default function Header() {
                 href={locale === 'en' ? '/' : `/${locale}`} 
                 className="flex-shrink-0"
               >
-                <Image 
-                  src="/logo3.png" 
-                  alt="UAEMMAF Logo" 
-                  width={160} 
-                  height={70} 
-                  loading="lazy"
-                  className="rounded-sm"
-                />
+                <div className="relative overflow-hidden rounded-sm">
+                  <Image 
+                    src="/logo3.png" 
+                    alt="UAEMMAF Logo" 
+                    width={160} 
+                    height={70} 
+                    loading="lazy"
+                    className="rounded-sm relative z-0"
+                  />
+                </div>
               </Link>
             </div>
             
@@ -229,11 +251,21 @@ export default function Header() {
             <div className="hidden lg:flex items-center gap-6">
               <Link 
                 href={locale === 'en' ? '/' : `/${locale}`}
-                className={`font-medium hover:text-primary transition-colors ${
-                  pathname === "/" || pathname === `/${locale}` ? "text-primary" : "text-white"
-                }`}
+                className="relative font-medium text-white hover:text-white transition-colors group"
               >
                 {t('home')}
+                <motion.div 
+                  className="absolute bottom-0 left-0 h-0.5 bg-green-600"
+                  initial={pathname === "/" || pathname === `/${locale}` ? "visible" : "hidden"}
+                  animate={pathname === "/" || pathname === `/${locale}` ? "visible" : "hidden"}
+                  variants={underlineVariants}
+                />
+                <motion.div 
+                  className="absolute bottom-0 left-0 h-0.5 bg-green-600 opacity-0 group-hover:opacity-100"
+                  initial="hidden"
+                  whileHover="visible"
+                  variants={underlineVariants}
+                />
               </Link>
               
               {/* About Dropdown */}
@@ -244,9 +276,7 @@ export default function Header() {
                 onMouseLeave={() => handleDropdownMouseLeave(setIsAboutOpen)}
               >
                 <button 
-                  className={`flex items-center gap-1 font-medium hover:text-primary transition-colors ${
-                    pathname.includes("/about") ? "text-primary" : "text-white"
-                  }`}
+                  className="relative flex items-center gap-1 font-medium text-white hover:text-white transition-colors group"
                   onClick={() => setIsAboutOpen(!isAboutOpen)}
                   aria-expanded={isAboutOpen}
                   aria-haspopup="true"
@@ -255,6 +285,18 @@ export default function Header() {
                   <ChevronDown 
                     size={16} 
                     className={`transition-transform duration-300 ease-in-out ${isAboutOpen ? 'rotate-180' : ''}`} 
+                  />
+                  <motion.div 
+                    className="absolute bottom-0 left-0 h-0.5 bg-green-600"
+                    initial={pathname.includes("/about") ? "visible" : "hidden"}
+                    animate={pathname.includes("/about") ? "visible" : "hidden"}
+                    variants={underlineVariants}
+                  />
+                  <motion.div 
+                    className="absolute bottom-0 left-0 h-0.5 bg-green-600 opacity-0 group-hover:opacity-100"
+                    initial="hidden"
+                    whileHover="visible"
+                    variants={underlineVariants}
                   />
                 </button>
                 <AnimatePresence>
@@ -268,15 +310,21 @@ export default function Header() {
                     >
                       <Link 
                         href={getLocalizedHref('/mission')}
-                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-primary transition-colors duration-200"
+                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-white transition-colors duration-200 relative group/item overflow-hidden"
                       >
                         {t('mission')}
+                        <motion.div 
+                          className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover/item:w-full transition-all duration-300"
+                        />
                       </Link>
                       <Link 
                         href={getLocalizedHref('/leadership')}
-                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-primary transition-colors duration-200"
+                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-white transition-colors duration-200 relative group/item overflow-hidden"
                       >
                         {t('leadership')}
+                        <motion.div 
+                          className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover/item:w-full transition-all duration-300"
+                        />
                       </Link>
                     </motion.div>
                   )}
@@ -285,11 +333,21 @@ export default function Header() {
               
               <Link 
                 href={getLocalizedHref('/news')}
-                className={`font-medium hover:text-primary transition-colors ${
-                  pathname.includes("/news") ? "text-primary" : "text-white"
-                }`}
+                className="relative font-medium text-white hover:text-white transition-colors group"
               >
                 {t('news')}
+                <motion.div 
+                  className="absolute bottom-0 left-0 h-0.5 bg-green-600"
+                  initial={pathname.includes("/news") ? "visible" : "hidden"}
+                  animate={pathname.includes("/news") ? "visible" : "hidden"}
+                  variants={underlineVariants}
+                />
+                <motion.div 
+                  className="absolute bottom-0 left-0 h-0.5 bg-green-600 opacity-0 group-hover:opacity-100"
+                  initial="hidden"
+                  whileHover="visible"
+                  variants={underlineVariants}
+                />
               </Link>
               
               {/* Events Dropdown */}
@@ -300,9 +358,7 @@ export default function Header() {
                 onMouseLeave={() => handleDropdownMouseLeave(setIsEventsOpen)}
               >
                 <button 
-                  className={`flex items-center gap-1 font-medium hover:text-primary transition-colors ${
-                    pathname.includes("/events") ? "text-primary" : "text-white"
-                  }`}
+                  className="relative flex items-center gap-1 font-medium text-white hover:text-white transition-colors group"
                   onClick={() => setIsEventsOpen(!isEventsOpen)}
                   aria-expanded={isEventsOpen}
                   aria-haspopup="true"
@@ -311,6 +367,18 @@ export default function Header() {
                   <ChevronDown 
                     size={16} 
                     className={`transition-transform duration-300 ease-in-out ${isEventsOpen ? 'rotate-180' : ''}`} 
+                  />
+                  <motion.div 
+                    className="absolute bottom-0 left-0 h-0.5 bg-green-600"
+                    initial={pathname.includes("/events") ? "visible" : "hidden"}
+                    animate={pathname.includes("/events") ? "visible" : "hidden"}
+                    variants={underlineVariants}
+                  />
+                  <motion.div 
+                    className="absolute bottom-0 left-0 h-0.5 bg-green-600 opacity-0 group-hover:opacity-100"
+                    initial="hidden"
+                    whileHover="visible"
+                    variants={underlineVariants}
                   />
                 </button>
                 <AnimatePresence>
@@ -325,16 +393,22 @@ export default function Header() {
                       <Link 
                         href="https://uaemmaf.smoothcomp.com/en/federation/187/events/upcoming" 
                         target="_blank"
-                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-primary transition-colors duration-200"
+                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-white transition-colors duration-200 relative group/item overflow-hidden"
                       >
                         {t('upcomingEvents')}
+                        <motion.div 
+                          className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover/item:w-full transition-all duration-300"
+                        />
                       </Link>
                       <Link 
                         href="https://uaemmaf.smoothcomp.com/en/federation/187/events/past" 
                         target="_blank"
-                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-primary transition-colors duration-200"
+                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-white transition-colors duration-200 relative group/item overflow-hidden"
                       >
                         {t('pastEvents')}
+                        <motion.div 
+                          className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover/item:w-full transition-all duration-300"
+                        />
                       </Link>
                     </motion.div>
                   )}
@@ -349,9 +423,7 @@ export default function Header() {
                 onMouseLeave={() => handleDropdownMouseLeave(setIsJoinUsOpen)}
               >
                 <button 
-                  className={`flex items-center gap-1 font-medium hover:text-primary transition-colors ${
-                    pathname.includes("/join-us") ? "text-primary" : "text-white"
-                  }`}
+                  className="relative flex items-center gap-1 font-medium text-white hover:text-white transition-colors group"
                   onClick={() => setIsJoinUsOpen(!isJoinUsOpen)}
                   aria-expanded={isJoinUsOpen}
                   aria-haspopup="true"
@@ -360,6 +432,18 @@ export default function Header() {
                   <ChevronDown 
                     size={16} 
                     className={`transition-transform duration-300 ease-in-out ${isJoinUsOpen ? 'rotate-180' : ''}`} 
+                  />
+                  <motion.div 
+                    className="absolute bottom-0 left-0 h-0.5 bg-green-600"
+                    initial={pathname.includes("/join-us") ? "visible" : "hidden"}
+                    animate={pathname.includes("/join-us") ? "visible" : "hidden"}
+                    variants={underlineVariants}
+                  />
+                  <motion.div 
+                    className="absolute bottom-0 left-0 h-0.5 bg-green-600 opacity-0 group-hover:opacity-100"
+                    initial="hidden"
+                    whileHover="visible"
+                    variants={underlineVariants}
                   />
                 </button>
                 <AnimatePresence>
@@ -373,15 +457,21 @@ export default function Header() {
                     >
                       <Link 
                         href="https://uaemmaf.smoothcomp.com/en/federation/187/membership" 
-                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-primary transition-colors duration-200"
+                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-white transition-colors duration-200 relative group/item overflow-hidden"
                       >
                         {t('athletes')}
+                        <motion.div 
+                          className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover/item:w-full transition-all duration-300"
+                        />
                       </Link>
                       <Link 
                         href="https://uaemmaf.smoothcomp.com/en/federation/187/academies" 
-                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-primary transition-colors duration-200"
+                        className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-white transition-colors duration-200 relative group/item overflow-hidden"
                       >
                         {t('clubs')}
+                        <motion.div 
+                          className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover/item:w-full transition-all duration-300"
+                        />
                       </Link>
                     </motion.div>
                   )}
@@ -390,11 +480,21 @@ export default function Header() {
               
               <Link 
                 href={getLocalizedHref('/contact')}
-                className={`font-medium hover:text-primary transition-colors ${
-                  pathname.includes("/contact") ? "text-primary" : "text-white"
-                }`}
+                className="relative font-medium text-white hover:text-white transition-colors group"
               >
                 {t('contact')}
+                <motion.div 
+                  className="absolute bottom-0 left-0 h-0.5 bg-green-600"
+                  initial={pathname.includes("/contact") ? "visible" : "hidden"}
+                  animate={pathname.includes("/contact") ? "visible" : "hidden"}
+                  variants={underlineVariants}
+                />
+                <motion.div 
+                  className="absolute bottom-0 left-0 h-0.5 bg-green-600 opacity-0 group-hover:opacity-100"
+                  initial="hidden"
+                  whileHover="visible"
+                  variants={underlineVariants}
+                />
               </Link>
               
               <div className="ml-4">
@@ -410,7 +510,7 @@ export default function Header() {
                   animate="visible"
                   exit="hidden"
                   variants={mobileMenuVariants}
-                  className="fixed inset-0 bg-background z-50 lg:hidden overflow-y-auto"
+                  className="fixed inset-0 bg-gradient-to-r from-red-900 to-red-950 z-50 lg:hidden overflow-y-auto"
                 >
                   <div className="p-6">
                     <div className="flex justify-between items-center mb-8">
@@ -419,14 +519,17 @@ export default function Header() {
                         className="flex-shrink-0" 
                         onClick={handleMenuClose}
                       >
-                        <Image 
-                          src="/logo3.png" 
-                          alt="UAEMMAF Logo" 
-                          width={150} 
-                          height={70} 
-                          loading="lazy"
-                          className="rounded-sm"
-                        />
+                        <div className="relative overflow-hidden rounded-sm">
+                          <div className="absolute inset-0 bg-gradient-to-r from-red-800/30 to-transparent z-10 pointer-events-none" />
+                          <Image 
+                            src="/logo3.png" 
+                            alt="UAEMMAF Logo" 
+                            width={150} 
+                            height={70} 
+                            loading="lazy"
+                            className="rounded-sm relative z-0"
+                          />
+                        </div>
                       </Link>
                       <button
                         type="button"
@@ -444,10 +547,13 @@ export default function Header() {
                     <nav className="flex flex-col space-y-6">
                       <Link 
                         href={locale === 'en' ? '/' : `/${locale}`} 
-                        className="font-medium text-white hover:text-primary py-3 border-b border-gray-800 transition-colors duration-200" 
+                        className="relative font-medium text-white hover:text-white py-3 border-b border-gray-800 transition-colors duration-200 group" 
                         onClick={handleMenuClose}
                       >
                         {t('home')}
+                        {(pathname === "/" || pathname === `/${locale}`) && 
+                          <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
+                        }
                       </Link>
                       
                       <div className="py-3 border-b border-gray-800">
@@ -457,7 +563,7 @@ export default function Header() {
                             setIsJoinUsOpen(false);
                             setIsAboutOpen(!isAboutOpen);
                           }}
-                          className="flex items-center justify-between w-full font-medium text-white hover:text-primary transition-colors duration-200"
+                          className="flex items-center justify-between w-full font-medium text-white hover:text-white transition-colors duration-200 relative"
                           aria-expanded={isAboutOpen}
                         >
                           {t('about')}
@@ -465,6 +571,9 @@ export default function Header() {
                             size={16} 
                             className={`transition-transform duration-300 ease-in-out ${isAboutOpen ? 'rotate-180' : ''}`} 
                           />
+                          {pathname.includes("/about") && 
+                            <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
+                          }
                         </button>
                         <AnimatePresence>
                           {isAboutOpen && (
@@ -477,17 +586,19 @@ export default function Header() {
                             >
                               <Link 
                                 href={getLocalizedHref('/mission')}
-                                className="text-sm text-gray-300 hover:text-primary py-2 transition-colors duration-200"
+                                className="text-sm text-gray-300 hover:text-white py-2 transition-colors duration-200 relative group"
                                 onClick={handleMenuClose}
                               >
                                 {t('mission')}
+                                <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover:w-full transition-all duration-300" />
                               </Link>
                               <Link 
                                 href={getLocalizedHref('/leadership')}
-                                className="text-sm text-gray-300 hover:text-primary py-2 transition-colors duration-200"
+                                className="text-sm text-gray-300 hover:text-white py-2 transition-colors duration-200 relative group"
                                 onClick={handleMenuClose}
                               >
                                 {t('leadership')}
+                                <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover:w-full transition-all duration-300" />
                               </Link>
                             </motion.div>
                           )}
@@ -496,10 +607,13 @@ export default function Header() {
                       
                       <Link 
                         href={getLocalizedHref('/news')} 
-                        className="font-medium text-white hover:text-primary py-3 border-b border-gray-800 transition-colors duration-200" 
+                        className="relative font-medium text-white hover:text-white py-3 border-b border-gray-800 transition-colors duration-200" 
                         onClick={handleMenuClose}
                       >
                         {t('news')}
+                        {pathname.includes("/news") && 
+                          <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
+                        }
                       </Link>
                       
                       <div className="py-3 border-b border-gray-800">
@@ -509,7 +623,7 @@ export default function Header() {
                             setIsJoinUsOpen(false);
                             setIsEventsOpen(!isEventsOpen);
                           }}
-                          className="flex items-center justify-between w-full font-medium text-white hover:text-primary transition-colors duration-200"
+                          className="flex items-center justify-between w-full font-medium text-white hover:text-white transition-colors duration-200 relative"
                           aria-expanded={isEventsOpen}
                         >
                           {t('events')}
@@ -517,6 +631,9 @@ export default function Header() {
                             size={16} 
                             className={`transition-transform duration-300 ease-in-out ${isEventsOpen ? 'rotate-180' : ''}`} 
                           />
+                          {pathname.includes("/events") && 
+                            <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
+                          }
                         </button>
                         <AnimatePresence>
                           {isEventsOpen && (
@@ -529,17 +646,21 @@ export default function Header() {
                             >
                               <Link 
                                 href="https://uaemmaf.smoothcomp.com/en/federation/187/events/upcoming" 
-                                className="text-sm text-gray-300 hover:text-primary py-2 transition-colors duration-200"
+                                target="_blank"
+                                className="text-sm text-gray-300 hover:text-white py-2 transition-colors duration-200 relative group"
                                 onClick={handleMenuClose}
                               >
                                 {t('upcomingEvents')}
+                                <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover:w-full transition-all duration-300" />
                               </Link>
                               <Link 
                                 href="https://uaemmaf.smoothcomp.com/en/federation/187/events/past" 
-                                className="text-sm text-gray-300 hover:text-primary py-2 transition-colors duration-200"
+                                target="_blank"
+                                className="text-sm text-gray-300 hover:text-white py-2 transition-colors duration-200 relative group"
                                 onClick={handleMenuClose}
                               >
                                 {t('pastEvents')}
+                                <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover:w-full transition-all duration-300" />
                               </Link>
                             </motion.div>
                           )}
@@ -553,7 +674,7 @@ export default function Header() {
                             setIsEventsOpen(false);
                             setIsJoinUsOpen(!isJoinUsOpen);
                           }}
-                          className="flex items-center justify-between w-full font-medium text-white hover:text-primary transition-colors duration-200"
+                          className="flex items-center justify-between w-full font-medium text-white hover:text-white transition-colors duration-200 relative"
                           aria-expanded={isJoinUsOpen}
                         >
                           {t('joinUs')}
@@ -561,6 +682,9 @@ export default function Header() {
                             size={16} 
                             className={`transition-transform duration-300 ease-in-out ${isJoinUsOpen ? 'rotate-180' : ''}`} 
                           />
+                          {pathname.includes("/join-us") && 
+                            <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
+                          }
                         </button>
                         <AnimatePresence>
                           {isJoinUsOpen && (
@@ -573,17 +697,21 @@ export default function Header() {
                             >
                               <Link 
                                 href="https://uaemmaf.smoothcomp.com/en/federation/187/membership" 
-                                className="text-sm text-gray-300 hover:text-primary py-2 transition-colors duration-200"
+                                target="_blank"
+                                className="text-sm text-gray-300 hover:text-white py-2 transition-colors duration-200 relative group"
                                 onClick={handleMenuClose}
                               >
                                 {t('athletes')}
+                                <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover:w-full transition-all duration-300" />
                               </Link>
                               <Link 
                                 href="https://uaemmaf.smoothcomp.com/en/federation/187/academies" 
-                                className="text-sm text-gray-300 hover:text-primary py-2 transition-colors duration-200"
+                                target="_blank"
+                                className="text-sm text-gray-300 hover:text-white py-2 transition-colors duration-200 relative group"
                                 onClick={handleMenuClose}
                               >
                                 {t('clubs')}
+                                <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover:w-full transition-all duration-300" />
                               </Link>
                             </motion.div>
                           )}
@@ -592,10 +720,13 @@ export default function Header() {
                       
                       <Link 
                         href={getLocalizedHref('/contact')} 
-                        className="font-medium text-white hover:text-primary py-3 border-b border-gray-800 transition-colors duration-200" 
+                        className="relative font-medium text-white hover:text-white py-3 border-b border-gray-800 transition-colors duration-200" 
                         onClick={handleMenuClose}
                       >
                         {t('contact')}
+                        {pathname.includes("/contact") && 
+                          <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
+                        }
                       </Link>
                       
                       <div className="mt-6">

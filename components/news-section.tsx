@@ -4,9 +4,7 @@ import { useTranslations, useLocale } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
-import { useInView } from "react-intersection-observer"
-import { CalendarDays, ArrowRight, Flame, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react"
+import { CalendarDays, ArrowRight, Flame, ChevronLeft, ChevronRight } from "lucide-react"
 import { useState, useEffect } from "react"
 
 type NewsApiItem = {
@@ -19,11 +17,21 @@ type NewsApiItem = {
     ar: string
     en: string
   }
-  image: {
+  image: Array<{
     secure_url: string
+    public_id: string
+    _id: string
+  }>
+  category: {
+    _id: string
+    name: {
+      ar: string
+      en: string
+    }
   }
-  category: string
+  customId: string
   date: string
+  __v: number
 }
 
 type NewsItem = {
@@ -32,7 +40,7 @@ type NewsItem = {
   excerpt: string
   date: string
   image: string
-  slug: string
+  _id: string
   category: string
 }
 
@@ -44,8 +52,27 @@ export default function NewsSection() {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([])
   const [hotNewsItems, setHotNewsItems] = useState<NewsItem[]>([])
   const [loading, setLoading] = useState(true)
+  const [isLargeScreen, setIsLargeScreen] = useState(false)
   const isRtl = locale === 'ar'
   
+  // Add screen size detection
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const checkScreenSize = () => {
+        setIsLargeScreen(window.innerWidth >= 1024);
+      };
+
+      // Check initially
+      checkScreenSize();
+
+      // Add event listener
+      window.addEventListener('resize', checkScreenSize);
+
+      // Cleanup
+      return () => window.removeEventListener('resize', checkScreenSize);
+    }
+  }, []);
+
   // Create localized links
   const getLocalizedHref = (path: string) => {
     if (path.startsWith('http')) {
@@ -53,11 +80,6 @@ export default function NewsSection() {
     }
     return `/${locale}${path.startsWith('/') ? path : `/${path}`}`
   }
-
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  })
 
   // Extract an excerpt from content
   const extractExcerpt = (content: string, maxLength: number = 150): string => {
@@ -84,15 +106,17 @@ export default function NewsSection() {
         const data = await response.json();
         
         if (data && data.news && Array.isArray(data.news)) {
-          const formattedNews = data.news.map((item: NewsApiItem) => ({
-            id: item._id,
-            title: item.title[locale as keyof typeof item.title] || item.title.en,
-            excerpt: extractExcerpt(item.content[locale as keyof typeof item.content] || item.content.en),
-            date: item.date,
-            image: item.image.secure_url,
-            slug: item._id, // Using ID as slug for now
-            category: item.category
-          }));
+          const formattedNews = data.news
+            .map((item: NewsApiItem) => ({
+              id: item._id,
+              title: item.title[locale as keyof typeof item.title] || item.title.en,
+              excerpt: extractExcerpt(item.content[locale as keyof typeof item.content] || item.content.en),
+              date: item.date,
+              image: item.image[0]?.secure_url || '', // Use the first image from the array
+              _id: item._id,
+              category: item.category.name[locale as keyof typeof item.category.name] || item.category.name.en
+            }))
+            .sort((a: NewsItem, b: NewsItem) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date descending
           
           setNewsItems(formattedNews);
           
@@ -118,27 +142,6 @@ export default function NewsSection() {
     return () => clearInterval(interval)
   }, [hotNewsItems.length])
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-      },
-    },
-  }
-
   // Format date to display in a localized format
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -161,54 +164,42 @@ export default function NewsSection() {
 
   // Function to navigate to previous slide
   const goToPrevSlide = () => {
-    if (newsItems.length > 0) {
-      setCurrentSlide((prev) => (prev - 1 + newsItems.length) % newsItems.length)
-    }
-  }
+    setCurrentSlide((prev) => {
+      const newIndex = prev - 1;
+      return newIndex < 0 ? newsItems.length - 1 : newIndex;
+    });
+  };
 
   // Function to navigate to next slide
   const goToNextSlide = () => {
-    if (newsItems.length > 0) {
-      setCurrentSlide((prev) => (prev + 1) % newsItems.length)
-    }
-  }
+    setCurrentSlide((prev) => {
+      const newIndex = prev + 1;
+      return newIndex >= newsItems.length ? 0 : newIndex;
+    });
+  };
 
-  // Animation directions based on language direction
-  const getSlideAnimation = (direction: 'in' | 'out') => {
-    if (direction === 'in') {
-      return { 
-        initial: { x: isRtl ? -20 : 20, opacity: 0 },
-        animate: { x: 0, opacity: 1 },
-        exit: { x: isRtl ? 20 : -20, opacity: 0 }
-      }
-    } else {
-      return {
-        initial: { x: isRtl ? 20 : -20, opacity: 0 },
-        animate: { x: 0, opacity: 1 },
-        exit: { x: isRtl ? -20 : 20, opacity: 0 }
-      }
-    }
-  }
-
-  const slideAnimation = getSlideAnimation('in')
-
-  // Get the second card index
+  // Get the second and third card indices
   const getSecondCardIndex = () => {
     return newsItems.length > 1 ? (currentSlide + 1) % newsItems.length : 0
   }
 
+  const getThirdCardIndex = () => {
+    return newsItems.length > 2 ? (currentSlide + 2) % newsItems.length : 0
+  }
+
   // Create a NewsCard component for reuse
   const NewsCard = ({ item }: { item: NewsItem }) => (
-    <div className={`bg-background-300 rounded-lg overflow-hidden border border-gray-800 hover:border-primary/50 transition-colors group ${isRtl ? 'rtl' : ''} w-full max-w-md mx-auto`}>
-      <div className="relative h-40 sm:h-48 w-full overflow-hidden">
+    <div className={`bg-background-300 rounded-lg overflow-hidden border border-gray-800 hover:border-primary/50 transition-all duration-300 group ${isRtl ? 'rtl' : ''} w-full max-w-md mx-auto hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1`}>
+      <div className="relative h-72 w-full overflow-hidden">
         <Image
-          src={item.image}
+          src={item.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzFhMWEyMSIvPjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMzAiIGZpbGw9IiM0YTUwNjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4='}
           alt={item.title}
           fill
           loading="lazy"
           className="object-cover transition-transform group-hover:scale-105 duration-500"
         />
-        <div className={`absolute top-3 md:top-4 ${isRtl ? 'left-3 md:left-4' : 'right-3 md:right-4'} bg-primary px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs font-medium text-white`}>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className={`absolute top-3 md:top-4 ${isRtl ? 'left-3 md:left-4' : 'right-3 md:right-4'} bg-primary/90 backdrop-blur-sm px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs font-medium text-white shadow-lg`}>
           {item.category}
         </div>
       </div>
@@ -223,12 +214,15 @@ export default function NewsSection() {
         <p className="text-sm md:text-base text-gray-400 mb-3 md:mb-4 line-clamp-3">
           {item.excerpt}
         </p>
-        <Link href={getLocalizedHref(`/news/${item.slug}`)} className={`text-sm md:text-base text-primary font-medium inline-flex items-center group-hover:underline ${isRtl ? 'flex-row-reverse' : ''}`}>
+        <Link 
+          href={getLocalizedHref(`/news/${item._id}`)} 
+          className={`text-sm md:text-base text-primary font-medium inline-flex items-center group-hover:underline ${isRtl ? 'flex-row-reverse' : ''}`}
+        >
           {t('readMore')}
           {isRtl ? (
-            <ArrowRight className="mr-1 md:mr-1 h-3 w-3 md:h-4 md:w-4 rotate-180" />
+            <ArrowRight className="mr-1 md:mr-1 h-3 w-3 md:h-4 md:w-4 rotate-180 transition-transform group-hover:translate-x-1" />
           ) : (
-            <ArrowRight className="ml-1 md:ml-1 h-3 w-3 md:h-4 md:w-4" />
+            <ArrowRight className="ml-1 md:ml-1 h-3 w-3 md:h-4 md:w-4 transition-transform group-hover:translate-x-1" />
           )}
         </Link>
       </div>
@@ -275,80 +269,89 @@ export default function NewsSection() {
   return (
     <section className="py-12 md:py-20 bg-background-200">
       <div className="container mx-auto px-4">
-        {/* Hot News Line - Redesigned */}
-        <div className="mb-6 md:mb-10 overflow-hidden rounded-xl border border-primary/30 bg-gradient-to-r from-background-300/90 via-background-300/70 to-background-300/90 backdrop-blur-sm shadow-lg">
-          <div className={`flex flex-col sm:flex-row items-center py-3 px-3 sm:py-0 sm:h-16 sm:px-4 ${isRtl ? 'sm:flex-row-reverse' : ''}`}>
-            {/* Breaking News Label */}
-            <div className={`flex-shrink-0 w-full sm:w-auto mb-2 sm:mb-0 ${isRtl ? 'sm:ml-3 md:ml-4' : 'sm:mr-3 md:mr-4'}`}>
-              <div className={`flex items-center justify-center sm:justify-start gap-1.5 md:gap-2 bg-primary px-3 py-1.5 rounded-md text-sm font-semibold text-white shadow-md ${isRtl ? 'flex-row-reverse' : ''}`}>
-                <Flame className="h-4 w-4 animate-pulse" />
-                <span>{t('breaking')}</span>
+        {/* Hot News Line - Redesigned as TV Ticker */}
+        <div className="mb-6 md:mb-10 overflow-hidden rounded-xl border border-primary/30 bg-gradient-to-r from-background-300/90 to-background-300/90 backdrop-blur-sm ">
+          <div className={`flex items-center h-12 sm:h-14 md:h-16 px-2 sm:px-4 relative ${isRtl ? 'flex-row-reverse' : ''}`}>
+            {/* News Channel Label */}
+            <div className={`flex-shrink-0 ${isRtl ? 'ml-2 sm:ml-3 md:ml-4' : 'mr-2 sm:mr-3 md:mr-4'} z-10`}>
+              <div className={`flex items-center gap-1 sm:gap-2 ${isRtl ? 'flex-row-reverse' : ''}`}>
+                <div className="relative">
+                  <Flame className="h-3 w-3 sm:h-4 sm:w-4 text-red-500  z-10 relative animate-[ping_2s_ease-in-out_infinite]" />
+                  <div className="absolute -inset-1 bg-red-500/20 blur-sm rounded-full animate-[ping_3s_ease-in-out_infinite_alternate]"></div>
+                  <div className="absolute -inset-2 bg-red-500/10 blur-md rounded-full animate-[ping_4s_ease-in-out_infinite_alternate-reverse]"></div>
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-primary/50 opacity-70 blur-sm rounded-full  duration-700 animate-[spin_8s_linear_infinite]"></div>
+                </div>
+                <span className="text-xs sm:text-sm font-medium relative">
+                  <span className="bg-gradient-to-r from-red-400 to-primary bg-clip-text text-transparent uppercase tracking-wider">{t('breaking')}</span>
+                  <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-gradient-to-r from-red-500 to-transparent"></span>
+                </span>
               </div>
             </div>
-
-            {/* News Content - Full width on mobile */}
-            <div className="flex-1 relative overflow-hidden w-full sm:w-auto h-10 sm:h-full mx-0 sm:mx-3 mb-2 sm:mb-0 order-3 sm:order-2">
-              <AnimatePresence mode="wait">
-                {hotNewsItems.length > 0 && (
-                  <motion.div
-                    key={activeHotNews}
-                    initial={slideAnimation.initial}
-                    animate={slideAnimation.animate}
-                    exit={slideAnimation.exit}
-                    transition={{ duration: 0.4 }}
-                    className="flex items-center justify-center sm:justify-start h-full"
+            
+            {/* Ticker Line - The red line that appears in TV news tickers */}
+            <div className={`absolute ${isRtl ? 'right-0' : 'left-0'} top-0 bottom-0 w-0.5 sm:w-1 bg-red-500`}></div>
+            
+            {/* News Ticker Content with Typing Effect */}
+            <div className="flex-1 overflow-hidden relative h-full">
+              <div 
+                className={`absolute inset-0 bg-gradient-to-r ${isRtl ? 'from-background-300/90 to-transparent' : 'from-transparent to-background-300/90'} w-4 sm:w-8 z-10 ${isRtl ? 'left-0' : 'right-0'}`}
+              ></div>
+              
+              <div className="flex items-center h-full px-1 sm:px-2 overflow-hidden">
+                <div 
+                  className={`whitespace-nowrap flex items-center h-full ${isRtl ? 'justify-end' : 'justify-start'} w-full`}
+                  style={{ 
+                    direction: isRtl ? 'rtl' : 'ltr'
+                  }}
+                >
+                  <Link 
+                    href={getLocalizedHref(`/news/${hotNewsItems[activeHotNews]?._id || ''}`)}
+                    className={`text-sm sm:text-base md:text-lg font-medium text-white flex items-center hover:text-primary transition-colors w-full`}
+                    key={`hot-news-${hotNewsItems[activeHotNews]?.id || 'empty'}`}
                   >
-                    <Link 
-                      href={getLocalizedHref(`/news/${hotNewsItems[activeHotNews]?.slug || ''}`)}
-                      className={`text-sm md:text-base font-medium text-white hover:text-primary transition-colors flex items-center w-full ${isRtl ? 'flex-row-reverse text-right' : 'text-left'}`}
-                    >
-                      <span className={`inline-block h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-red-500 animate-pulse ${isRtl ? 'ml-2 md:ml-3' : 'mr-2 md:mr-3'}`}></span>
-                      {hotNewsItems[activeHotNews]?.title || ''}
-                      {isRtl ? (
-                        <ArrowLeft className="mr-1.5 md:mr-2 h-3.5 w-3.5 md:h-4 md:w-4 opacity-80" />
-                      ) : (
-                        <ArrowLeft className="ml-1.5 md:ml-2 h-3.5 w-3.5 md:h-4 md:w-4 opacity-80" />
-                      )}
-                    </Link>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    <span className={`inline-block flex-shrink-0 h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-red-500 animate-pulse ${isRtl ? 'ml-2 sm:ml-3' : 'mr-2 sm:mr-3'}`}></span>
+                    <span className="truncate max-w-full">{hotNewsItems[activeHotNews]?.title || ''}</span>
+                  </Link>
+                </div>
+              </div>
             </div>
-
-            {/* Controls in a row on mobile */}
-            <div className={`flex items-center order-2 sm:order-3 mb-1 sm:mb-0 ${isRtl ? 'flex-row-reverse' : ''}`}>
-              {/* Arrow Navigation - Left/Previous */}
+            
+            {/* Controls */}
+            <div className={`flex items-center ${isRtl ? 'mr-1 sm:mr-2' : 'ml-1 sm:ml-2'} z-10 bg-background-300/90 py-0.5 sm:py-1 px-0.5 sm:px-1 rounded-full`}>
+              {/* Arrow Navigation */}
               <button 
                 onClick={goToPrevHotNews}
-                className="h-8 w-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                className="h-6 w-6 sm:h-8 sm:w-8 flex items-center justify-center rounded-full bg-black/40 hover:bg-primary/80 text-white transform transition-all duration-300"
                 aria-label={isRtl ? "Next news" : "Previous news"}
               >
-                {isRtl ? <ChevronLeft className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+                {isRtl ? <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" /> : <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />}
               </button>
-
+              
               {/* Pagination Dots */}
-              <div className={`flex-shrink-0 mx-2 md:mx-3`}>
-                <div className={`flex space-x-1.5 md:space-x-2 ${isRtl ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                  {hotNewsItems.map((_, idx) => (
+              <div className={`flex-shrink-0 mx-1 sm:mx-1.5`}>
+                <div className={`flex space-x-1 sm:space-x-1.5 ${isRtl ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                  {hotNewsItems.map((item, idx) => (
                     <button
-                      key={idx}
+                      key={`hot-news-dot-${item.id || idx}`}
                       onClick={() => setActiveHotNews(idx)}
-                      className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
-                        idx === activeHotNews ? "w-5 md:w-6 bg-primary" : "w-1.5 md:w-2 bg-gray-600 hover:bg-gray-500"
+                      className={`transition-all duration-300 ${
+                        idx === activeHotNews 
+                          ? "h-2 w-2 sm:h-2.5 sm:w-2.5 bg-primary rounded-full" 
+                          : "h-1.5 w-1.5 sm:h-2 sm:w-2 bg-gray-600 hover:bg-gray-500 rounded-full"
                       }`}
                       aria-label={`Go to news item ${idx + 1}`}
                     />
                   ))}
                 </div>
               </div>
-
-              {/* Arrow Navigation - Right/Next */}
+              
+              {/* Arrow Navigation */}
               <button 
                 onClick={goToNextHotNews}
-                className="h-8 w-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
+                className="h-6 w-6 sm:h-8 sm:w-8 flex items-center justify-center rounded-full bg-black/40 hover:bg-primary/80 text-white transform transition-all duration-300"
                 aria-label={isRtl ? "Previous news" : "Next news"}
               >
-                {isRtl ? <ChevronRight className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                {isRtl ? <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" /> : <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />}
               </button>
             </div>
           </div>
@@ -356,7 +359,7 @@ export default function NewsSection() {
 
         <div className={`flex flex-col md:flex-row justify-between items-start md:items-center mb-8 md:mb-12 ${isRtl ? 'rtl' : ''}`}>
           <div>
-            <h2 className="text-primary text-base md:text-lg font-medium">{t('latestNews')}</h2>
+            {/* <h2 className="text-primary text-base md:text-lg font-medium">{t('latestNews')}</h2> */}
             <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mt-1 md:mt-2">
               {t('title')}
             </h3>
@@ -375,96 +378,69 @@ export default function NewsSection() {
 
         {newsItems.length > 0 && (
           <div className="relative">
-            {/* Slider Navigation - Left Arrow */}
-            {isRtl ? (
-              <>
-                <button
-                  onClick={goToNextSlide}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 md:-mr-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
-                  aria-label="Next slide"
-                >
-                  <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-                </button>
-                <button
-                  onClick={goToPrevSlide}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 md:-ml-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
-                  aria-label="Previous slide"
-                >
-                  <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={goToPrevSlide}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 md:-ml-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
-                  aria-label="Previous slide"
-                >
-                  <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
-                </button>
-                <button
-                  onClick={goToNextSlide}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 md:-mr-5 z-10 h-8 w-8 md:h-12 md:w-12 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transform transition-all duration-300 hover:scale-110"
-                  aria-label="Next slide"
-                >
-                  <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
-                </button>
-              </>
-            )}
-
-            {/* News Cards Slider */}
-            <div className="overflow-hidden">
-              <motion.div
-                ref={ref}
-                variants={containerVariants}
-                initial="hidden"
-                animate={inView ? "visible" : "hidden"}
-                className="relative w-full"
+            {/* Navigation Buttons */}
+            <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none z-10">
+              <button
+                onClick={goToPrevSlide}
+                className={`${isRtl ? 'right-0 lg:-right-5' : 'left-0 lg:-left-5'} pointer-events-auto h-10 w-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition-all duration-300 hover:scale-110`}
+                aria-label={isRtl ? "Next slide" : "Previous slide"}
               >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentSlide}
-                    initial={{ x: isRtl ? -600 : 600, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: isRtl ? 600 : -600, opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                  >
-                    {/* First Card - Always visible */}
-                    <div className="mx-auto w-full max-w-md">
-                      <NewsCard item={newsItems[currentSlide]} />
-                    </div>
+                {isRtl ? <ChevronRight className="h-6 w-6" /> : <ChevronLeft className="h-6 w-6" />}
+              </button>
+              <button
+                onClick={goToNextSlide}
+                className={`${isRtl ? 'left-0 lg:-left-5' : 'right-0 lg:-right-5'} pointer-events-auto h-10 w-10 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition-all duration-300 hover:scale-110`}
+                aria-label={isRtl ? "Previous slide" : "Next slide"}
+              >
+                {isRtl ? <ChevronLeft className="h-6 w-6" /> : <ChevronRight className="h-6 w-6" />}
+              </button>
+            </div>
 
-                    {/* Second Card - Hidden on mobile */}
-                    {newsItems.length > 1 && (
-                      <div className="hidden md:block mx-auto w-full max-w-md">
-                        <NewsCard item={newsItems[getSecondCardIndex()]} />
+            {/* Cards Container */}
+            <div className="overflow-hidden">
+              <div className="relative">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+                  {newsItems.map((item, index) => {
+                    // Calculate the visibility based on the current slide
+                    let shouldShow = false;
+                    
+                    // For mobile (1 card)
+                    if (!isLargeScreen) {
+                      shouldShow = index === currentSlide;
+                    } 
+                    // For desktop (3 cards)
+                    else {
+                      // Calculate which cards should be visible
+                      const visibleIndices = [
+                        currentSlide,
+                        (currentSlide + 1) % newsItems.length,
+                        (currentSlide + 2) % newsItems.length
+                      ];
+                      shouldShow = visibleIndices.includes(index);
+                    }
+
+                    return (
+                      <div 
+                        key={`news-card-${item.id || index}`}
+                        className={`
+                          mx-auto w-full max-w-md 
+                          transition-all duration-500 ease-in-out
+                          ${shouldShow ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full hidden'}
+                          ${!isLargeScreen && index !== currentSlide ? 'hidden' : ''}
+                        `}
+                      >
+                        <NewsCard item={item} />
                       </div>
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-              </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
+
+     
           </div>
         )}
 
-        {/* Slider Pagination Dots */}
-        {newsItems.length > 0 && (
-          <div className="flex justify-center mt-8">
-            <div className={`flex space-x-2 ${isRtl ? 'flex-row-reverse space-x-reverse' : ''}`}>
-              {newsItems.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentSlide(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    idx === currentSlide ? "w-8 bg-primary" : "w-2 bg-gray-600 hover:bg-gray-500"
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </section>
   )

@@ -138,7 +138,7 @@ export default function JoinUsSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-70"></div>
               <div className="absolute bottom-0 left-0 w-full p-6">
                 <h4 className="text-2xl font-bold text-white mb-2 flex items-center ">
-                  <Building className="mr-2 h-6 w-6 text-primary px-2" />
+                  <Building className="mr-2 h-6 w-6 text-primary " />
                   {t('clubs.title')}
                 </h4>
               </div>

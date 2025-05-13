@@ -111,6 +111,7 @@
   },
   "events": {
     "upcomingEvents": "Upcoming Events",
+    "eventsDescription": "Discover upcoming MMA events, championships, and tournaments across the UAE.",
     "title": "MMA Championship Calendar",
     "viewAll": "View All Events",
     "upcoming": "Upcoming",
