@@ -5,11 +5,20 @@ import { useTranslations, useLocale } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react"
+import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { API_URL } from "@/lib/constants";
 import ReCAPTCHA from "react-google-recaptcha"
+
+// واجهة أخطاء النموذج
+interface FormErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+  subject?: string;
+  message?: string;
+}
 
 export default function ContactSection() {
   const t = useTranslations('contact')
@@ -20,8 +29,18 @@ export default function ContactSection() {
   const [formState, setFormState] = useState({
     name: "",
     email: "",
+    phone: "",
     subject: "",
     message: "",
+  })
+  
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [touched, setTouched] = useState<Record<string, boolean>>({
+    name: false,
+    email: false,
+    phone: false,
+    subject: false,
+    message: false
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -43,6 +62,9 @@ export default function ContactSection() {
       setCaptchaToken(null);
     }
   }, [locale]);
+
+  // إضافة التحقق الأولي من النموذج عند تحميل المكون
+  // إضافة تعليق لإزالة التحقق الأولي من النموذج
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -73,14 +95,73 @@ export default function ContactSection() {
       setCaptchaError(false);
     }
   }
+  
+  // التحقق من صحة النموذج وإظهار رسائل الخطأ
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+    
+    // التحقق من اسم المستخدم
+    if (!formState.name.trim()) {
+      newErrors.name = t('form.errors.nameRequired');
+    } else if (formState.name.trim().length < 3) {
+      newErrors.name = t('form.errors.nameLength');
+    }
+    
+    // التحقق من البريد الإلكتروني
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formState.email.trim()) {
+      newErrors.email = t('form.errors.emailRequired');
+    } else if (!emailRegex.test(formState.email)) {
+      newErrors.email = t('form.errors.emailInvalid');
+    }
+    
+    // التحقق من رقم الهاتف (اختياري)
+    if (formState.phone && !/^[+]?[0-9\s-]{8,}$/.test(formState.phone)) {
+      newErrors.phone = t('form.errors.phoneInvalid');
+    }
+    
+    // التحقق من الموضوع
+    if (!formState.subject.trim()) {
+      newErrors.subject = t('form.errors.subjectRequired');
+    } else if (formState.subject.trim().length < 3) {
+      newErrors.subject = t('form.errors.subjectLength');
+    }
+    
+    // التحقق من الرسالة
+    if (!formState.message.trim()) {
+      newErrors.message = t('form.errors.messageRequired');
+    } else if (formState.message.trim().length < 10) {
+      newErrors.message = t('form.errors.messageLength');
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   // تنفيذ التحقق من reCAPTCHA قبل إرسال النموذج
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // تحديد جميع الحقول كتم لمسها لإظهار الأخطاء
+    const allTouched: Record<string, boolean> = {
+      name: true,
+      email: true,
+      phone: true,
+      subject: true,
+      message: true
+    };
+    setTouched(allTouched);
+    
+    // التحقق من صحة النموذج
+    const isValid = validateForm();
+    
     // التحقق من reCAPTCHA
     if (!isCaptchaVerified || !captchaToken) {
       setCaptchaError(true);
+      return;
+    }
+    
+    if (!isValid) {
       return;
     }
     
@@ -105,6 +186,7 @@ export default function ContactSection() {
         setFormState({
           name: "",
           email: "",
+          phone: "",
           subject: "",
           message: "",
         });
@@ -113,6 +195,15 @@ export default function ContactSection() {
         recaptchaRef.current?.reset();
         setIsCaptchaVerified(false);
         setCaptchaToken(null);
+        // إعادة تعيين حالة الحقول والأخطاء
+        setTouched({
+          name: false,
+          email: false,
+          phone: false,
+          subject: false,
+          message: false
+        });
+        setErrors({});
       } else {
         // فشل الإرسال
         const errorData = await response.json().catch(() => ({}));
@@ -140,6 +231,85 @@ export default function ContactSection() {
       ...prev,
       [name]: value,
     }));
+    
+    // تحديث حالة اللمس للحقل وإعادة التحقق مباشرة
+    setTouched((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
+    
+    // إعادة التحقق من الحقل بعد تغييره فورًا
+    validateField(name, value);
+  }
+  
+  // التحقق من حقل معين وتحديث الأخطاء
+  const validateField = (name: string, value: string) => {
+    // نسخ حالة الأخطاء الحالية
+    const newErrors = { ...errors };
+    
+    switch (name) {
+      case 'name':
+        if (!value.trim()) {
+          newErrors.name = t('form.errors.nameRequired');
+        } else if (value.trim().length < 3) {
+          newErrors.name = t('form.errors.nameLength');
+        } else {
+          delete newErrors.name;
+        }
+        break;
+        
+      case 'email':
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!value.trim()) {
+          newErrors.email = t('form.errors.emailRequired');
+        } else if (!emailRegex.test(value)) {
+          newErrors.email = t('form.errors.emailInvalid');
+        } else {
+          delete newErrors.email;
+        }
+        break;
+        
+      case 'phone':
+        if (value && !/^[+]?[0-9\s-]{8,}$/.test(value)) {
+          newErrors.phone = t('form.errors.phoneInvalid');
+        } else {
+          delete newErrors.phone;
+        }
+        break;
+        
+      case 'subject':
+        if (!value.trim()) {
+          newErrors.subject = t('form.errors.subjectRequired');
+        } else if (value.trim().length < 3) {
+          newErrors.subject = t('form.errors.subjectLength');
+        } else {
+          delete newErrors.subject;
+        }
+        break;
+        
+      case 'message':
+        if (!value.trim()) {
+          newErrors.message = t('form.errors.messageRequired');
+        } else if (value.trim().length < 10) {
+          newErrors.message = t('form.errors.messageLength');
+        } else {
+          delete newErrors.message;
+        }
+        break;
+    }
+    
+    // تحديث حالة الأخطاء
+    setErrors(newErrors);
+  }
+  
+  // التعامل مع تركيز الحقل
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
+    validateField(name, value);
   }
 
   return (
@@ -183,7 +353,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <h4 className="text-white font-medium">{t('phone')}</h4>
-                  <a href="tel:+97123456789" className="text-gray-300 hover:text-primary transition-colors">
+                  <a href="tel:+97123336111" className="text-gray-300 hover:text-primary transition-colors">
                     +97123336111
                   </a>
                 </div>
@@ -248,22 +418,31 @@ PO Box 110007 Abu Dhabi, UAE
                 <div className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-white mb-2">
-                      {t('form.name')}
+                      {t('form.name')} <span className="text-red-500">*</span>
                     </label>
                     <Input
                       id="name"
                       name="name"
                       value={formState.name}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       required
-                      className="bg-background border-gray-700 text-white focus:border-primary"
+                      className={`bg-background border-gray-700 text-white focus:border-primary ${
+                        touched.name && errors.name ? 'border-red-500' : ''
+                      }`}
                       placeholder={t('form.namePlaceholder')}
                     />
+                    {touched.name && errors.name && (
+                      <div className="flex items-center mt-1 text-red-500 text-sm">
+                        <AlertCircle className="h-4 w-4 mr-1" />
+                        {errors.name}
+                      </div>
+                    )}
                   </div>
                   
                   <div>
                     <label htmlFor="email" className="block text-white mb-2">
-                      {t('form.email')}
+                      {t('form.email')} <span className="text-red-500">*</span>
                     </label>
                     <Input
                       id="email"
@@ -271,40 +450,91 @@ PO Box 110007 Abu Dhabi, UAE
                       type="email"
                       value={formState.email}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       required
-                      className="bg-background border-gray-700 text-white focus:border-primary"
+                      className={`bg-background border-gray-700 text-white focus:border-primary ${
+                        touched.email && errors.email ? 'border-red-500' : ''
+                      }`}
                       placeholder={t('form.emailPlaceholder')}
                     />
+                    {touched.email && errors.email && (
+                      <div className="flex items-center mt-1 text-red-500 text-sm">
+                        <AlertCircle className="h-4 w-4 mr-1" />
+                        {errors.email}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="phone" className="block text-white mb-2">
+                      {t('form.phone')}
+                    </label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formState.phone}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`bg-background border-gray-700 text-white focus:border-primary ${
+                        touched.phone && errors.phone ? 'border-red-500' : ''
+                      }`}
+                      placeholder={t('form.phonePlaceholder')}
+                    />
+                    {touched.phone && errors.phone && (
+                      <div className="flex items-center mt-1 text-red-500 text-sm">
+                        <AlertCircle className="h-4 w-4 mr-1" />
+                        {errors.phone}
+                      </div>
+                    )}
                   </div>
                   
                   <div>
                     <label htmlFor="subject" className="block text-white mb-2">
-                      {t('form.subject')}
+                      {t('form.subject')} <span className="text-red-500">*</span>
                     </label>
                     <Input
                       id="subject"
                       name="subject"
                       value={formState.subject}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       required
-                      className="bg-background border-gray-700 text-white focus:border-primary"
+                      className={`bg-background border-gray-700 text-white focus:border-primary ${
+                        touched.subject && errors.subject ? 'border-red-500' : ''
+                      }`}
                       placeholder={t('form.subjectPlaceholder')}
                     />
+                    {touched.subject && errors.subject && (
+                      <div className="flex items-center mt-1 text-red-500 text-sm">
+                        <AlertCircle className="h-4 w-4 mr-1" />
+                        {errors.subject}
+                      </div>
+                    )}
                   </div>
                   
                   <div>
                     <label htmlFor="message" className="block text-white mb-2">
-                      {t('form.message')}
+                      {t('form.message')} <span className="text-red-500">*</span>
                     </label>
                     <Textarea
                       id="message"
                       name="message"
                       value={formState.message}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       required
-                      className="bg-background border-gray-700 text-white focus:border-primary min-h-32"
+                      className={`bg-background border-gray-700 text-white focus:border-primary min-h-32 ${
+                        touched.message && errors.message ? 'border-red-500' : ''
+                      }`}
                       placeholder={t('form.messagePlaceholder')}
                     />
+                    {touched.message && errors.message && (
+                      <div className="flex items-center mt-1 text-red-500 text-sm">
+                        <AlertCircle className="h-4 w-4 mr-1" />
+                        {errors.message}
+                      </div>
+                    )}
                   </div>
                   
                   {/* reCAPTCHA بسيطة (checkbox) */}
@@ -318,10 +548,15 @@ PO Box 110007 Abu Dhabi, UAE
                       className="mx-auto my-2"
                     />
                     {captchaError && (
-                      <p className="text-red-500 text-sm mt-2">
+                      <div className="flex items-center mt-1 text-red-500 text-sm">
+                        <AlertCircle className="h-4 w-4 mr-1" />
                         {t('form.captchaError')}
-                      </p>
+                      </div>
                     )}
+                  </div>
+                  
+                  <div className="text-gray-400 text-xs mb-4">
+                    <span className="text-red-500">*</span> {t('form.requiredFields')}
                   </div>
                   
                   <Button 

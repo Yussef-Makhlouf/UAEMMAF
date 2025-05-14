@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 interface ContactFormData {
   name: string;
   email: string;
+  phone?: string; // حقل الهاتف اختياري
   subject: string;
   message: string;
   recaptchaToken: string;
@@ -62,7 +63,7 @@ async function verifyRecaptcha(token: string): Promise<{success: boolean; errorC
 export async function POST(request: NextRequest) {
   try {
     const formData: ContactFormData = await request.json();
-    const { name, email, subject, message, recaptchaToken } = formData;
+    const { name, email, phone, subject, message, recaptchaToken } = formData;
 
     // التحقق من البيانات المطلوبة
     if (!name || !email || !subject || !message) {

@@ -268,6 +268,8 @@
       "namePlaceholder": "Enter your full name",
       "email": "Email Address",
       "emailPlaceholder": "Enter your email address",
+      "phone": "Phone Number",
+      "phonePlaceholder": "Enter your phone number",
       "subject": "Subject",
       "subjectPlaceholder": "How can we help you?",
       "message": "Message",
@@ -275,7 +277,19 @@
       "submit": "Send Message",
       "sending": "Sending...",
       "thankYouMessage": "Thank you very much for your inquiry, one of UAEMMAF team will contact you shortly",
-      "captchaError": "Please verify that you are not a robot"
+      "captchaError": "Please verify that you are not a robot",
+      "requiredFields": "Required fields",
+      "errors": {
+        "nameRequired": "Name is required",
+        "nameLength": "Name must be at least 3 characters",
+        "emailRequired": "Email address is required",
+        "emailInvalid": "Please enter a valid email address",
+        "phoneInvalid": "Please enter a valid phone number",
+        "subjectRequired": "Subject is required",
+        "subjectLength": "Subject must be at least 3 characters",
+        "messageRequired": "Message is required",
+        "messageLength": "Message must be at least 10 characters"
+      }
     }
   },
   "contactPage":{
