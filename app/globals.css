@@ -98,3 +98,12 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Add blink animation for the news ticker cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.animate-blink {
+  animation: blink 1s infinite;
+}

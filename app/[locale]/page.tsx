@@ -6,13 +6,14 @@ import PartnersSection from "@/components/partners-section"
 import JoinUsSection from "@/components/join-us-section"
 import ContactSection from "@/components/contact-section"
 
+
 export default function Home() {
   return (
     <>
       <Hero />
       <AboutSection />
       <JoinUsSection />
-
+    
       <NewsSection />
       
       <EventsSection />

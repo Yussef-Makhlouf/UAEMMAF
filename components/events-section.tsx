@@ -8,13 +8,7 @@ import { useInView } from "react-intersection-observer";
 import { ExternalLink, Sparkles, Calendar, Trophy } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
-import {
-  FaFacebook,
-  FaInstagram,
-  FaTwitter,
-  FaYoutube,
-  FaTiktok,
-} from "react-icons/fa";
+import SocialMediaStyled from "./social-media-styled";
 
 export default function EventsSection() {
   const t = useTranslations("events");
@@ -154,7 +148,7 @@ export default function EventsSection() {
             {/* <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary-dark/40 rounded-2xl blur-sm group-hover:blur-md transform group-hover:scale-[1.02] transition-all duration-300"></div> */}
             <div className="relative bg-background-300/80 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 group-hover:border-primary/40 transition-colors h-full flex flex-col">
               <motion.div 
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent"
+                className=" inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent"
                 {...shimmerEffect}
               />
               
@@ -173,16 +167,15 @@ export default function EventsSection() {
                 </p>
                 
                 <div className="flex justify-center mt-auto">
-                  <Link
-                    href="https://uaemmaf.smoothcomp.com/en/federation/187/events/upcoming"
-                    target="_blank"
+                  <a 
+                    href="https://uaemmaf.smoothcomp.com/en/federation/187/events/upcoming" 
+                    target="_blank" 
                     rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white px-6 py-3 h-auto text-lg rounded-xl group transition-colors"
                   >
-                    <Button className="bg-primary hover:bg-primary-dark text-white px-6 py-3 h-auto text-lg rounded-xl group">
-                      <span>{t("viewUpcoming")}</span>
-                      <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </Link>
+                    <span>{t("viewUpcoming")}</span>
+                    <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </a>
                 </div>
               </div>
             </div>
@@ -197,7 +190,7 @@ export default function EventsSection() {
             {/* <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/40 to-primary/30 rounded-2xl blur-sm group-hover:blur-md transform group-hover:scale-[1.02] transition-all duration-300"></div> */}
             <div className="relative bg-background-300/80 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 group-hover:border-primary/40 transition-colors h-full flex flex-col">
               <motion.div 
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent"
+                className=" inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent"
                 {...shimmerEffect}
               />
               
@@ -216,19 +209,15 @@ export default function EventsSection() {
                 </p>
                 
                 <div className="flex justify-center mt-auto">
-                  <Link
-                    href="https://uaemmaf.smoothcomp.com/en/federation/187/events"
-                    target="_blank"
+                  <a 
+                    href="https://uaemmaf.smoothcomp.com/en/federation/187/events/past" 
+                    target="_blank" 
                     rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center border-2 border-primary/50 text-white hover:bg-primary/20 px-6 py-3 h-auto text-lg rounded-xl group transition-colors"
                   >
-                    <Button
-                      variant="outline"
-                      className="border-2 border-primary/50 text-white hover:bg-primary/20 px-6 py-3 h-auto text-lg rounded-xl group"
-                    >
-                      <span>{t("viewPast")}</span>
-                      <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </Link>
+                    <span>{t("viewPast")}</span>
+                    <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </a>
                 </div>
               </div>
             </div>
@@ -242,81 +231,7 @@ export default function EventsSection() {
           transition={{ delay: 0.6, duration: 0.7 }}
           className="mt-20 text-center"
         >
-          <h4 className="text-xl font-bold text-white mb-8">
-            {t("followUs") || "Follow Us"}
-          </h4>
-          <div className={`flex flex-nowrap justify-center ${isRtl ? 'gap-4' : 'space-x-6'}`}>
-            <Link
-              href="https://www.facebook.com/share/1KqkSucYDU/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`group ${isRtl ? 'mx-2' : ''}`}
-            >
-              <motion.div 
-                whileHover={{ y: -5, scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                className="bg-background-300/80 backdrop-blur-sm p-4 rounded-full border border-gray-800 group-hover:border-primary/50 group-hover:bg-background-400/80"
-              >
-                <FaFacebook className="h-6 w-6 text-gray-400 group-hover:text-primary" />
-              </motion.div>
-            </Link>
-            <Link
-              href="https://www.instagram.com/uaemmaf?igsh=MTZ6c2xic2tzZWV5dA=="
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`group ${isRtl ? 'mx-2' : ''}`}
-            >
-              <motion.div 
-                whileHover={{ y: -5, scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                className="bg-background-300/80 backdrop-blur-sm p-4 rounded-full border border-gray-800 group-hover:border-primary/50 group-hover:bg-background-400/80"
-              >
-                <FaInstagram className="h-6 w-6 text-gray-400 group-hover:text-primary" />
-              </motion.div>
-            </Link>
-            <Link
-              href="https://x.com/UAEMMAF?t=Zw8Gkof-X7A9XRbinT1PLA&s=09"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`group ${isRtl ? 'mx-2' : ''}`}
-            >
-              <motion.div 
-                whileHover={{ y: -5, scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                className="bg-background-300/80 backdrop-blur-sm p-4 rounded-full border border-gray-800 group-hover:border-primary/50 group-hover:bg-background-400/80"
-              >
-                <FaTwitter className="h-6 w-6 text-gray-400 group-hover:text-primary" />
-              </motion.div>
-            </Link>
-            <Link
-              href="https://youtube.com/@UAEMMAF"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`group ${isRtl ? 'mx-2' : ''}`}
-            >
-              <motion.div 
-                whileHover={{ y: -5, scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                className="bg-background-300/80 backdrop-blur-sm p-4 rounded-full border border-gray-800 group-hover:border-primary/50 group-hover:bg-background-400/80"
-              >
-                <FaYoutube className="h-6 w-6 text-gray-400 group-hover:text-primary" />
-              </motion.div>
-            </Link>
-            <Link
-              href="https://www.tiktok.com/@uaemmaf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`group ${isRtl ? 'mx-2' : ''}`}
-            >
-              <motion.div 
-                whileHover={{ y: -5, scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                className="bg-background-300/80 backdrop-blur-sm p-4 rounded-full border border-gray-800 group-hover:border-primary/50 group-hover:bg-background-400/80"
-              >
-                <FaTiktok className="h-6 w-6 text-gray-400 group-hover:text-primary" />
-              </motion.div>
-            </Link>
-          </div>
+          <SocialMediaStyled followText={t("followUs") || "Follow Us"} />
         </motion.div>
       </div>
     </section>

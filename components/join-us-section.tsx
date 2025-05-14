@@ -113,7 +113,7 @@ export default function JoinUsSection() {
                 </div>
               </div>
               
-              <Link href="https://uaemmaf.smoothcomp.com/en/federation/187/membership">
+              <Link href="https://uaemmaf.smoothcomp.com/en/federation/187/membership" target="_blank" rel="noopener noreferrer" className="w-full">
                 <Button className="w-full bg-primary hover:bg-primary-dark text-white">
                   {t('athletes.joinNow')}
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -178,7 +178,7 @@ export default function JoinUsSection() {
                 </div>
               </div>
               
-              <Link href="https://uaemmaf.smoothcomp.com/en/federation/187/academies">
+              <Link href="https://uaemmaf.smoothcomp.com/en/federation/187/academies" target="_blank" rel="noopener noreferrer" className="w-full">
                 <Button className="w-full bg-primary hover:bg-primary-dark text-white">
                   {t('clubs.registerNow')}
                   <ArrowRight className="ml-2 h-4 w-4" />

@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { CalendarDays, ArrowRight, Flame, ChevronLeft, ChevronRight } from "lucide-react"
 import { useState, useEffect } from "react"
+import NewsTicker from "@/components/news-ticker"
 
 type NewsApiItem = {
   _id: string
@@ -47,10 +48,8 @@ type NewsItem = {
 export default function NewsSection() {
   const t = useTranslations('news')
   const locale = useLocale()
-  const [activeHotNews, setActiveHotNews] = useState(0)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [newsItems, setNewsItems] = useState<NewsItem[]>([])
-  const [hotNewsItems, setHotNewsItems] = useState<NewsItem[]>([])
   const [loading, setLoading] = useState(true)
   const [isLargeScreen, setIsLargeScreen] = useState(false)
   const isRtl = locale === 'ar'
@@ -119,9 +118,6 @@ export default function NewsSection() {
             .sort((a: NewsItem, b: NewsItem) => new Date(b.date).getTime() - new Date(a.date).getTime()); // Sort by date descending
           
           setNewsItems(formattedNews);
-          
-          // Also set hot news items - take first 3 items or all if less than 3
-          setHotNewsItems(formattedNews.slice(0, 3));
         }
       } catch (error) {
         console.error('Error fetching news:', error);
@@ -133,15 +129,6 @@ export default function NewsSection() {
     fetchNews();
   }, [locale]);
 
-  // Auto-rotate hot news items
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveHotNews((prev) => (prev + 1) % hotNewsItems.length)
-    }, 6000)
-    
-    return () => clearInterval(interval)
-  }, [hotNewsItems.length])
-
   // Format date to display in a localized format
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -150,16 +137,6 @@ export default function NewsSection() {
       month: 'long',
       day: 'numeric'
     }).format(date)
-  }
-
-  // Function to navigate to previous hot news item
-  const goToPrevHotNews = () => {
-    setActiveHotNews((prev) => (prev - 1 + hotNewsItems.length) % hotNewsItems.length)
-  }
-
-  // Function to navigate to next hot news item
-  const goToNextHotNews = () => {
-    setActiveHotNews((prev) => (prev + 1) % hotNewsItems.length)
   }
 
   // Function to navigate to previous slide
@@ -269,93 +246,10 @@ export default function NewsSection() {
   return (
     <section className="py-12 md:py-20 bg-background-200">
       <div className="container mx-auto px-4">
-        {/* Hot News Line - Redesigned as TV Ticker */}
-        <div className="mb-6 md:mb-10 overflow-hidden rounded-xl border border-primary/30 bg-gradient-to-r from-background-300/90 to-background-300/90 backdrop-blur-sm ">
-          <div className={`flex items-center h-12 sm:h-14 md:h-16 px-2 sm:px-4 relative ${isRtl ? 'flex-row-reverse' : ''}`}>
-            {/* News Channel Label */}
-            <div className={`flex-shrink-0 ${isRtl ? 'ml-2 sm:ml-3 md:ml-4' : 'mr-2 sm:mr-3 md:mr-4'} z-10`}>
-              <div className={`flex items-center gap-1 sm:gap-2 ${isRtl ? 'flex-row-reverse' : ''}`}>
-                <div className="relative">
-                  <Flame className="h-3 w-3 sm:h-4 sm:w-4 text-red-500  z-10 relative animate-[ping_2s_ease-in-out_infinite]" />
-                  <div className="absolute -inset-1 bg-red-500/20 blur-sm rounded-full animate-[ping_3s_ease-in-out_infinite_alternate]"></div>
-                  <div className="absolute -inset-2 bg-red-500/10 blur-md rounded-full animate-[ping_4s_ease-in-out_infinite_alternate-reverse]"></div>
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-primary/50 opacity-70 blur-sm rounded-full  duration-700 animate-[spin_8s_linear_infinite]"></div>
-                </div>
-                <span className="text-xs sm:text-sm font-medium relative">
-                  <span className="bg-gradient-to-r from-red-400 to-primary bg-clip-text text-transparent uppercase tracking-wider">{t('breaking')}</span>
-                  <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-gradient-to-r from-red-500 to-transparent"></span>
-                </span>
-              </div>
-            </div>
-            
-            {/* Ticker Line - The red line that appears in TV news tickers */}
-            <div className={`absolute ${isRtl ? 'right-0' : 'left-0'} top-0 bottom-0 w-0.5 sm:w-1 bg-red-500`}></div>
-            
-            {/* News Ticker Content with Typing Effect */}
-            <div className="flex-1 overflow-hidden relative h-full">
-              <div 
-                className={`absolute inset-0 bg-gradient-to-r ${isRtl ? 'from-background-300/90 to-transparent' : 'from-transparent to-background-300/90'} w-4 sm:w-8 z-10 ${isRtl ? 'left-0' : 'right-0'}`}
-              ></div>
-              
-              <div className="flex items-center h-full px-1 sm:px-2 overflow-hidden">
-                <div 
-                  className={`whitespace-nowrap flex items-center h-full ${isRtl ? 'justify-end' : 'justify-start'} w-full`}
-                  style={{ 
-                    direction: isRtl ? 'rtl' : 'ltr'
-                  }}
-                >
-                  <Link 
-                    href={getLocalizedHref(`/news/${hotNewsItems[activeHotNews]?._id || ''}`)}
-                    className={`text-sm sm:text-base md:text-lg font-medium text-white flex items-center hover:text-primary transition-colors w-full`}
-                    key={`hot-news-${hotNewsItems[activeHotNews]?.id || 'empty'}`}
-                  >
-                    <span className={`inline-block flex-shrink-0 h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-red-500 animate-pulse ${isRtl ? 'ml-2 sm:ml-3' : 'mr-2 sm:mr-3'}`}></span>
-                    <span className="truncate max-w-full">{hotNewsItems[activeHotNews]?.title || ''}</span>
-                  </Link>
-                </div>
-              </div>
-            </div>
-            
-            {/* Controls */}
-            <div className={`flex items-center ${isRtl ? 'mr-1 sm:mr-2' : 'ml-1 sm:ml-2'} z-10 bg-background-300/90 py-0.5 sm:py-1 px-0.5 sm:px-1 rounded-full`}>
-              {/* Arrow Navigation */}
-              <button 
-                onClick={goToPrevHotNews}
-                className="h-6 w-6 sm:h-8 sm:w-8 flex items-center justify-center rounded-full bg-black/40 hover:bg-primary/80 text-white transform transition-all duration-300"
-                aria-label={isRtl ? "Next news" : "Previous news"}
-              >
-                {isRtl ? <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" /> : <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />}
-              </button>
-              
-              {/* Pagination Dots */}
-              <div className={`flex-shrink-0 mx-1 sm:mx-1.5`}>
-                <div className={`flex space-x-1 sm:space-x-1.5 ${isRtl ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                  {hotNewsItems.map((item, idx) => (
-                    <button
-                      key={`hot-news-dot-${item.id || idx}`}
-                      onClick={() => setActiveHotNews(idx)}
-                      className={`transition-all duration-300 ${
-                        idx === activeHotNews 
-                          ? "h-2 w-2 sm:h-2.5 sm:w-2.5 bg-primary rounded-full" 
-                          : "h-1.5 w-1.5 sm:h-2 sm:w-2 bg-gray-600 hover:bg-gray-500 rounded-full"
-                      }`}
-                      aria-label={`Go to news item ${idx + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
-              
-              {/* Arrow Navigation */}
-              <button 
-                onClick={goToNextHotNews}
-                className="h-6 w-6 sm:h-8 sm:w-8 flex items-center justify-center rounded-full bg-black/40 hover:bg-primary/80 text-white transform transition-all duration-300"
-                aria-label={isRtl ? "Previous news" : "Next news"}
-              >
-                {isRtl ? <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" /> : <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />}
-              </button>
-            </div>
-          </div>
-        </div>
+        {/* Use the new NewsTicker component */}
+        {newsItems.length > 0 && (
+          <NewsTicker latestNews={newsItems[0]} />
+        )}
 
         <div className={`flex flex-col md:flex-row justify-between items-start md:items-center mb-8 md:mb-12 ${isRtl ? 'rtl' : ''}`}>
           <div>

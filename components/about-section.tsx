@@ -95,7 +95,7 @@ export default function AboutSection() {
                 <p className="text-gray-300 leading-relaxed">
                   {t('description1')}
                 </p>
-                <div className="my-4 w-12 h-0.5 bg-primary/30"></div>
+                <div className="my-4 w-12 h-0.5 "></div>
                 <p className="text-gray-300 leading-relaxed">
                   {t('description2')}
                 </p>

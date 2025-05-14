@@ -458,6 +458,7 @@ export default function Header() {
                       <Link 
                         href="https://uaemmaf.smoothcomp.com/en/federation/187/membership" 
                         className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-white transition-colors duration-200 relative group/item overflow-hidden"
+                        target="_blank"
                       >
                         {t('athletes')}
                         <motion.div 
@@ -467,7 +468,8 @@ export default function Header() {
                       <Link 
                         href="https://uaemmaf.smoothcomp.com/en/federation/187/academies" 
                         className="block px-4 py-2 text-sm text-white hover:bg-background-400 hover:text-white transition-colors duration-200 relative group/item overflow-hidden"
-                      >
+                        target="_blank"
+                        >
                         {t('clubs')}
                         <motion.div 
                           className="absolute bottom-0 left-0 h-0.5 w-0 bg-green-600 group-hover/item:w-full transition-all duration-300"

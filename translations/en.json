@@ -53,9 +53,11 @@
   },
   "news": {
     "latestNews": "Latest News",
-    "title": "MMA News & Updates",
+    "title": "Latest UAEMMAF News",
     "viewAll": "View All News",
     "readMore": "Read More",
+    "breaking": "LATEST NEWS",
+    "new": "NEW",
     "article1": {
       "title": "UAE National MMA Championship Concludes with Record Participation",
       "excerpt": "The UAE National MMA Championship concluded with record participation, showcasing the country's growing talent pool in mixed martial arts. The event featured over 200 athletes competing across different weight classes."

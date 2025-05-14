@@ -175,10 +175,11 @@ export default function LeadershipPage() {
               <p className="text-gray-300">
               {t('presidentMessage.message2')}
             </p>
-            <div className="text-white">
-              <p className="font-bold text-lg">{t('presidentMessage.name')}</p>
-              <p className="text-primary">{t('presidentMessage.position')}</p>
-         
+            <div className="text-white mt-8 border-t-2 border-gray-700 pt-6">
+              <div className="bg-background-400 p-4 rounded-lg border-l-4 border-primary shadow-md">
+                <p className="font-bold text-lg">{t('presidentMessage.name')}</p>
+                <p className="text-primary">{t('presidentMessage.position')}</p>
+              </div>
             </div>
             </div>
             
@@ -242,6 +243,7 @@ export default function LeadershipPage() {
                   </div>
                 </div>
                 <h4 className="text-xl font-bold text-white mb-1">
+                  
                   {locale === 'ar' ? member.name.ar : member.name.en}
                 </h4>
                 <p className="text-primary mb-2">

@@ -118,13 +118,12 @@ export default function Hero() {
 
   return (
     <section 
-      className="relative w-full overflow-hidden"
-      style={{ height: "100vh" }}
+      className="relative w-full overflow-hidden h-[34vh] md:h-[100vh]"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
       {/* Carousel */}
-      <div className="relative h-full w-full px-4 md:px-8">
+      <div className="relative h-full w-full px-0 md:px-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={slides[currentSlide].id}
@@ -146,7 +145,7 @@ export default function Hero() {
                   src={slides[currentSlide].imageSrc}
                   alt={slides[currentSlide].title}
                   fill
-                  className="md:object-cover object-contain object-center"
+                  className="object-cover object-center"
                   sizes="100vw"
                   priority
                 />

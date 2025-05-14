@@ -1,17 +1,22 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
+import { useState, useRef, useEffect } from "react"
+import { useTranslations, useLocale } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import { Mail, Phone, MapPin, Send } from "lucide-react"
+import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { API_URL } from "@/lib/constants";
+import ReCAPTCHA from "react-google-recaptcha"
 
 export default function ContactSection() {
   const t = useTranslations('contact')
+  const locale = useLocale();
+  // استخدام المفتاح التجريبي الرسمي من Google
+  const recaptchaSiteKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+  
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -19,11 +24,25 @@ export default function ContactSection() {
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [captchaError, setCaptchaError] = useState(false)
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
   
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   })
+
+  // إعادة تعيين reCAPTCHA عند تغيير اللغة
+  useEffect(() => {
+    if (recaptchaRef.current) {
+      recaptchaRef.current.reset();
+      setIsCaptchaVerified(false);
+      setCaptchaToken(null);
+    }
+  }, [locale]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -46,49 +65,81 @@ export default function ContactSection() {
     },
   }
 
+  const handleCaptchaChange = (token: string | null) => {
+    console.log("reCAPTCHA token:", token);
+    setCaptchaToken(token);
+    setIsCaptchaVerified(!!token);
+    if (token) {
+      setCaptchaError(false);
+    }
+  }
 
-  // Then in your handleSubmit function:
+  // تنفيذ التحقق من reCAPTCHA قبل إرسال النموذج
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    
+    // التحقق من reCAPTCHA
+    if (!isCaptchaVerified || !captchaToken) {
+      setCaptchaError(true);
+      return;
+    }
+    
+    setIsSubmitting(true);
     
     try {
+      // إضافة رمز reCAPTCHA إلى الطلب للتحقق من جانب الخادم
       const response = await fetch(`${API_URL}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formState),
+        body: JSON.stringify({
+          ...formState,
+          recaptchaToken: captchaToken // إرسال الرمز إلى الخادم للتحقق
+        }),
       });
-      // console.log(response);
       
       if (response.ok) {
-        // Handle success
-        console.log("Form submitted successfully")
+        // تمت العملية بنجاح
+        console.log("Form submitted successfully");
         setFormState({
           name: "",
           email: "",
           subject: "",
           message: "",
-        })
+        });
+        setIsSuccess(true);
+        // إعادة تعيين reCAPTCHA
+        recaptchaRef.current?.reset();
+        setIsCaptchaVerified(false);
+        setCaptchaToken(null);
       } else {
-        // Handle error response
-        console.error("Form submission failed:", await response.text())
+        // فشل الإرسال
+        const errorData = await response.json().catch(() => ({}));
+        
+        // التحقق مما إذا كان الخطأ متعلق بالتحقق من reCAPTCHA
+        if (errorData.error === 'invalid-recaptcha') {
+          setCaptchaError(true);
+          recaptchaRef.current?.reset();
+          setIsCaptchaVerified(false);
+          setCaptchaToken(null);
+        }
+        
+        console.error("Form submission failed:", errorData);
       }
     } catch (error) {
-      console.error("Error submitting form:", error)
+      console.error("Error submitting form:", error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
   
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormState((prev) => ({
       ...prev,
       [name]: value,
-    }))
+    }));
   }
 
   return (
@@ -175,93 +226,127 @@ PO Box 110007 Abu Dhabi, UAE
             </div> */}
           </motion.div>
           
-          {/* Contact Form */}
+          {/* Contact Form or Success Message */}
           <motion.div variants={itemVariants}>
-            <form onSubmit={handleSubmit} className="bg-background-300 p-8 rounded-lg">
-              <div className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-white mb-2">
-                    {t('form.name')}
-                  </label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formState.name}
-                    onChange={handleChange}
-                    required
-                    className="bg-background border-gray-700 text-white focus:border-primary"
-                    placeholder={t('form.namePlaceholder')}
-                  />
+            {isSuccess ? (
+              <div className="bg-background-300 p-8 rounded-lg flex flex-col items-center justify-center h-full text-center">
+                <div className="bg-primary/20 p-4 rounded-full mb-4">
+                  <CheckCircle className="h-12 w-12 text-primary" />
                 </div>
-                
-                <div>
-                  <label htmlFor="email" className="block text-white mb-2">
-                    {t('form.email')}
-                  </label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formState.email}
-                    onChange={handleChange}
-                    required
-                    className="bg-background border-gray-700 text-white focus:border-primary"
-                    placeholder={t('form.emailPlaceholder')}
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="subject" className="block text-white mb-2">
-                    {t('form.subject')}
-                  </label>
-                  <Input
-                    id="subject"
-                    name="subject"
-                    value={formState.subject}
-                    onChange={handleChange}
-                    required
-                    className="bg-background border-gray-700 text-white focus:border-primary"
-                    placeholder={t('form.subjectPlaceholder')}
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="message" className="block text-white mb-2">
-                    {t('form.message')}
-                  </label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formState.message}
-                    onChange={handleChange}
-                    required
-                    className="bg-background border-gray-700 text-white focus:border-primary min-h-32"
-                    placeholder={t('form.messagePlaceholder')}
-                  />
-                </div>
-                
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  {t('form.thankYouMessage')}
+                </h3>
                 <Button 
-                  type="submit" 
-                  className="w-full bg-primary hover:bg-primary-dark text-white"
-                  disabled={isSubmitting}
+                  onClick={() => setIsSuccess(false)}
+                  className="mt-4 bg-primary hover:bg-primary-dark text-white"
                 >
-                  {isSubmitting ? (
-                    <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      {t('form.sending')}
-                    </span>
-                  ) : (
-                    <span className="flex items-center">
-                      <Send className="mr-2 h-4 w-4" />
-                      {t('form.submit')}
-                    </span>
-                  )}
+                  {t('form.submit')}
                 </Button>
               </div>
-            </form>
+            ) : (
+              <form onSubmit={handleSubmit} className="bg-background-300 p-8 rounded-lg">
+                <div className="space-y-6">
+                  <div>
+                    <label htmlFor="name" className="block text-white mb-2">
+                      {t('form.name')}
+                    </label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formState.name}
+                      onChange={handleChange}
+                      required
+                      className="bg-background border-gray-700 text-white focus:border-primary"
+                      placeholder={t('form.namePlaceholder')}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="email" className="block text-white mb-2">
+                      {t('form.email')}
+                    </label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formState.email}
+                      onChange={handleChange}
+                      required
+                      className="bg-background border-gray-700 text-white focus:border-primary"
+                      placeholder={t('form.emailPlaceholder')}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="subject" className="block text-white mb-2">
+                      {t('form.subject')}
+                    </label>
+                    <Input
+                      id="subject"
+                      name="subject"
+                      value={formState.subject}
+                      onChange={handleChange}
+                      required
+                      className="bg-background border-gray-700 text-white focus:border-primary"
+                      placeholder={t('form.subjectPlaceholder')}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="message" className="block text-white mb-2">
+                      {t('form.message')}
+                    </label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formState.message}
+                      onChange={handleChange}
+                      required
+                      className="bg-background border-gray-700 text-white focus:border-primary min-h-32"
+                      placeholder={t('form.messagePlaceholder')}
+                    />
+                  </div>
+                  
+                  {/* reCAPTCHA بسيطة (checkbox) */}
+                  <div className="flex flex-col items-center">
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey={recaptchaSiteKey}
+                      onChange={handleCaptchaChange}
+                      theme="dark"
+                      hl={locale}
+                      className="mx-auto my-2"
+                    />
+                    {captchaError && (
+                      <p className="text-red-500 text-sm mt-2">
+                        {t('form.captchaError')}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-primary hover:bg-primary-dark text-white"
+                    disabled={isSubmitting || !isCaptchaVerified}
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        {t('form.sending')}
+                      </span>
+                    ) : (
+                      <span className="flex items-center">
+                        <Send className="mr-2 h-4 w-4" />
+                        {t('form.submit')}
+                      </span>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            )}
           </motion.div>
         </motion.div>
         

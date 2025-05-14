@@ -60,6 +60,7 @@
     "readMore": "Read More",
     "breaking": "LATEST NEWS",
     "linkCopied": "Link Copied",
+    "new": "NEW",
     "hotNews": {
       "item1": "UAE MMA Federation announces new international tournament",
       "item2": "National team selection trials to be held next month",
@@ -128,7 +129,7 @@
   },
   "events": {
     "upcomingEvents": "Our Events",
-    "eventsDescription": "Discover upcoming MMA events, championships, and tournaments across the UAE.",
+    "eventsDescription": "Discover MMA events",
     "upcomingEventsDescription": "Discover the latest and upcoming MMA events in the UAE.",
     "pastEvents": "Past Events",
     "followUs": "Visit our Social Media",
@@ -256,23 +257,25 @@
   },
   "contact": {
     "getInTouch": "Get In Touch",
-    "title": "Contact UAEMMAF",
-    "description": "Have questions about the UAE Mixed Martial Arts Federation? We're here to help. Fill out the form below or contact us directly.",
-    "email": "Email Us",
-    "location":"location",
-    "phone": "Call Us",
-    "address": "Visit Us",
+    "title": "Contact Us",
+    "description": "Have questions about joining the UAE Mixed Martial Arts Federation or need information about our programs? Fill out the form below, and we'll get back to you as soon as possible.",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "location": "Our Location",
     "form": {
       "name": "Your Name",
       "namePlaceholder": "Enter your full name",
       "email": "Email Address",
       "emailPlaceholder": "Enter your email address",
       "subject": "Subject",
-      "subjectPlaceholder": "What is this regarding?",
+      "subjectPlaceholder": "How can we help you?",
       "message": "Message",
       "messagePlaceholder": "Type your message here...",
       "submit": "Send Message",
-      "sending": "Sending..."
+      "sending": "Sending...",
+      "thankYouMessage": "Thank you very much for your inquiry, one of UAEMMAF team will contact you shortly",
+      "captchaError": "Please verify that you are not a robot"
     }
   },
   "contactPage":{
