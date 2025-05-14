@@ -191,10 +191,10 @@ export default function LeadershipPage() {
             <div className="relative h-[400px] w-full mx-auto flex items-center justify-center">
               <div className="relative h-[350px] w-[350px] rounded-full border-4 border-primary overflow-hidden">
                 <Image
-                  src="/user.jpg"
+                  src="/leader.jpg"
                   alt={t('presidentMessage.imageAlt')}
                   fill
-                  className="object-cover object-center"
+                  className="object-cover "
                 />
               </div>
             </div>
