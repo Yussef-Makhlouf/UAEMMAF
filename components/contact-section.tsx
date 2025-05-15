@@ -17,8 +17,16 @@ export default function ContactSection() {
     email: "",
     subject: "",
     message: "",
+    phone: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+    phone: "",
+  })
   
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -46,10 +54,71 @@ export default function ContactSection() {
     },
   }
 
+  // UAE Phone number validation
+  const validateUAEPhone = (phone: string) => {
+    // UAE phone numbers start with +971 or 971 followed by 9 digits
+    const uaePhoneRegex = /^(?:\+971|971)?[2-9]\d{8}$/;
+    return uaePhoneRegex.test(phone.replace(/\s+/g, ''));
+  }
 
-  // Then in your handleSubmit function:
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
+    
+    // Reset errors
+    setErrors({
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+      phone: "",
+    });
+
+    // Validate form
+    let hasErrors = false;
+    const newErrors = {
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+      phone: "",
+    };
+
+    if (!formState.name.trim()) {
+      newErrors.name = "Name is required";
+      hasErrors = true;
+    }
+
+    if (!formState.email.trim()) {
+      newErrors.email = "Email is required";
+      hasErrors = true;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) {
+      newErrors.email = "Invalid email format";
+      hasErrors = true;
+    }
+
+    if (!formState.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+      hasErrors = true;
+    } else if (!validateUAEPhone(formState.phone)) {
+      newErrors.phone = "Please enter a valid UAE phone number";
+      hasErrors = true;
+    }
+
+    if (!formState.subject.trim()) {
+      newErrors.subject = "Subject is required";
+      hasErrors = true;
+    }
+
+    if (!formState.message.trim()) {
+      newErrors.message = "Message is required";
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      setErrors(newErrors);
+      return;
+    }
+
     setIsSubmitting(true)
     
     try {
@@ -70,6 +139,7 @@ export default function ContactSection() {
           email: "",
           subject: "",
           message: "",
+          phone: "",
         })
       } else {
         // Handle error response
@@ -189,9 +259,10 @@ PO Box 110007 Abu Dhabi, UAE
                     value={formState.name}
                     onChange={handleChange}
                     required
-                    className="bg-background border-gray-700 text-white focus:border-primary"
+                    className={`bg-background border-gray-700 text-white focus:border-primary ${errors.name ? 'border-red-500' : ''}`}
                     placeholder={t('form.namePlaceholder')}
                   />
+                  {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
                 </div>
                 
                 <div>
@@ -205,9 +276,27 @@ PO Box 110007 Abu Dhabi, UAE
                     value={formState.email}
                     onChange={handleChange}
                     required
-                    className="bg-background border-gray-700 text-white focus:border-primary"
+                    className={`bg-background border-gray-700 text-white focus:border-primary ${errors.email ? 'border-red-500' : ''}`}
                     placeholder={t('form.emailPlaceholder')}
                   />
+                  {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+                </div>
+                
+                <div>
+                  <label htmlFor="phone" className="block text-white mb-2">
+                    {t('form.phone')}
+                  </label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formState.phone}
+                    onChange={handleChange}
+                    required
+                    className={`bg-background border-gray-700 text-white focus:border-primary ${errors.phone ? 'border-red-500' : ''}`}
+                    placeholder={t('form.phonePlaceholder')}
+                  />
+                  {errors.phone && <p className="mt-1 text-sm text-red-500">{errors.phone}</p>}
                 </div>
                 
                 <div>
@@ -220,9 +309,10 @@ PO Box 110007 Abu Dhabi, UAE
                     value={formState.subject}
                     onChange={handleChange}
                     required
-                    className="bg-background border-gray-700 text-white focus:border-primary"
+                    className={`bg-background border-gray-700 text-white focus:border-primary ${errors.subject ? 'border-red-500' : ''}`}
                     placeholder={t('form.subjectPlaceholder')}
                   />
+                  {errors.subject && <p className="mt-1 text-sm text-red-500">{errors.subject}</p>}
                 </div>
                 
                 <div>
@@ -235,9 +325,10 @@ PO Box 110007 Abu Dhabi, UAE
                     value={formState.message}
                     onChange={handleChange}
                     required
-                    className="bg-background border-gray-700 text-white focus:border-primary min-h-32"
+                    className={`bg-background border-gray-700 text-white focus:border-primary min-h-32 ${errors.message ? 'border-red-500' : ''}`}
                     placeholder={t('form.messagePlaceholder')}
                   />
+                  {errors.message && <p className="mt-1 text-sm text-red-500">{errors.message}</p>}
                 </div>
                 
                 <Button 

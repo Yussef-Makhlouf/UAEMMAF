@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { CalendarDays, ArrowRight, Flame, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react"
 import { useState, useEffect } from "react"
+import { API_URL } from "@/lib/constants"
 
 type NewsApiItem = {
   _id: string
@@ -19,10 +20,15 @@ type NewsApiItem = {
     ar: string
     en: string
   }
-  image: {
+  image: Array<{
     secure_url: string
+    public_id: string
+    _id: string
+  }>
+  category: {
+    _id: string
+    name: string  
   }
-  category: string
   date: string
 }
 
@@ -33,7 +39,9 @@ type NewsItem = {
   date: string
   image: string
   slug: string
-  category: string
+  category: {
+    name: string
+  }
 }
 
 export default function NewsSection() {
@@ -80,8 +88,9 @@ export default function NewsSection() {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://mmaf.onrender.com/news/getallnews');
+        const response = await fetch(`${API_URL}/news/getallnews`);
         const data = await response.json();
+        console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDddd",data);
         
         if (data && data.news && Array.isArray(data.news)) {
           const formattedNews = data.news.map((item: NewsApiItem) => ({
@@ -89,9 +98,9 @@ export default function NewsSection() {
             title: item.title[locale as keyof typeof item.title] || item.title.en,
             excerpt: extractExcerpt(item.content[locale as keyof typeof item.content] || item.content.en),
             date: item.date,
-            image: item.image.secure_url,
-            slug: item._id, // Using ID as slug for now
-            category: item.category
+            image: item.image[0]?.secure_url || '', // Take the first image from the array
+            slug: item._id,
+            category: item.category.name
           }));
           
           setNewsItems(formattedNews);
@@ -209,7 +218,7 @@ export default function NewsSection() {
           className="object-cover transition-transform group-hover:scale-105 duration-500"
         />
         <div className={`absolute top-3 md:top-4 ${isRtl ? 'left-3 md:left-4' : 'right-3 md:right-4'} bg-primary px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs font-medium text-white`}>
-          {item.category}
+          {item.category.name}
         </div>
       </div>
       <div className="p-4 md:p-6">
