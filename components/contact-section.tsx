@@ -90,9 +90,11 @@ export default function ContactSection() {
 
   // UAE Phone number validation
   const validateUAEPhone = (phone: string) => {
-    // UAE phone numbers start with +971 or 971 followed by 9 digits
-    const uaePhoneRegex = /^(?:\+971|971)?[2-9]\d{8}$/;
-    return uaePhoneRegex.test(phone.replace(/\s+/g, ''));
+    // UAE phone numbers can start with +971 or 971 followed by 9 digits
+    // Also allow just the phone number without country code for flexibility
+    const cleanedPhone = phone.replace(/\s+/g, '').replace(/-/g, '');
+    const uaePhoneRegex = /^(?:\+971|971)?[0-9]{9}$/;
+    return uaePhoneRegex.test(cleanedPhone);
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,33 +120,42 @@ export default function ContactSection() {
     };
 
     if (!formState.name.trim()) {
-      newErrors.name = "Name is required";
+      newErrors.name = t('form.errors.nameRequired');
+      hasErrors = true;
+    } else if (formState.name.trim().length < 3) {
+      newErrors.name = t('form.errors.nameLength');
       hasErrors = true;
     }
 
     if (!formState.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = t('form.errors.emailRequired');
       hasErrors = true;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) {
-      newErrors.email = "Invalid email format";
+      newErrors.email = t('form.errors.emailInvalid');
       hasErrors = true;
     }
 
     if (!formState.phone.trim()) {
-      newErrors.phone = "Phone number is required";
+      newErrors.phone = t('form.errors.phoneRequired');
       hasErrors = true;
     } else if (!validateUAEPhone(formState.phone)) {
-      newErrors.phone = "Please enter a valid UAE phone number";
+      newErrors.phone = t('form.errors.phoneInvalid');
       hasErrors = true;
     }
 
     if (!formState.subject.trim()) {
-      newErrors.subject = "Subject is required";
+      newErrors.subject = t('form.errors.subjectRequired');
+      hasErrors = true;
+    } else if (formState.subject.trim().length < 3) {
+      newErrors.subject = t('form.errors.subjectLength');
       hasErrors = true;
     }
 
     if (!formState.message.trim()) {
-      newErrors.message = "Message is required";
+      newErrors.message = t('form.errors.messageRequired');
+      hasErrors = true;
+    } else if (formState.message.trim().length < 10) {
+      newErrors.message = t('form.errors.messageLength');
       hasErrors = true;
     }
 
@@ -245,7 +256,9 @@ export default function ContactSection() {
         break;
         
       case 'phone':
-        if (value && !/^[+]?[0-9\s-]{8,}$/.test(value)) {
+        if (!value.trim()) {
+          newErrors.phone = t('form.errors.phoneRequired');
+        } else if (!validateUAEPhone(value)) {
           newErrors.phone = t('form.errors.phoneInvalid');
         } else {
           newErrors.phone = undefined;
@@ -338,7 +351,7 @@ export default function ContactSection() {
                 <div>
                   <h4 className="text-white font-medium">{t('phone')}</h4>
                   <a href="tel:+97123336111" className="text-gray-300 hover:text-primary transition-colors">
-                  97123336111
+                    97123336111
                   </a>
                 </div>
               </div>
@@ -388,6 +401,9 @@ PO Box 110007 Abu Dhabi, UAE
                   <CheckCircle className="h-12 w-12 text-green-600" />
                 </div>
           
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  {t('form.thankYouTitle') || "Thank You!"}
+                </h3>
                 <p className="text-gray-300 mb-8">
                   {t('form.thankYouMessage') || "Your message has been received. We will get back to you as soon as possible."}
                 </p>

@@ -116,7 +116,7 @@ export default function Footer() {
               {t('description')}
             </p> */}
             <p className="text-gray-400 text-sm sm:text-base">
-              Telephone: <a href="tel:+97123336111" className="hover:text-white transition-colors">+97123336111</a>
+              Telephone: <a href="tel:+97123336111" className="hover:text-white transition-colors">97123336111</a>
             </p>
             <p className="text-gray-400 text-sm sm:text-base">
               Email: <a href="mailto:info@uaemmaf.com" className="hover:text-white transition-colors">info@uaemmaf.com</a>
