@@ -10,6 +10,20 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useState, useEffect } from "react"
 import Loader from "@/components/loader"
 
+// Add custom scrollbar styling
+const scrollbarHideStyles = `
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+`;
+
 type NewsItem = {
   _id: string
   title: {
@@ -168,6 +182,9 @@ export default function NewsArticlePage() {
       animate="animate"
       className="min-h-screen bg-background-100"
     >
+      {/* Apply custom scrollbar styles */}
+      <style jsx global>{scrollbarHideStyles}</style>
+      
       {/* Hero Banner with Parallax Effect */}
       <div className="relative h-[450px] bg-background-300 flex items-center justify-center overflow-hidden ">
         <div className="absolute inset-0">
@@ -215,7 +232,8 @@ export default function NewsArticlePage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="relative w-full h-[450px] mb-12 rounded-2xl overflow-hidden"
+              className="relative w-full h-[450px] mb-12 rounded-2xl overflow-hidden cursor-pointer"
+              onClick={() => setSelectedImage(newsData.image[0].secure_url)}
             >
               <Image 
                 src={newsData.image[0].secure_url}
@@ -232,7 +250,8 @@ export default function NewsArticlePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease: "easeOut" }}
-              className="flex overflow-x-auto md:grid md:grid-cols-3 gap-4 mb-12 pb-2"
+              className="flex overflow-x-auto scrollbar-hide md:grid md:grid-cols-3 gap-4 mb-12 pb-2"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {newsData.image.map((img, index) => (
                 <motion.div
