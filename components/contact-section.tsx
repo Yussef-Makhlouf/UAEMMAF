@@ -26,6 +26,14 @@ export default function ContactSection() {
   // استخدام المفتاح التجريبي الرسمي من Google
   const recaptchaSiteKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
   
+  // Add missing refs and state
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaError, setCaptchaError] = useState(false);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -33,21 +41,14 @@ export default function ContactSection() {
     subject: "",
     message: "",
   })
-  
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [touched, setTouched] = useState<Record<string, boolean>>({
-    name: false,
-    email: false,
-    phone: false,
-    subject: false,
-    message: false
-  })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const [captchaError, setCaptchaError] = useState(false)
-  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false)
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
-  const recaptchaRef = useRef<ReCAPTCHA>(null)
+  const [errors, setErrors] = useState<FormErrors>({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+    phone: "",
+  })
   
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -87,89 +88,76 @@ export default function ContactSection() {
     },
   }
 
-  const handleCaptchaChange = (token: string | null) => {
-    console.log("reCAPTCHA token:", token);
-    setCaptchaToken(token);
-    setIsCaptchaVerified(!!token);
-    if (token) {
-      setCaptchaError(false);
-    }
+  // UAE Phone number validation
+  const validateUAEPhone = (phone: string) => {
+    // UAE phone numbers start with +971 or 971 followed by 9 digits
+    const uaePhoneRegex = /^(?:\+971|971)?[2-9]\d{8}$/;
+    return uaePhoneRegex.test(phone.replace(/\s+/g, ''));
   }
-  
-  // التحقق من صحة النموذج وإظهار رسائل الخطأ
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-    
-    // التحقق من اسم المستخدم
-    if (!formState.name.trim()) {
-      newErrors.name = t('form.errors.nameRequired');
-    } else if (formState.name.trim().length < 3) {
-      newErrors.name = t('form.errors.nameLength');
-    }
-    
-    // التحقق من البريد الإلكتروني
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formState.email.trim()) {
-      newErrors.email = t('form.errors.emailRequired');
-    } else if (!emailRegex.test(formState.email)) {
-      newErrors.email = t('form.errors.emailInvalid');
-    }
-    
-    // التحقق من رقم الهاتف (اختياري)
-    if (formState.phone && !/^[+]?[0-9\s-]{8,}$/.test(formState.phone)) {
-      newErrors.phone = t('form.errors.phoneInvalid');
-    }
-    
-    // التحقق من الموضوع
-    if (!formState.subject.trim()) {
-      newErrors.subject = t('form.errors.subjectRequired');
-    } else if (formState.subject.trim().length < 3) {
-      newErrors.subject = t('form.errors.subjectLength');
-    }
-    
-    // التحقق من الرسالة
-    if (!formState.message.trim()) {
-      newErrors.message = t('form.errors.messageRequired');
-    } else if (formState.message.trim().length < 10) {
-      newErrors.message = t('form.errors.messageLength');
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
-  // تنفيذ التحقق من reCAPTCHA قبل إرسال النموذج
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // تحديد جميع الحقول كتم لمسها لإظهار الأخطاء
-    const allTouched: Record<string, boolean> = {
-      name: true,
-      email: true,
-      phone: true,
-      subject: true,
-      message: true
+    // Reset errors
+    setErrors({
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+      phone: "",
+    });
+
+    // Validate form
+    let hasErrors = false;
+    const newErrors: FormErrors = {
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+      phone: "",
     };
-    setTouched(allTouched);
-    
-    // التحقق من صحة النموذج
-    const isValid = validateForm();
-    
-    // التحقق من reCAPTCHA
-    if (!isCaptchaVerified || !captchaToken) {
-      setCaptchaError(true);
+
+    if (!formState.name.trim()) {
+      newErrors.name = "Name is required";
+      hasErrors = true;
+    }
+
+    if (!formState.email.trim()) {
+      newErrors.email = "Email is required";
+      hasErrors = true;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) {
+      newErrors.email = "Invalid email format";
+      hasErrors = true;
+    }
+
+    if (!formState.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+      hasErrors = true;
+    } else if (!validateUAEPhone(formState.phone)) {
+      newErrors.phone = "Please enter a valid UAE phone number";
+      hasErrors = true;
+    }
+
+    if (!formState.subject.trim()) {
+      newErrors.subject = "Subject is required";
+      hasErrors = true;
+    }
+
+    if (!formState.message.trim()) {
+      newErrors.message = "Message is required";
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      setErrors(newErrors);
       return;
     }
-    
-    if (!isValid) {
-      return;
-    }
-    
-    setIsSubmitting(true);
+
+    setIsSubmitting(true)
     
     try {
       // إضافة رمز reCAPTCHA إلى الطلب للتحقق من جانب الخادم
-      const response = await fetch(`${API_URL}/contact`, {
+      const response = await fetch(`https://mmaf.onrender.com/contact/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -190,20 +178,7 @@ export default function ContactSection() {
           subject: "",
           message: "",
         });
-        setIsSuccess(true);
-        // إعادة تعيين reCAPTCHA
-        recaptchaRef.current?.reset();
-        setIsCaptchaVerified(false);
-        setCaptchaToken(null);
-        // إعادة تعيين حالة الحقول والأخطاء
-        setTouched({
-          name: false,
-          email: false,
-          phone: false,
-          subject: false,
-          message: false
-        });
-        setErrors({});
+        setSubmissionSuccess(true);
       } else {
         // فشل الإرسال
         const errorData = await response.json().catch(() => ({}));
@@ -254,7 +229,7 @@ export default function ContactSection() {
         } else if (value.trim().length < 3) {
           newErrors.name = t('form.errors.nameLength');
         } else {
-          delete newErrors.name;
+          newErrors.name = undefined;
         }
         break;
         
@@ -265,7 +240,7 @@ export default function ContactSection() {
         } else if (!emailRegex.test(value)) {
           newErrors.email = t('form.errors.emailInvalid');
         } else {
-          delete newErrors.email;
+          newErrors.email = undefined;
         }
         break;
         
@@ -273,7 +248,7 @@ export default function ContactSection() {
         if (value && !/^[+]?[0-9\s-]{8,}$/.test(value)) {
           newErrors.phone = t('form.errors.phoneInvalid');
         } else {
-          delete newErrors.phone;
+          newErrors.phone = undefined;
         }
         break;
         
@@ -283,7 +258,7 @@ export default function ContactSection() {
         } else if (value.trim().length < 3) {
           newErrors.subject = t('form.errors.subjectLength');
         } else {
-          delete newErrors.subject;
+          newErrors.subject = undefined;
         }
         break;
         
@@ -293,7 +268,7 @@ export default function ContactSection() {
         } else if (value.trim().length < 10) {
           newErrors.message = t('form.errors.messageLength');
         } else {
-          delete newErrors.message;
+          newErrors.message = undefined;
         }
         break;
     }
@@ -310,6 +285,15 @@ export default function ContactSection() {
       [name]: true,
     }));
     validateField(name, value);
+  }
+
+  const handleSendAnother = () => {
+    setSubmissionSuccess(false);
+    if (recaptchaRef.current) {
+      recaptchaRef.current.reset();
+      setIsCaptchaVerified(false);
+      setCaptchaToken(null);
+    }
   }
 
   return (
@@ -354,7 +338,7 @@ export default function ContactSection() {
                 <div>
                   <h4 className="text-white font-medium">{t('phone')}</h4>
                   <a href="tel:+97123336111" className="text-gray-300 hover:text-primary transition-colors">
-                    +97123336111
+                  97123336111
                   </a>
                 </div>
               </div>
@@ -398,19 +382,20 @@ PO Box 110007 Abu Dhabi, UAE
           
           {/* Contact Form or Success Message */}
           <motion.div variants={itemVariants}>
-            {isSuccess ? (
-              <div className="bg-background-300 p-8 rounded-lg flex flex-col items-center justify-center h-full text-center">
-                <div className="bg-primary/20 p-4 rounded-full mb-4">
-                  <CheckCircle className="h-12 w-12 text-primary" />
+            {submissionSuccess ? (
+              <div className="bg-background-300 p-8 rounded-lg text-center">
+                <div className="mb-6 inline-flex p-4 rounded-full bg-green-100">
+                  <CheckCircle className="h-12 w-12 text-green-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  {t('form.thankYouMessage')}
-                </h3>
+          
+                <p className="text-gray-300 mb-8">
+                  {t('form.thankYouMessage') || "Your message has been received. We will get back to you as soon as possible."}
+                </p>
                 <Button 
-                  onClick={() => setIsSuccess(false)}
-                  className="mt-4 bg-primary hover:bg-primary-dark text-white"
+                  onClick={handleSendAnother}
+                  className="bg-primary hover:bg-primary-dark text-white"
                 >
-                  {t('form.submit')}
+                  {t('form.sendAnother') || "Send Another Message"}
                 </Button>
               </div>
             ) : (
@@ -418,7 +403,7 @@ PO Box 110007 Abu Dhabi, UAE
                 <div className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-white mb-2">
-                      {t('form.name')} <span className="text-red-500">*</span>
+                      {t('form.name')}
                     </label>
                     <Input
                       id="name"
@@ -427,22 +412,15 @@ PO Box 110007 Abu Dhabi, UAE
                       onChange={handleChange}
                       onBlur={handleBlur}
                       required
-                      className={`bg-background border-gray-700 text-white focus:border-primary ${
-                        touched.name && errors.name ? 'border-red-500' : ''
-                      }`}
+                      className={`bg-background border-gray-700 text-white focus:border-primary ${errors.name ? 'border-red-500' : ''}`}
                       placeholder={t('form.namePlaceholder')}
                     />
-                    {touched.name && errors.name && (
-                      <div className="flex items-center mt-1 text-red-500 text-sm">
-                        <AlertCircle className="h-4 w-4 mr-1" />
-                        {errors.name}
-                      </div>
-                    )}
+                    {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
                   </div>
                   
                   <div>
                     <label htmlFor="email" className="block text-white mb-2">
-                      {t('form.email')} <span className="text-red-500">*</span>
+                      {t('form.email')}
                     </label>
                     <Input
                       id="email"
@@ -452,17 +430,10 @@ PO Box 110007 Abu Dhabi, UAE
                       onChange={handleChange}
                       onBlur={handleBlur}
                       required
-                      className={`bg-background border-gray-700 text-white focus:border-primary ${
-                        touched.email && errors.email ? 'border-red-500' : ''
-                      }`}
+                      className={`bg-background border-gray-700 text-white focus:border-primary ${errors.email ? 'border-red-500' : ''}`}
                       placeholder={t('form.emailPlaceholder')}
                     />
-                    {touched.email && errors.email && (
-                      <div className="flex items-center mt-1 text-red-500 text-sm">
-                        <AlertCircle className="h-4 w-4 mr-1" />
-                        {errors.email}
-                      </div>
-                    )}
+                    {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
                   </div>
                   
                   <div>
@@ -476,22 +447,16 @@ PO Box 110007 Abu Dhabi, UAE
                       value={formState.phone}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`bg-background border-gray-700 text-white focus:border-primary ${
-                        touched.phone && errors.phone ? 'border-red-500' : ''
-                      }`}
+                      required
+                      className={`bg-background border-gray-700 text-white focus:border-primary ${errors.phone ? 'border-red-500' : ''}`}
                       placeholder={t('form.phonePlaceholder')}
                     />
-                    {touched.phone && errors.phone && (
-                      <div className="flex items-center mt-1 text-red-500 text-sm">
-                        <AlertCircle className="h-4 w-4 mr-1" />
-                        {errors.phone}
-                      </div>
-                    )}
+                    {errors.phone && <p className="mt-1 text-sm text-red-500">{errors.phone}</p>}
                   </div>
                   
                   <div>
                     <label htmlFor="subject" className="block text-white mb-2">
-                      {t('form.subject')} <span className="text-red-500">*</span>
+                      {t('form.subject')}
                     </label>
                     <Input
                       id="subject"
@@ -500,22 +465,15 @@ PO Box 110007 Abu Dhabi, UAE
                       onChange={handleChange}
                       onBlur={handleBlur}
                       required
-                      className={`bg-background border-gray-700 text-white focus:border-primary ${
-                        touched.subject && errors.subject ? 'border-red-500' : ''
-                      }`}
+                      className={`bg-background border-gray-700 text-white focus:border-primary ${errors.subject ? 'border-red-500' : ''}`}
                       placeholder={t('form.subjectPlaceholder')}
                     />
-                    {touched.subject && errors.subject && (
-                      <div className="flex items-center mt-1 text-red-500 text-sm">
-                        <AlertCircle className="h-4 w-4 mr-1" />
-                        {errors.subject}
-                      </div>
-                    )}
+                    {errors.subject && <p className="mt-1 text-sm text-red-500">{errors.subject}</p>}
                   </div>
                   
                   <div>
                     <label htmlFor="message" className="block text-white mb-2">
-                      {t('form.message')} <span className="text-red-500">*</span>
+                      {t('form.message')}
                     </label>
                     <Textarea
                       id="message"
@@ -524,45 +482,32 @@ PO Box 110007 Abu Dhabi, UAE
                       onChange={handleChange}
                       onBlur={handleBlur}
                       required
-                      className={`bg-background border-gray-700 text-white focus:border-primary min-h-32 ${
-                        touched.message && errors.message ? 'border-red-500' : ''
-                      }`}
+                      className={`bg-background border-gray-700 text-white focus:border-primary min-h-32 ${errors.message ? 'border-red-500' : ''}`}
                       placeholder={t('form.messagePlaceholder')}
                     />
-                    {touched.message && errors.message && (
-                      <div className="flex items-center mt-1 text-red-500 text-sm">
-                        <AlertCircle className="h-4 w-4 mr-1" />
-                        {errors.message}
-                      </div>
-                    )}
+                    {errors.message && <p className="mt-1 text-sm text-red-500">{errors.message}</p>}
                   </div>
                   
-                  {/* reCAPTCHA بسيطة (checkbox) */}
-                  <div className="flex flex-col items-center">
+                  {/* Add ReCAPTCHA component */}
+                  <div className="mt-4">
                     <ReCAPTCHA
                       ref={recaptchaRef}
                       sitekey={recaptchaSiteKey}
-                      onChange={handleCaptchaChange}
-                      theme="dark"
-                      hl={locale}
-                      className="mx-auto my-2"
+                      onChange={(token) => {
+                        setCaptchaToken(token);
+                        setIsCaptchaVerified(!!token);
+                        setCaptchaError(false);
+                      }}
                     />
                     {captchaError && (
-                      <div className="flex items-center mt-1 text-red-500 text-sm">
-                        <AlertCircle className="h-4 w-4 mr-1" />
-                        {t('form.captchaError')}
-                      </div>
+                      <p className="mt-1 text-sm text-red-500">{t('form.errors.captchaRequired')}</p>
                     )}
-                  </div>
-                  
-                  <div className="text-gray-400 text-xs mb-4">
-                    <span className="text-red-500">*</span> {t('form.requiredFields')}
                   </div>
                   
                   <Button 
                     type="submit" 
                     className="w-full bg-primary hover:bg-primary-dark text-white"
-                    disabled={isSubmitting || !isCaptchaVerified}
+                    disabled={isSubmitting}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center">

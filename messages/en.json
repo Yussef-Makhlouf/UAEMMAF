@@ -277,6 +277,7 @@
       "submit": "Send Message",
       "sending": "Sending...",
       "thankYouMessage": "Thank you very much for your inquiry, one of UAEMMAF team will contact you shortly",
+      "sendAnother": "Send Another Message",
       "captchaError": "Please verify that you are not a robot",
       "requiredFields": "Required fields",
       "errors": {
