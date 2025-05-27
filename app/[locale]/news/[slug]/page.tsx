@@ -186,7 +186,7 @@ export default function NewsArticlePage() {
       <style jsx global>{scrollbarHideStyles}</style>
       
       {/* Hero Banner with Parallax Effect */}
-      <div className="relative h-[450px] bg-background-300 flex items-center justify-center overflow-hidden ">
+      <div className="relative h-[450px] bg-background-300 flex items-center justify-center overflow-hidden border-y border-primary/40 shadow-lg ">
         <div className="absolute inset-0">
           <Image 
             src="/subhero.png"
@@ -203,19 +203,7 @@ export default function NewsArticlePage() {
       </div>
 
       {/* Progress Bar */}
-      <motion.div 
-        className="sticky top-0 z-20 w-full h-1 bg-background-300"
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 0.4, ease: "linear" }}
-      >
-        <motion.div 
-          className="h-full bg-primary origin-left"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 30, ease: "linear" }}
-        />
-      </motion.div>
+ 
 
       {/* Article Content Section */}
       <div className="container mx-auto px-4 py-16 max-w-4xl">

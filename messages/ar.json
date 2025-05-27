@@ -287,7 +287,7 @@
         "emailRequired": "البريد الإلكتروني مطلوب",
         "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح",
         "phoneRequired": "رقم الهاتف مطلوب",
-        "phoneInvalid": "يرجى إدخال رقم هاتف إماراتي صحيح",
+        "phoneInvalid": "يرجى إدخال رقم هاتف صحيح",
         "subjectRequired": "الموضوع مطلوب",
         "subjectLength": "يجب أن يتكون الموضوع من 3 أحرف على الأقل",
         "messageRequired": "الرسالة مطلوبة",

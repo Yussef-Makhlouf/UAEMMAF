@@ -94,7 +94,7 @@
       "title": "New MMA Regulations Effective Soon",
       "excerpt": "The UAEMMAF has announced new regulatory framework for MMA competitions in the UAE, focusing on enhanced safety protocols and standardized rules across all emirates."
     },
-    "pageTitle": "Stay update with the latest news and announcements from the UAEMMAF.",
+    "pageTitle": "Stay update with the latest news and announcements from the UAEMMAF",
     "pageDescription": "Stay updated with the latest news, announcements, and developments from the UAE Mixed Martial Arts Federation.",
     "searchPlaceholder": "Search news articles...",
     "backToNews": "Back to News",
@@ -287,7 +287,7 @@
         "emailRequired": "Email address is required",
         "emailInvalid": "Please enter a valid email address",
         "phoneRequired": "Phone number is required",
-        "phoneInvalid": "Please enter a valid UAE phone number",
+        "phoneInvalid": "Please enter a valid phone number",
         "subjectRequired": "Subject is required",
         "subjectLength": "Subject must be at least 3 characters",
         "messageRequired": "Message is required",

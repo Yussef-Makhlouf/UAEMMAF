@@ -160,76 +160,7 @@ export default function MissionPage() {
         </div>
       </div>
       <div className="container mx-auto px-4 py-16">
-        {/* Values Section Title */}
-        <motion.div
-          ref={ref1}
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView1 ? "visible" : "hidden"}
-          className="text-center max-w-4xl mx-auto mb-16"
-        >
-          <motion.div variants={itemVariants} className="mb-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-              {locale === 'ar' ? 'القيم' : 'Our Values'}
-            </h2>
-            <div className="h-1 w-24 bg-primary mb-6 mx-auto"></div>
-          </motion.div>
-          <motion.h3 variants={itemVariants} className="text-primary text-xl font-bold mb-4">
-            {locale === 'ar' 
-              ? 'يسعى اتحاد الإمارات العربية المتحدة لفنون القتال المختلطة إلى تعزيز القيم التالية' 
-              : 'The UAE Mixed Martial Arts Federation seeks to promote the following values'}
-          </motion.h3>
-          {/* <motion.p variants={itemVariants} className="text-gray-300 text-lg">
-            {locale === 'ar'
-              ? 'قيمنا هي الأساس الذي نبني عليه مستقبل رياضة فنون القتال المختلطة في دولة الإمارات. من خلال هذه القيم، نسعى لتطوير رياضيين يتميزون ليس فقط بالمهارة الفنية، ولكن أيضًا بالأخلاق والانضباط والروح الرياضية العالية.'
-              : 'Our values are the foundation upon which we build the future of mixed martial arts in the UAE. Through these values, we aim to develop athletes who excel not only in technical skill but also in ethics, discipline, and high sportsmanship.'}
-          </motion.p> */}
-        </motion.div>
-
-        {/* Values Cards - Special Design */}
-        <motion.div
-          ref={ref2}
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView2 ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"
-        >
-          {values.map((value, index) => {
-            const Icon = value.icon;
-            return (
-              <motion.div 
-                key={index} 
-                variants={itemVariants}
-                className="bg-gradient-to-br from-background-300 to-background-400 rounded-lg overflow-hidden transition-all duration-300 
-                hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group relative"
-              >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-primary/60"></div>
-                <div className="p-8">
-                  <div className="flex flex-col items-center text-center mb-6">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                      <Icon className="text-primary h-8 w-8 group-hover:scale-110 transition-transform" />
-                    </div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors">
-                      {value.title}
-                    </h3>
-                  </div>
-                  <div className="relative">
-                    <p className="text-gray-300 leading-relaxed group-hover:text-white transition-colors">
-                      {value.description}
-                    </p>
-                    <div className="absolute -bottom-4 -right-4 w-12 h-12 opacity-10 text-primary">
-                      <Icon className="w-full h-full" />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-        
-
-      </div>
-      {/* VIP Vision & Mission Section */}
+ {/* VIP Vision & Mission Section */}
       <motion.div 
         ref={refVIP}
         variants={containerVariants}
@@ -336,6 +267,76 @@ export default function MissionPage() {
           </div>
         </div>
       </motion.div>
+        {/* Values Section Title */}
+        <motion.div
+          ref={ref1}
+          variants={containerVariants}
+          initial="hidden"
+          animate={inView1 ? "visible" : "hidden"}
+          className="text-center max-w-4xl mx-auto mb-16 py-10"
+        >
+          <motion.div variants={itemVariants} className="mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
+              {locale === 'ar' ? 'القيم' : 'Our Values'}
+            </h2>
+            <div className="h-1 w-24 bg-primary mb-6 mx-auto"></div>
+          </motion.div>
+          <motion.h3 variants={itemVariants} className="text-primary text-xl font-bold mb-4">
+            {locale === 'ar' 
+              ? 'يسعى اتحاد الإمارات العربية المتحدة لفنون القتال المختلطة إلى تعزيز القيم التالية' 
+              : 'The UAE Mixed Martial Arts Federation seeks to promote the following values'}
+          </motion.h3>
+          {/* <motion.p variants={itemVariants} className="text-gray-300 text-lg">
+            {locale === 'ar'
+              ? 'قيمنا هي الأساس الذي نبني عليه مستقبل رياضة فنون القتال المختلطة في دولة الإمارات. من خلال هذه القيم، نسعى لتطوير رياضيين يتميزون ليس فقط بالمهارة الفنية، ولكن أيضًا بالأخلاق والانضباط والروح الرياضية العالية.'
+              : 'Our values are the foundation upon which we build the future of mixed martial arts in the UAE. Through these values, we aim to develop athletes who excel not only in technical skill but also in ethics, discipline, and high sportsmanship.'}
+          </motion.p> */}
+        </motion.div>
+
+        {/* Values Cards - Special Design */}
+        <motion.div
+          ref={ref2}
+          variants={containerVariants}
+          initial="hidden"
+          animate={inView2 ? "visible" : "hidden"}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20"
+        >
+          {values.map((value, index) => {
+            const Icon = value.icon;
+            return (
+              <motion.div 
+                key={index} 
+                variants={itemVariants}
+                className="bg-gradient-to-br from-background-300 to-background-400 rounded-lg overflow-hidden transition-all duration-300 
+                hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group relative"
+              >
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-primary/60"></div>
+                <div className="p-8">
+                  <div className="flex flex-col items-center text-center mb-6">
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                      <Icon className="text-primary h-8 w-8 group-hover:scale-110 transition-transform" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors">
+                      {value.title}
+                    </h3>
+                  </div>
+                  <div className="relative">
+                    <p className="text-gray-300 leading-relaxed group-hover:text-white transition-colors">
+                      {value.description}
+                    </p>
+                    <div className="absolute -bottom-4 -right-4 w-12 h-12 opacity-10 text-primary">
+                      <Icon className="w-full h-full" />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+        
+
+      </div>
+
 
 
     </div>

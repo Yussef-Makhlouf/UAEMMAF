@@ -61,12 +61,12 @@ export default function AboutSection() {
               <div className="absolute top-4 left-4 w-16 h-16 border-t-2 border-l-2 border-primary opacity-70"></div>
               <div className="absolute bottom-4 right-4 w-16 h-16 border-b-2 border-r-2 border-primary opacity-70"></div>
             </div>
-            <div className="absolute right-2 bottom-2 sm:-bottom-6 sm:-right-6 bg-primary p-3 sm:p-6 rounded-lg shadow-xl w-28 sm:w-auto transform hover:scale-105 transition-transform duration-300">
+            {/* <div className="absolute right-2 bottom-2 sm:-bottom-6 sm:-right-6 bg-primary p-3 sm:p-6 rounded-lg shadow-xl w-28 sm:w-auto transform hover:scale-105 transition-transform duration-300">
               <div className="text-white text-center">
                 <p className="text-3xl sm:text-5xl font-bold">2021</p>
                 <p className="text-xs sm:text-sm uppercase tracking-wide">{t('established')}</p>
               </div>
-            </div>
+            </div> */}
           </motion.div>
 
           {/* Text Column */}

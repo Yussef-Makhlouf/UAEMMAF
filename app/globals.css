@@ -107,3 +107,44 @@ body {
 .animate-blink {
   animation: blink 1s infinite;
 }
+
+/* Phone Input Styles */
+.phone-input-container {
+  @apply w-full;
+}
+
+.phone-input-container .form-control {
+  @apply w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm;
+}
+
+.phone-input-container .flag-dropdown {
+  @apply border-input bg-background;
+}
+
+.phone-input-container .selected-flag {
+  @apply rounded-l-md;
+}
+
+.phone-input-container .country-list {
+  @apply bg-background border border-input;
+}
+
+.phone-input-container .country-list .country {
+  @apply text-foreground hover:bg-accent;
+}
+
+.phone-input-container .country-list .country.highlight {
+  @apply bg-accent;
+}
+
+.phone-input-container .country-list .search {
+  @apply bg-background border-b border-input;
+}
+
+.phone-input-container .country-list .search-box {
+  @apply bg-background text-foreground;
+}
+
+.phone-input-container .country-list .divider {
+  @apply border-input;
+}

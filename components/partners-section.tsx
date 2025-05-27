@@ -2,8 +2,7 @@
 
 import { useTranslations } from "next-intl"
 import Image from "next/image"
-import { motion, useAnimation, AnimatePresence } from "framer-motion"
-import { useInView } from "react-intersection-observer"
+import { IoChevronForward, IoChevronBack } from "react-icons/io5"
 import { useEffect, useState, useRef } from "react"
 import { useLocale } from "next-intl"
 
@@ -13,21 +12,17 @@ type Partner = {
   logo: string
 }
 
+
+
 export default function PartnersSection() {
   const t = useTranslations('partners')
   const locale = useLocale()
   const isRTL = locale === 'ar'
   
-  const [ref, inView] = useInView({
-    triggerOnce: false,
-    threshold: 0.1,
-  })
 
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [width, setWidth] = useState(0)
-  const [containerWidth, setContainerWidth] = useState(0)
-  const scrollControls = useAnimation()
-  const [hoveredId, setHoveredId] = useState<number | null>(null)
+
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   const partners: Partner[] = [
     {
@@ -72,176 +67,140 @@ export default function PartnersSection() {
     },
   ]
 
-  // Calculate dimensions on mount and window resize
+  // Number of slides to show based on screen size
+  const [slidesToShow, setSlidesToShow] = useState(3);
+  
+  // Update slides to show based on window width
   useEffect(() => {
-    const calculateSizes = () => {
-      // Check if we're on mobile
-      const isMobile = window.innerWidth < 768;
-      
-      // Width of one partner logo container (including padding)
-      const logoWidth = isMobile ? 52 : 68; // 44px/60px logo + 8px padding
-      const totalWidth = logoWidth * partners.length;
-      setWidth(totalWidth);
-
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth);
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        // Mobile - show 1 slide
+        setSlidesToShow(1);
+      } else if (window.innerWidth < 1024) {
+        // Tablet - show 2 slides
+        setSlidesToShow(2);
+      } else {
+        // Desktop - show 3 slides
+        setSlidesToShow(3);
       }
     };
+    
+    // Set initial value
+    handleResize();
+    
+    // Add resize listener
+    window.addEventListener('resize', handleResize);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-    // Initial measurement
-    calculateSizes();
-
-    // Update on resize
-    window.addEventListener('resize', calculateSizes);
-    return () => window.removeEventListener('resize', calculateSizes);
-  }, [partners.length]);
-
-  // Enhanced infinite scrolling animation with RTL support and pause on hover
-  useEffect(() => {
-    if (inView && width > 0 && containerWidth > 0) {
-      // Determine animation direction based on language
-      const startX = isRTL ? -width : 0;
-      const endX = isRTL ? 0 : -width;
-      
-      // Calculate duration based on width for consistent speed regardless of content amount
-      const animationDuration = width / 20; // Adjust divisor to change speed
-
-      // Only animate if not hovering on any partner
-      if (hoveredId === null) {
-        scrollControls.start({
-          x: [startX, endX],
-          transition: {
-            x: {
-              repeat: Infinity,
-              repeatType: "loop",
-              duration: animationDuration,
-              ease: "linear",
-            }
-          }
-        });
+  // Navigation functions to move one image at a time
+  const handlePrev = () => {
+    setCurrentIndex(prev => {
+      // Move back by one position but handle the circular behavior
+      if (prev === 0) {
+        return partners.length - 1; // Loop back to the end
       } else {
-        // Pause animation when hovering
-        scrollControls.stop();
+        return prev - 1;
       }
-    } else {
-      scrollControls.stop();
-    }
-  }, [inView, scrollControls, width, isRTL, hoveredId, containerWidth]);
+    });
+  };
 
-  // Partner hover handlers
-  const handleMouseEnter = (id: number) => setHoveredId(id);
-  const handleMouseLeave = () => setHoveredId(null);
+  const handleNext = () => {
+    setCurrentIndex(prev => {
+      // Move forward by one position but handle the circular behavior
+      if (prev === partners.length - 1) {
+        return 0; // Loop back to the beginning
+      } else {
+        return prev + 1;
+      }
+    });
+  };
+
+  // Calculate visible partners based on currentIndex
+  const getVisiblePartners = () => {
+    const visiblePartners = [];
+    
+    // Add slidesToShow partners starting from currentIndex
+    for (let i = 0; i < slidesToShow; i++) {
+      const index = (currentIndex + i) % partners.length;
+      visiblePartners.push(partners[index]);
+    }
+    
+    return visiblePartners;
+  };
+
+
+
+
 
   return (
     <section className="py-12 md:py-16 bg-background-200 overflow-hidden" dir="ltr">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8 md:mb-12" dir={isRTL ? "rtl" : "ltr"}>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-2xl md:text-3xl font-bold text-white mb-2 md:mb-3"
-          >
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 md:mb-3">
             {t('title')}
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-sm md:text-base text-gray-400 max-w-2xl mx-auto"
-          >
+          </h2>
+          <p className="text-sm md:text-base text-gray-400 max-w-2xl mx-auto">
             {t('description')}
-          </motion.p>
+          </p>
         </div>
 
-        <div ref={ref} className="relative">
-          <div ref={containerRef} className="overflow-hidden rounded-xl">
-            <motion.div
-              animate={scrollControls}
-              className="flex"
-              style={{ width: width > 0 ? `${width * 2}px` : '200%' }}
+        <div className="relative">
+          <div className="relative">
+            {/* Left arrow */}
+            <div 
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-primary/80 hover:bg-primary rounded-full flex items-center justify-center cursor-pointer shadow-lg"
+              onClick={handlePrev}
             >
-              {/* First set of partners */}
-              <AnimatePresence>
-                {partners.map((partner) => (
-                  <motion.div
-                    key={partner.id}
-                    className="px-2 md:px-4 flex-none group cursor-pointer"
-                    whileHover={{ 
-                      scale: 1.05, 
-                      y: -4,
-                      transition: { duration: 0.3, ease: "easeOut" }
-                    }}
-                    onMouseEnter={() => handleMouseEnter(partner.id)}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <div className="relative h-44 w-44 md:h-60 md:w-60 filter transition-all duration-500 bg-white rounded-[20px] md:rounded-[30px] p-2 md:p-3 shadow-lg md:shadow-xl group-hover:shadow-primary/20 overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[20px] md:rounded-[30px]" />
-                      <div className="relative h-full w-full">
-                        <Image
-                          src={partner.logo}
-                          alt={partner.name}
-                          fill
-                          loading="lazy"
-                          sizes="(max-width: 640px) 44px, (max-width: 768px) 60px, 240px"
-                          className="object-contain p-2 md:p-3 grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105 z-10"
-                        />
-                      </div>
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        whileHover={{ opacity: 1, y: 0 }}
-                        className="absolute bottom-2 md:bottom-3 left-0 right-0 text-center text-[10px] md:text-xs font-medium text-gray-800 bg-white/80 backdrop-blur-sm py-1 md:py-1.5 rounded-b-xl md:rounded-b-2xl opacity-0 group-hover:opacity-100 transition-all duration-300"
-                      >
-                        {partner.name}
-                      </motion.div>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-              
-              {/* Duplicate set for seamless looping */}
-              <AnimatePresence>
-                {partners.map((partner) => (
-                  <motion.div
-                    key={`dup-${partner.id}`}
-                    className="px-2 md:px-4 flex-none group cursor-pointer"
-                    whileHover={{ 
-                      scale: 1.05, 
-                      y: -4,
-                      transition: { duration: 0.3, ease: "easeOut" }
-                    }}
-                    onMouseEnter={() => handleMouseEnter(partner.id)}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <div className="relative h-44 w-44 md:h-60 md:w-60 filter transition-all duration-500 bg-white rounded-[20px] md:rounded-[30px] p-2 md:p-3 shadow-lg md:shadow-xl group-hover:shadow-primary/20 overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[20px] md:rounded-[30px]" />
-                      <div className="relative h-full w-full">
-                        <Image
-                          src={partner.logo}
-                          alt={partner.name}
-                          fill
-                          loading="lazy"
-                          sizes="(max-width: 640px) 44px, (max-width: 768px) 60px, 240px"
-                          className="object-contain p-2 md:p-3 grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105 z-10"
-                        />
-                      </div>
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        whileHover={{ opacity: 1, y: 0 }}
-                        className="absolute bottom-2 md:bottom-3 left-0 right-0 text-center text-[10px] md:text-xs font-medium text-gray-800 bg-white/80 backdrop-blur-sm py-1 md:py-1.5 rounded-b-xl md:rounded-b-2xl opacity-0 group-hover:opacity-100 transition-all duration-300"
-                      >
-                        {partner.name}
-                      </motion.div>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          </div>
+              <IoChevronBack className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            </div>
+            
+            {/* Right arrow */}
+            <div 
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-primary/80 hover:bg-primary rounded-full flex items-center justify-center cursor-pointer shadow-lg"
+              onClick={handleNext}
+            >
+              <IoChevronForward className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            </div>
           
-          {/* Gradient fades at edges */}
-          <div className="absolute top-0 bottom-0 left-0 w-16 md:w-24 bg-gradient-to-r from-background-200 to-transparent z-10" />
-          <div className="absolute top-0 bottom-0 right-0 w-16 md:w-24 bg-gradient-to-l from-background-200 to-transparent z-10" />
+            <div className="flex justify-center overflow-hidden rounded-xl py-8">
+              {/* Multiple partners filling the display area with responsive design */}
+              <div className="flex w-full justify-center sm:justify-between px-2 sm:px-4 md:px-8 lg:px-12 max-w-5xl mx-auto">
+                {getVisiblePartners().map((partner, index) => (
+                  <div key={partner.id} className={`
+                    ${slidesToShow === 1 ? 'w-3/4' : 'flex-1'} 
+                    mx-1 sm:mx-2 md:mx-3 lg:mx-4
+                    ${slidesToShow < 3 && index >= slidesToShow ? 'hidden' : ''}
+                  `}>
+                    <div className="relative 
+                      h-32 sm:h-36 md:h-40 lg:h-44 
+                      w-full 
+                      bg-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] 
+                      p-2 sm:p-3 md:p-4 
+                      shadow-lg overflow-hidden">
+                      <div className="relative h-full w-full">
+                        <Image
+                          src={partner.logo}
+                          alt={partner.name}
+                          fill
+                          loading="eager"
+                          sizes="
+                            (max-width: 640px) 75vw, 
+                            (max-width: 768px) 45vw, 
+                            (max-width: 1024px) 30vw, 
+                            280px"
+                          className="object-contain p-2 sm:p-3"
+                        />
+                      </div>
+                     
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

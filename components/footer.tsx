@@ -95,9 +95,9 @@ export default function Footer() {
             <Link href="/leadership" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
               {t('leadership')}
             </Link>
-            <Link href="/events" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
+            {/* <Link href="/events" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
               {t('events')}
-            </Link>
+            </Link> */}
             <Link href="/news" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
               {t('news')}
             </Link>
@@ -116,7 +116,7 @@ export default function Footer() {
               {t('description')}
             </p> */}
             <p className="text-gray-400 text-sm sm:text-base">
-              Telephone: <a href="tel:+97123336111" className="hover:text-white transition-colors">97123336111</a>
+              Telephone: <a href="tel:+97123336111" className="hover:text-white transition-colors">+971 23336111</a>
             </p>
             <p className="text-gray-400 text-sm sm:text-base">
               Email: <a href="mailto:info@uaemmaf.com" className="hover:text-white transition-colors">info@uaemmaf.com</a>
@@ -128,7 +128,7 @@ export default function Footer() {
             <h3 className="text-base sm:text-lg font-bold">{t('location')}</h3>
             <div className="w-full h-[180px] sm:h-[200px] rounded-lg overflow-hidden">
               <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d68949.90053632692!2d54.442805!3d24.418652!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e42167a9cd0f1%3A0x7986ec2b7a18e80f!2sUAE%20Jiu-Jitsu%20Federation!5e1!3m2!1sar!2sus!4v1747085469086!5m2!1sar!2sus" 
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d68949.90053632692!2d54.442805!3d24.418652!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e42167a9cd0f1%3A0x7986ec2b7a18e80f!2sUAE%20Jiu-Jitsu%20Federation!5e1!3m2!1sen!2sus!4v1747085469086!5m2!1sen!2sus" 
               width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 

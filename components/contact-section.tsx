@@ -88,13 +88,13 @@ export default function ContactSection() {
     },
   }
 
-  // UAE Phone number validation
-  const validateUAEPhone = (phone: string) => {
-    // UAE phone numbers can start with +971 or 971 followed by 9 digits
-    // Also allow just the phone number without country code for flexibility
+  // General Phone number validation
+  const validatePhone = (phone: string) => {
+    // General phone numbers can start with an optional '+' and have 10-15 digits.
+    // This regex is a basic example and might need to be adjusted for more specific international formats.
     const cleanedPhone = phone.replace(/\s+/g, '').replace(/-/g, '');
-    const uaePhoneRegex = /^(?:\+971|971)?[0-9]{9}$/;
-    return uaePhoneRegex.test(cleanedPhone);
+    const phoneRegex = /^[+]?[0-9]{10,15}$/;
+    return phoneRegex.test(cleanedPhone);
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -138,7 +138,7 @@ export default function ContactSection() {
     if (!formState.phone.trim()) {
       newErrors.phone = t('form.errors.phoneRequired');
       hasErrors = true;
-    } else if (!validateUAEPhone(formState.phone)) {
+    } else if (!validatePhone(formState.phone)) {
       newErrors.phone = t('form.errors.phoneInvalid');
       hasErrors = true;
     }
@@ -258,7 +258,7 @@ export default function ContactSection() {
       case 'phone':
         if (!value.trim()) {
           newErrors.phone = t('form.errors.phoneRequired');
-        } else if (!validateUAEPhone(value)) {
+        } else if (!validatePhone(value)) {
           newErrors.phone = t('form.errors.phoneInvalid');
         } else {
           newErrors.phone = undefined;
@@ -350,9 +350,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <h4 className="text-white font-medium">{t('phone')}</h4>
-                  <a href="tel:+97123336111" className="text-gray-300 hover:text-primary transition-colors">
-                    97123336111
-                  </a>
+                  <a href="tel:+97123336111" className="text-gray-300 hover:text-primary transition-colors" dir="ltr">+971 23336111</a>
                 </div>
               </div>
               
@@ -523,7 +521,7 @@ PO Box 110007 Abu Dhabi, UAE
                   <Button 
                     type="submit" 
                     className="w-full bg-primary hover:bg-primary-dark text-white"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !isCaptchaVerified}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center">
@@ -558,7 +556,7 @@ PO Box 110007 Abu Dhabi, UAE
           </h3>
           <div className="rounded-lg overflow-hidden shadow-lg h-[400px] w-full">
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d68949.90053632692!2d54.442805!3d24.418652!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e42167a9cd0f1%3A0x7986ec2b7a18e80f!2sUAE%20Jiu-Jitsu%20Federation!5e1!3m2!1sar!2sus!4v1747085469086!5m2!1sar!2sus" 
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d68949.90053632692!2d54.442805!3d24.418652!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e42167a9cd0f1%3A0x7986ec2b7a18e80f!2sUAE%20Jiu-Jitsu%20Federation!5e1!3m2!1sen!2sus!4v1747085469086!5m2!1sen!2sus" 
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 

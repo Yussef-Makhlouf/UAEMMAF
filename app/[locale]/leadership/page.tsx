@@ -219,11 +219,56 @@ export default function LeadershipPage() {
             </p>
           </motion.div>
           
+          {/* Premium Master Card - First Member */}
+          {members.length > 0 && (
+            <motion.div 
+              variants={itemVariants}
+              className="mb-16 mx-auto max-w-4xl"
+            >
+              <div className="bg-gradient-to-r from-background-300 to-background-200 rounded-xl shadow-2xl overflow-hidden transform hover:-translate-y-2 transition-all duration-500 border border-primary/30 relative">
+                {/* Premium indicator */}
+           
+                
+                <div className="flex flex-col md:flex-row items-center p-8 gap-8">
+                  {/* Image container with premium styling */}
+                  <div className="relative h-64 w-64 flex-shrink-0">
+                    <div className="absolute inset-0 rounded-full border-4 border-primary p-2 shadow-[0_0_15px_rgba(255,165,0,0.5)] bg-background-300">
+                      <div className="relative w-full h-full rounded-full overflow-hidden">
+                        <Image
+                          src={members[0].image.secure_url}
+                          alt={locale === 'ar' ? members[0].name.ar : members[0].name.en}
+                          fill
+                          className="object-cover object-center"
+                          style={{ objectPosition: '50% 25%' }}
+                          priority
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Content with enhanced styling */}
+                  <div className="flex-1 text-center md:text-left">
+                    <h3 className="text-3xl font-bold text-white mb-3">
+                      {locale === 'ar' ? members[0].name.ar : members[0].name.en}
+                    </h3>
+                    <div className="inline-block bg-primary/20 px-4 py-2 rounded-full mb-4">
+                      <p className="text-primary text-xl font-semibold">
+                        {locale === 'ar' ? members[0].position.ar : members[0].position.en}
+                      </p>
+                    </div>
+                   
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+          
+          {/* Remaining Members Grid */}
           <motion.div 
             variants={containerVariants}
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
           >
-            {members.map((member) => (
+            {members.slice(1).map((member) => (
               <motion.div 
                 key={member._id}
                 variants={itemVariants}
@@ -243,7 +288,6 @@ export default function LeadershipPage() {
                   </div>
                 </div>
                 <h4 className="text-xl font-bold text-white mb-1">
-                  
                   {locale === 'ar' ? member.name.ar : member.name.en}
                 </h4>
                 <p className="text-primary mb-2">
