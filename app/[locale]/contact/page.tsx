@@ -30,12 +30,12 @@ export default function ContactPage() {
   }, []);
 
   return (
-    <div className="bg-[#FAFAFA] relative" dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="w-full h-full ">
+    <div className=" relative" dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className="w-full h-full pb-20">
         <Header />
       </div>
       {/* Hero Banner */}
-      <div className="relative h-[300px] bg-background-300 flex items-center justify-center overflow-hidden">
+      {/* <div className="relative h-[300px] bg-background-300 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image 
             src="/subhero.png"
@@ -56,9 +56,10 @@ export default function ContactPage() {
             <span className="text-white">{t('breadcrumbs.contact')}</span>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <ContactSection />
+      
     </div>
   );
 }

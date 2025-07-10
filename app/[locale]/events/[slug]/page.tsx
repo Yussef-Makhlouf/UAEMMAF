@@ -33,7 +33,7 @@ export default function EventDetailPage() {
   const t = useTranslations('events')
   const locale = useLocale()
   const params = useParams()
-  const slug = params.slug as string
+  const slug = params?.slug as string
   
   // Mock events data - in a real application, this would come from an API or CMS
   const allEvents: EventItem[] = [

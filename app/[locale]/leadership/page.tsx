@@ -102,7 +102,7 @@ export default function LeadershipPage() {
     return (
       <div className="min-h-screen bg-background-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-r-transparent align-[-0.125em]" role="status">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4  border-r-transparent align-[-0.125em]" role="status">
             <span className="sr-only">Loading...</span>
           </div>
           <p className="mt-4 text-gray-300">Loading members...</p>
@@ -123,7 +123,7 @@ export default function LeadershipPage() {
   return (
     <div className="min-h-screen bg-background-100">
       {/* Hero Banner */}
-      <div className="relative h-[450px] bg-background-300 flex items-center justify-center overflow-hidden border-y border-primary/30">
+      {/* <div className="relative h-[450px] bg-background-300 flex items-center justify-center overflow-hidden border-y /30 border-b border-primary/30">
         <div className="absolute inset-0">
           <Image
             src="/subhero.png"
@@ -141,42 +141,39 @@ export default function LeadershipPage() {
               {t('breadcrumbs.home')}
             </Link>
             <span>/</span>
-            {/* <Link href={getLocalizedHref('/about')} className="hover:text-primary transition-colors">
-              {t('breadcrumbs.about')}
-            </Link>
-            <span>/</span> */}
+         
             <span className="text-white">{t('leadership.title')}</span>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-28">
         {/* President's Message */}
         <motion.div
           ref={ref1}
           variants={containerVariants}
           initial="hidden"
           animate={inView1 ? "visible" : "hidden"}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24"
         >
           <motion.div variants={itemVariants} className="flex flex-col space-y-6 order-2 lg:order-1">
             <div>
               {/* <h2 className="text-primary text-lg font-medium">{t('presidentMessage.badge')}</h2> */}
-              <h3 className="text-3xl md:text-4xl font-bold text-white mt-2">
+              <h3 className="text-3xl md:text-4xl font-bold text-white mt-2 ">
                 {t('presidentMessage.title')}
               </h3>
             </div>
             
-            <div className="bg-background-300 p-6 rounded-lg border-l-4 border-primary">
-              <p className="text-white text-xl">
+            <div className="bg-background-300 p-8 rounded-lg border-l-4 space-y-6">
+              <p className="text-white">
                 {t('presidentMessage.message1')}
               </p>
               <br /> <br />
-              <p className="text-gray-300">
+              <p className="text-white">
               {t('presidentMessage.message2')}
             </p>
-            <div className="text-white mt-8 border-t-2 border-gray-700 pt-6">
-              <div className="bg-background-400 p-4 rounded-lg border-l-4 border-primary shadow-md">
+            <div className="text-white mt-10 pt-6">
+              <div className="bg-background-400 p-5 rounded-lg border-l-4 shadow-md">
                 <p className="font-bold text-lg">{t('presidentMessage.name')}</p>
                 <p className="text-primary">{t('presidentMessage.position')}</p>
               </div>
@@ -189,7 +186,7 @@ export default function LeadershipPage() {
 
           <motion.div variants={itemVariants} className="relative order-1 lg:order-2">
             <div className="relative h-[400px] w-full mx-auto flex items-center justify-center">
-              <div className="relative h-[350px] w-[350px] rounded-full border-4 border-primary overflow-hidden">
+              <div className="relative h-[350px] w-[350px] rounded-full border-4  overflow-hidden">
                 <Image
                   src="/leader.jpg"
                   alt={t('presidentMessage.imageAlt')}
@@ -207,32 +204,38 @@ export default function LeadershipPage() {
           variants={containerVariants}
           initial="hidden"
           animate={inView2 ? "visible" : "hidden"}
-          className="mb-20"
+          className="mb-24"
         >
-          <motion.div variants={itemVariants} className="text-center mb-12">
-            <h2 className="text-primary text-lg font-medium">{t('leadership.badge')}</h2>
+          <motion.div variants={itemVariants} className="text-center mb-16">
+            {/* <h2 className="text-primary text-lg font-medium">{t('leadership.badge')}</h2> */}
             <h3 className="text-3xl md:text-4xl font-bold text-white mt-2">
               {t('leadership.title')}
             </h3>
-            <p className="text-gray-300 max-w-3xl mx-auto mt-4">
+            {/* <p className="text-gray-300 max-w-3xl mx-auto mt-6">
               {t('leadership.description')}
-            </p>
+            </p> */}
           </motion.div>
           
           {/* Premium Master Card - First Member */}
           {members.length > 0 && (
             <motion.div 
               variants={itemVariants}
-              className="mb-16 mx-auto max-w-4xl"
+              className="mb-12 mx-auto"
             >
-              <div className="bg-gradient-to-r from-background-300 to-background-200 rounded-xl shadow-2xl overflow-hidden transform hover:-translate-y-2 transition-all duration-500 border border-primary/30 relative">
-                {/* Premium indicator */}
-           
+              <div className="w-full md:w-[80%] lg:w-[650px] mx-auto rounded-lg p-8 text-center hover:-translate-y-2 transform transition-all duration-500 relative group">
+                {/* Animated border effect */}
                 
-                <div className="flex flex-col md:flex-row items-center p-8 gap-8">
+                {/* Main card content with glass effect */}
+                <div className="relative z-10  backdrop-blur-sm rounded-lg p-5 ">
+             
+                  
+        
                   {/* Image container with premium styling */}
-                  <div className="relative h-64 w-64 flex-shrink-0">
-                    <div className="absolute inset-0 rounded-full border-4 border-primary p-2 shadow-[0_0_15px_rgba(255,165,0,0.5)] bg-background-300">
+                  <div className="relative h-48 w-48 sm:h-56 sm:w-56 lg:h-64 lg:w-64 mx-auto mb-6">
+                    {/* Pulsating ring */}
+                    <div className="absolute inset-0 rounded-full animate-pulse opacity-70 bg-primary p-[3px]"></div>
+                    
+                    <div className="absolute inset-0 rounded-full  p-2  bg-background-300/90">
                       <div className="relative w-full h-full rounded-full overflow-hidden">
                         <Image
                           src={members[0].image.secure_url}
@@ -247,16 +250,15 @@ export default function LeadershipPage() {
                   </div>
                   
                   {/* Content with enhanced styling */}
-                  <div className="flex-1 text-center md:text-left">
-                    <h3 className="text-3xl font-bold text-white mb-3">
+                  <div className="relative">
+                    <h4 className="text-xl font-bold text-white mb-1 group-hover:text-primary transition-colors duration-300">
                       {locale === 'ar' ? members[0].name.ar : members[0].name.en}
-                    </h3>
-                    <div className="inline-block bg-primary/20 px-4 py-2 rounded-full mb-4">
-                      <p className="text-primary text-xl font-semibold">
+                    </h4>
+                    <div className="inline-block bg-primary/20 px-3 py-1 rounded-full mb-2 backdrop-blur-sm">
+                      <p className="text-primary font-semibold">
                         {locale === 'ar' ? members[0].position.ar : members[0].position.en}
                       </p>
                     </div>
-                   
                   </div>
                 </div>
               </div>
@@ -266,16 +268,16 @@ export default function LeadershipPage() {
           {/* Remaining Members Grid */}
           <motion.div 
             variants={containerVariants}
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
           >
             {members.slice(1).map((member) => (
               <motion.div 
                 key={member._id}
                 variants={itemVariants}
-                className="bg-background-200 rounded-lg p-6 text-center hover:bg-background-300 transition-colors duration-300"
+                className="rounded-xl p-8 text-center hover:bg-background-300/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
               >
-                <div className="relative h-40 w-40 mx-auto mb-4">
-                  <div className="absolute inset-0 rounded-full border-2 border-primary p-2">
+                <div className="relative h-44 w-44 mx-auto mb-6">
+                  <div className="absolute inset-0 rounded-full   p-2">
                     <div className="relative w-full h-full rounded-full overflow-hidden">
                       <Image
                         src={member.image.secure_url}

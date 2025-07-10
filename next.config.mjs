@@ -26,7 +26,8 @@ const nextConfig = {
       enabled: true
     }
   },
-  output: 'standalone'
+  output: 'standalone',
+  trailingSlash: true,
 }
 
 export default withNextIntlConfig(nextConfig);

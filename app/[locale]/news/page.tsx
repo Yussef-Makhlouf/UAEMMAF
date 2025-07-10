@@ -102,7 +102,7 @@ export default function NewsPage() {
     threshold: 0.1,
   })
 
-  const itemsPerPage = 6
+  const itemsPerPage = 9
   
   // Filter news items based on search query and category
   const filteredNewsItems = newsItems.filter(item => {
@@ -173,8 +173,8 @@ export default function NewsPage() {
 
   return (
     <div className="min-h-screen bg-background-100">
-      {/* Hero Banner */}
-      <div className="relative h-[450px] bg-background-300 flex items-center justify-center overflow-hidden border-y border-primary/40 shadow-lg">
+      {/* Hero Banner (Commented Out) */}
+      {/* <div className="relative h-[450px] bg-background-300 flex items-center justify-center overflow-hidden border-y border-primary/40 shadow-lg">
         <div className="absolute inset-0">
           <Image 
             src="/subhero.png"
@@ -186,14 +186,24 @@ export default function NewsPage() {
         </div>
         <div className="relative z-10 text-center px-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{t('pageTitle')}</h1>
-          {/* <p className="text-xl text-gray-300 max-w-3xl mx-auto">{t('pageDescription')}</p> */}
         </div>
-      </div>
+      </div> */}
 
-      <div className="container mx-auto px-4 py-12">
+      {/* Main Content */}
+      <motion.main
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-4 py-16 lg:py-20 md:py-16 sm:py-12"
+      >
         {/* Search and Filters */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <div className="relative max-w-md w-full">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 md:mb-16 sm:mb-8"
+        >
+          <div className="relative w-full md:max-w-lg py-12">
             <Input
               type="text"
               placeholder={t('searchPlaceholder')}
@@ -208,7 +218,7 @@ export default function NewsPage() {
           </div>
           
           {/* Categories can be uncommented and adapted if needed based on API categories */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {categories.map(category => (
               <Button
                 key={category.id}
@@ -226,13 +236,18 @@ export default function NewsPage() {
               </Button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Loading state */}
         {loading ? (
-          <div className="flex justify-center items-center py-12">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-center items-center py-16"
+          >
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-          </div>
+          </motion.div>
         ) : filteredNewsItems.length > 0 ? (
           <>
             <motion.div
@@ -284,7 +299,12 @@ export default function NewsPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center mt-12 gap-2">
+<motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex items-center justify-center mt-16 gap-3"
+              >
                 <Button
                   variant="outline"
                   size="icon"
@@ -320,15 +340,20 @@ export default function NewsPage() {
                 >
                   <ChevronRight className="h-5 w-5" />
                 </Button>
-              </div>
+              </motion.div>
             )}
           </>
         ) : (
-          <div className="bg-background-200 rounded-lg p-8 text-center">
-            <h3 className="text-xl font-medium text-white mb-2">{t('noResults.title')}</h3>
-            <p className="text-gray-400 mb-6">{t('noResults.description')}</p>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-background-200/90 rounded-xl p-10 text-center max-w-2xl mx-auto shadow-lg"
+          >
+            <h3 className="text-2xl font-bold text-white mb-4">{t('noResults.title')}</h3>
+            <p className="text-gray-400 mb-8 text-lg">{t('noResults.description')}</p>
             <Button 
-              className="bg-primary hover:bg-primary-dark text-white"
+              className="bg-primary hover:bg-primary-dark text-white px-8 py-6 text-base"
               onClick={() => {
                 setSearchQuery("")
                 setCurrentCategory("all")
@@ -336,9 +361,9 @@ export default function NewsPage() {
             >
               {t('noResults.resetFilters')}
             </Button>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.main>
     </div>
   )
 } 

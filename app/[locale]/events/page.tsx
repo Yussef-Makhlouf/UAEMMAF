@@ -37,7 +37,7 @@ function EventsContent() {
   const t = useTranslations('events')
   const locale = useLocale()
   const searchParams = useSearchParams()
-  const categoryParam = searchParams.get('category')
+  const categoryParam = searchParams?.get('category')
   
   const [searchQuery, setSearchQuery] = useState("")
   const [currentCategory, setCurrentCategory] = useState("all")

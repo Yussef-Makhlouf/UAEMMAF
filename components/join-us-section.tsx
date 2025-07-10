@@ -41,13 +41,13 @@ export default function JoinUsSection() {
     <section className="py-20 bg-background-200">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-primary text-lg font-medium">{t('joinTheFederation')}</h2>
+          {/* <h2 className="text-primary text-lg font-medium">{t('joinTheFederation')}</h2>
           <h3 className="text-3xl md:text-4xl font-bold text-white mt-2 mb-4">
             {t('title')}
           </h3>
           <p className="text-gray-400 max-w-2xl mx-auto">
             {t('description')}
-          </p>
+          </p> */}
         </div>
 
         <motion.div
@@ -64,7 +64,7 @@ export default function JoinUsSection() {
           >
             <div className="relative h-64 w-full overflow-hidden">
               <Image
-                src="/main.jpg"
+                src="/event1.jpg"
                 alt={t('athletes.title')}
                 fill
                 loading="lazy"
@@ -79,9 +79,9 @@ export default function JoinUsSection() {
               </div>
             </div>
             <div className="p-6">
-              <p className="text-gray-300 mb-6">
+              {/* <p className="text-gray-300 mb-6">
                 {t('athletes.description')}
-              </p>
+              </p> */}
               
               <div className="space-y-4 mb-8">
                 <div className="flex items-start">
@@ -129,7 +129,7 @@ export default function JoinUsSection() {
           >
             <div className="relative h-64 w-full overflow-hidden">
               <Image
-                src="/main2.jpg"
+                src="/event2.jpg"
                 alt={t('clubs.title')}
                 fill
                 loading="lazy"
@@ -144,10 +144,10 @@ export default function JoinUsSection() {
               </div>
             </div>
             <div className="p-6">
-              <p className="text-gray-300 mb-6">
+              {/* <p className="text-gray-300 mb-6">
                 {t('clubs.description')}
               </p>
-              
+               */}
               <div className="space-y-4 mb-8">
                 <div className="flex items-start">
                   <div className="mr-3 mt-1 text-primary px-2">

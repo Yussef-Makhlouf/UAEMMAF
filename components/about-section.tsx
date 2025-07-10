@@ -99,6 +99,10 @@ export default function AboutSection() {
                 <p className="text-gray-300 leading-relaxed">
                   {t('description2')}
                 </p>
+                <div className="my-4 w-12 h-0.5 "></div>
+                <p className="text-gray-300 leading-relaxed">
+                  {t('description3')}
+                </p>
                 
                 {/* <div className="mt-6 pt-4 border-t border-gray-700/30">
                   <Link href="/about" className="inline-flex items-center text-primary hover:text-primary-light transition-colors">

@@ -23,37 +23,33 @@ export default function PartnersSection() {
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
 
   const partners: Partner[] = [
     {
-      id: 1,
-      name: "IMMAF",
-      logo: "part.png"
-    },
-    {
-      id: 2,
-      name: "UAE Ministry of Sports",
-      logo: "part3.png"
-    },
-    {
-      id: 4,
+      id: 13,
       name: "Dubai Sports Council",
-      logo: "part4.png"
+      logo: "logo6.svg"
     },
     {
-      id: 5,
-      name: "Etihad Airways",
-      logo: "part5.png"
-    },
-    {
-      id: 6,
+      id: 12,
       name: "Dubai Sports Council",
-      logo: "part6.png"
+      logo: "logo5.svg"
     },
     {
-      id: 7,
+      id: 11,
       name: "Dubai Sports Council",
-      logo: "part7.png"
+      logo: "logo2.svg"
+    },
+    {
+      id: 10,
+      name: "Dubai Sports Council",
+      logo: "logo3.svg"
+    },
+    {
+      id: 9,
+      name: "Dubai Sports Council",
+      logo: "part1.png"
     },
     {
       id: 8,
@@ -61,9 +57,34 @@ export default function PartnersSection() {
       logo: "part8.png"
     },
     {
-      id: 9,
+      id: 7,
       name: "Dubai Sports Council",
-      logo: "part1.png"
+      logo: "part7.png"
+    },
+    {
+      id: 6,
+      name: "Dubai Sports Council",
+      logo: "logo1.svg"
+    },
+    {
+      id: 5,
+      name: "Dubai Sports Council",
+      logo: "logo2.svg"
+    },
+    {
+      id: 4,
+      name: "Dubai Sports Council",
+      logo: "part4.png"
+    },
+    {
+      id: 2,
+      name: "UAE Ministry of Sports",
+      logo: "part3.png"
+    },
+    {
+      id: 1,
+      name: "IMMAF",
+      logo: "part.png"
     },
   ]
 
@@ -118,6 +139,17 @@ export default function PartnersSection() {
     });
   };
 
+  // Auto-swap functionality
+  useEffect(() => {
+    if (!isPaused) {
+      const autoSwapTimer = setInterval(() => {
+        handleNext();
+      }, 4000); // Change every 4 seconds
+      
+      return () => clearInterval(autoSwapTimer);
+    }
+  }, [currentIndex, isPaused]);
+
   // Calculate visible partners based on currentIndex
   const getVisiblePartners = () => {
     const visiblePartners = [];
@@ -142,9 +174,7 @@ export default function PartnersSection() {
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 md:mb-3">
             {t('title')}
           </h2>
-          <p className="text-sm md:text-base text-gray-400 max-w-2xl mx-auto">
-            {t('description')}
-          </p>
+ 
         </div>
 
         <div className="relative">
@@ -152,7 +182,13 @@ export default function PartnersSection() {
             {/* Left arrow */}
             <div 
               className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-primary/80 hover:bg-primary rounded-full flex items-center justify-center cursor-pointer shadow-lg"
-              onClick={handlePrev}
+              onClick={() => {
+                handlePrev();
+                setIsPaused(true); // Pause auto-swap when user manually navigates
+                setTimeout(() => setIsPaused(false), 8000); // Resume after 8 seconds
+              }}
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
             >
               <IoChevronBack className="w-5 h-5 md:w-6 md:h-6 text-white" />
             </div>
@@ -160,14 +196,24 @@ export default function PartnersSection() {
             {/* Right arrow */}
             <div 
               className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-primary/80 hover:bg-primary rounded-full flex items-center justify-center cursor-pointer shadow-lg"
-              onClick={handleNext}
+              onClick={() => {
+                handleNext();
+                setIsPaused(true); // Pause auto-swap when user manually navigates
+                setTimeout(() => setIsPaused(false), 8000); // Resume after 8 seconds
+              }}
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
             >
               <IoChevronForward className="w-5 h-5 md:w-6 md:h-6 text-white" />
             </div>
           
-            <div className="flex justify-center overflow-hidden rounded-xl py-8">
+            <div 
+              className="flex justify-center overflow-hidden rounded-xl py-8"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
               {/* Multiple partners filling the display area with responsive design */}
-              <div className="flex w-full justify-center sm:justify-between px-2 sm:px-4 md:px-8 lg:px-12 max-w-5xl mx-auto">
+              <div className="flex w-full justify-center sm:justify-between px-2 sm:px-4 md:px-8 lg:px-12 max-w-5xl mx-auto transition-all duration-700 ease-in-out">
                 {getVisiblePartners().map((partner, index) => (
                   <div key={partner.id} className={`
                     ${slidesToShow === 1 ? 'w-3/4' : 'flex-1'} 
@@ -178,8 +224,9 @@ export default function PartnersSection() {
                       h-32 sm:h-36 md:h-40 lg:h-44 
                       w-full 
                       bg-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] 
-                      p-2 sm:p-3 md:p-4 
-                      shadow-lg overflow-hidden">
+                     sm:p-3  
+                      shadow-lg overflow-hidden
+                      transition-transform duration-700 ease-in-out transform hover:scale-105">
                       <div className="relative h-full w-full">
                         <Image
                           src={partner.logo}

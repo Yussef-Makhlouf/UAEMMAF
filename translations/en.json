@@ -13,7 +13,7 @@
     "joinUs": "Join Us",
     "athletes": "Athletes",
     "clubs": "Clubs",
-    "contact": "Contact"
+    "contact": "Contact Us"
   },
   "hero": {
     "slide1": {
@@ -216,7 +216,7 @@
       }
     },
     "clubs": {
-      "title": "MMA Clubs",
+      "title": "Clubs",
       "description": "Register your MMA club or training facility with the UAEMMAF to become an officially recognized center for martial arts training and development in the UAE.",
       "registerNow": "Register Your Club",
       "benefit1": {
@@ -259,7 +259,7 @@
     "heroTitle": "Contact Us",
     "breadcrumbs": {
       "home": "Home",
-      "contact": "Contact"
+      "contact": "Contact Us"
     }
   },
   "footer": {

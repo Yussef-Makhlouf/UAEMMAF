@@ -219,10 +219,10 @@ export default function Header() {
               >
                 <div className="relative overflow-hidden rounded-sm">
                   <Image 
-                    src="/logo3.png" 
+                    src="/mainlogo.svg" 
                     alt="UAEMMAF Logo" 
-                    width={160} 
-                    height={70} 
+                    width={230} 
+                    height={120} 
                     loading="lazy"
                     className="rounded-sm relative z-0"
                   />
@@ -288,8 +288,8 @@ export default function Header() {
                   />
                   <motion.div 
                     className="absolute bottom-0 left-0 h-0.5 bg-green-600"
-                    initial={pathname.includes("/about") ? "visible" : "hidden"}
-                    animate={pathname.includes("/about") ? "visible" : "hidden"}
+                    initial={pathname?.includes("/about") ? "visible" : "hidden"}
+                    animate={pathname?.includes("/about") ? "visible" : "hidden"}
                     variants={underlineVariants}
                   />
                   <motion.div 
@@ -338,8 +338,8 @@ export default function Header() {
                 {t('news')}
                 <motion.div 
                   className="absolute bottom-0 left-0 h-0.5 bg-green-600"
-                  initial={pathname.includes("/news") ? "visible" : "hidden"}
-                  animate={pathname.includes("/news") ? "visible" : "hidden"}
+                  initial={pathname?.includes("/news") ? "visible" : "hidden"}
+                  animate={pathname?.includes("/news") ? "visible" : "hidden"}
                   variants={underlineVariants}
                 />
                 <motion.div 
@@ -370,8 +370,8 @@ export default function Header() {
                   />
                   <motion.div 
                     className="absolute bottom-0 left-0 h-0.5 bg-green-600"
-                    initial={pathname.includes("/events") ? "visible" : "hidden"}
-                    animate={pathname.includes("/events") ? "visible" : "hidden"}
+                    initial={pathname?.includes("/events") ? "visible" : "hidden"}
+                    animate={pathname?.includes("/events") ? "visible" : "hidden"}
                     variants={underlineVariants}
                   />
                   <motion.div 
@@ -435,8 +435,8 @@ export default function Header() {
                   />
                   <motion.div 
                     className="absolute bottom-0 left-0 h-0.5 bg-green-600"
-                    initial={pathname.includes("/join-us") ? "visible" : "hidden"}
-                    animate={pathname.includes("/join-us") ? "visible" : "hidden"}
+                    initial={pathname?.includes("/join-us") ? "visible" : "hidden"}
+                    animate={pathname?.includes("/join-us") ? "visible" : "hidden"}
                     variants={underlineVariants}
                   />
                   <motion.div 
@@ -487,8 +487,8 @@ export default function Header() {
                 {t('contact')}
                 <motion.div 
                   className="absolute bottom-0 left-0 h-0.5 bg-green-600"
-                  initial={pathname.includes("/contact") ? "visible" : "hidden"}
-                  animate={pathname.includes("/contact") ? "visible" : "hidden"}
+                  initial={pathname?.includes("/contact") ? "visible" : "hidden"}
+                  animate={pathname?.includes("/contact") ? "visible" : "hidden"}
                   variants={underlineVariants}
                 />
                 <motion.div 
@@ -524,10 +524,10 @@ export default function Header() {
                         <div className="relative overflow-hidden rounded-sm">
                           <div className="absolute inset-0 bg-gradient-to-r from-red-800/30 to-transparent z-10 pointer-events-none" />
                           <Image 
-                            src="/logo3.png" 
+                            src="/mainlogo.svg" 
                             alt="UAEMMAF Logo" 
-                            width={150} 
-                            height={70} 
+                            width={230} 
+                            height={120} 
                             loading="lazy"
                             className="rounded-sm relative z-0"
                           />
@@ -573,7 +573,7 @@ export default function Header() {
                             size={16} 
                             className={`transition-transform duration-300 ease-in-out ${isAboutOpen ? 'rotate-180' : ''}`} 
                           />
-                          {pathname.includes("/about") && 
+                          {pathname?.includes("/about") && 
                             <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
                           }
                         </button>
@@ -613,7 +613,7 @@ export default function Header() {
                         onClick={handleMenuClose}
                       >
                         {t('news')}
-                        {pathname.includes("/news") && 
+                        {pathname?.includes("/news") && 
                           <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
                         }
                       </Link>
@@ -633,7 +633,7 @@ export default function Header() {
                             size={16} 
                             className={`transition-transform duration-300 ease-in-out ${isEventsOpen ? 'rotate-180' : ''}`} 
                           />
-                          {pathname.includes("/events") && 
+                          {pathname?.includes("/events") && 
                             <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
                           }
                         </button>
@@ -684,7 +684,7 @@ export default function Header() {
                             size={16} 
                             className={`transition-transform duration-300 ease-in-out ${isJoinUsOpen ? 'rotate-180' : ''}`} 
                           />
-                          {pathname.includes("/join-us") && 
+                          {pathname?.includes("/join-us") && 
                             <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
                           }
                         </button>
@@ -726,7 +726,7 @@ export default function Header() {
                         onClick={handleMenuClose}
                       >
                         {t('contact')}
-                        {pathname.includes("/contact") && 
+                        {pathname?.includes("/contact") && 
                           <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
                         }
                       </Link>

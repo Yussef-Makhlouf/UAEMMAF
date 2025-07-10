@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "n@/components/ui/button";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { ExternalLink, Sparkles, Calendar, Trophy } from "lucide-react";
@@ -127,7 +127,7 @@ export default function EventsSection() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            {t("eventsDescription") || 
+            {t("eventsDescription") ||
               "All our events are managed through Smoothcomp. Click the links below to view and register for upcoming events or check past events."}
           </motion.p>
         </motion.div>
@@ -146,7 +146,7 @@ export default function EventsSection() {
             className="relative group h-full"
           >
             {/* <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary-dark/40 rounded-2xl blur-sm group-hover:blur-md transform group-hover:scale-[1.02] transition-all duration-300"></div> */}
-            <div className="relative bg-background-300/80 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 group-hover:border-primary/40 transition-colors h-full flex flex-col">
+            <div className="relative  backdrop-blur-sm rounded-xl overflow-hidden   transition-colors h-full flex flex-col">
               <motion.div 
                 className=" inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent"
                 {...shimmerEffect}
@@ -161,10 +161,10 @@ export default function EventsSection() {
                   {t("upcomingEvents")}
                 </h3>
                 
-                <p className="text-gray-300 mb-8 text-center flex-grow">
+                {/* <p className="text-gray-300 mb-8 text-center flex-grow">
                   {t("upcomingEventsDescription") ||
                     "View and register for all upcoming UAE MMA Federation events."}
-                </p>
+                </p> */}
                 
                 <div className="flex justify-center mt-auto">
                   <a 
@@ -188,9 +188,9 @@ export default function EventsSection() {
             className="relative group h-full"
           >
             {/* <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/40 to-primary/30 rounded-2xl blur-sm group-hover:blur-md transform group-hover:scale-[1.02] transition-all duration-300"></div> */}
-            <div className="relative bg-background-300/80 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 group-hover:border-primary/40 transition-colors h-full flex flex-col">
+            <div className="relative  backdrop-blur-sm rounded-xl overflow-hidden  transition-colors h-full flex flex-col">
               <motion.div 
-                className=" inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent"
+                className=" inset-0  to-transparent"
                 {...shimmerEffect}
               />
               
@@ -203,17 +203,17 @@ export default function EventsSection() {
                   {t("pastEvents")}
                 </h3>
                 
-                <p className="text-gray-300 mb-8 text-center flex-grow">
+                {/* <p className="text-gray-300 mb-8 text-center flex-grow">
                   {t("pastEventsDescription") ||
                     "Browse our past events, results, and achievements."}
-                </p>
+                </p> */}
                 
                 <div className="flex justify-center mt-auto">
                   <a 
                     href="https://uaemmaf.smoothcomp.com/en/federation/187/events/past" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center border-2 border-primary/50 text-white hover:bg-primary/20 px-6 py-3 h-auto text-lg rounded-xl group transition-colors"
+                    className="inline-flex items-center justify-center border-2 border-primary/50 text-white hover:bg-primary/20 px-6 py-3 h-auto text-lg rounded-xl group transition-colors  "
                   >
                     <span>{t("viewPast")}</span>
                     <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -225,14 +225,14 @@ export default function EventsSection() {
         </motion.div>
 
         {/* Social Media Links */}
-        <motion.div 
+        {/* <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.7 }}
           className="mt-20 text-center"
         >
           <SocialMediaStyled followText={t("followUs") || "Follow Us"} />
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

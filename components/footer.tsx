@@ -17,12 +17,12 @@ export default function Footer() {
           {/* Column 1 - Logo and Info */}
           <div className="flex flex-col gap-4 sm:gap-6">
             <Image 
-              src="/logo3.png" 
+              src="/mainlogo.svg" 
               alt="Capital Smart Logo" 
               width={140} 
               height={50}
               loading="lazy"
-              className="w-auto h-8 sm:h-10"
+              className="w-auto h-8 sm:h-10 "
             />
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
               {t('description')}
@@ -102,7 +102,7 @@ export default function Footer() {
               {t('news')}
             </Link>
             <Link href="/contact" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
-              {t('contact')}
+              {t('contactUs')}
             </Link>
             {/* <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
               {t('privacyPolicy')}
