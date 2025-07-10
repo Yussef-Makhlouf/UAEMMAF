@@ -259,7 +259,7 @@
   "contact": {
     "getInTouch": "Get In Touch",
     "title": "Contact Us",
-    "description": "Have questions about joining the UAE Mixed Martial Arts Federation or need information about our programs? Fill out the form below, and we'll get back to you as soon as possible.",
+    "description": "Have questions about joining the UAE Mixed Martial Arts Federation or need information about our programs? Fill out the form , and we'll get back to you as soon as possible.",
     "email": "Email",
     "phone": "Phone",
     "address": "Address",
@@ -412,31 +412,31 @@
       "viewFullTeam": "View Full Team",
       "members": {
         "0": {
-          "name": "Abdulmunem Alsayed Mohamed Alhashmi",
+          "name": "H.E. Abdulmunem Alsayed Mohamed Alhashmi",
           "position": "Chairman"
         },
         "1": {
-          "name": " Fahad Ali Alshamsi ",
+          "name": "H.E.Fahad Ali Alshamsi",
           "position": "Board Member, General Secretary"
         },
         "2": {
-          "name": "Sameera Murshid Al Romaithi",
+          "name": "H.E. Sameera Murshid Al Romaithi",
           "position": "Board Member"
         },
         "3": {
-          "name": "Yousef Abdullah Al Shehhi",
+          "name": "H.E. Yousef Abdullah Al Shehhi",
           "position": "Board Member"
         },
         "4": {
-          "name": "Mansour Mohammed Al Dhaheri",
+          "name": "H.E. Mansour Mohammed Al Dhaheri",
           "position": "Board Member"
         },
         "5": {
-          "name": "Mohamed Humaid Hamad Dalmouj Aldhaheri",
+          "name": "H.E. Mohamed Humaid Hamad Dalmouj Aldhaheri",
           "position": "Board Member"
         },
         "6": {
-          "name": " Mohamed Salim Al Thani",
+          "name": "H.E. Mohamed Salim Al Thani",
           "position": " Vice Chairman"
         }
       
@@ -448,7 +448,7 @@
       "imageAlt": "Chairman of UAE MMA Federation",
       "message1": "The UAE Mixed Martial Arts Federation is committed to developing and nurturing the sport in the country. Abu Dhabi has established itself as a leading destination for hosting combat sports events, and we are proud to be part of these achievements.",
       "message2": "The federation aims to provide world-class training opportunities and infrastructure for athletes of all categories, as well as nurturing local talent and preparing them to compete in prominent global forums. We also seek to host the most important and largest global championships in the UAE, attracting the strongest and most skilled athletes. We are determined to continue working to develop mixed martial arts in the UAE and around the world.",
-      "name": "HE. Abdulmonem Al Hashemi",
+      "name": "H.E. Abdulmonem Al Hashemi",
       "position": "Chairman of UAE Jiu-Jitsu and MMA Federation",
       "email": "chairman@uaemmaf.com"
     }

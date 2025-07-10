@@ -25,8 +25,7 @@ export default function ContactSection() {
   const locale = useLocale();
   // استخدام المفتاح التجريبي الرسمي من Google
   const recaptchaSiteKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
-  
-  // Add missing refs and state
+
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
@@ -55,7 +54,7 @@ export default function ContactSection() {
     threshold: 0.1,
   })
 
-  // إعادة تعيين reCAPTCHA عند تغيير اللغة
+
   useEffect(() => {
     if (recaptchaRef.current) {
       recaptchaRef.current.reset();
@@ -64,8 +63,6 @@ export default function ContactSection() {
     }
   }, [locale]);
 
-  // إضافة التحقق الأولي من النموذج عند تحميل المكون
-  // إضافة تعليق لإزالة التحقق الأولي من النموذج
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -323,9 +320,9 @@ export default function ContactSection() {
           <motion.div variants={itemVariants} className="flex flex-col space-y-8">
             <div>
               <h2 className="text-primary text-lg font-medium">{t('getInTouch')}</h2>
-              <h3 className="text-3xl md:text-4xl font-bold text-white mt-2 mb-6">
+              {/* <h3 className="text-3xl md:text-4xl font-bold text-white mt-2 mb-6">
                 {t('title')}
-              </h3>
+              </h3> */}
               <p className="text-gray-300 max-w-md">
                 {t('description')}
               </p>

@@ -252,7 +252,7 @@ export default function LeadershipPage() {
                   {/* Content with enhanced styling */}
                   <div className="relative">
                     <h4 className="text-xl font-bold text-white mb-1 group-hover:text-primary transition-colors duration-300">
-                      {locale === 'ar' ? members[0].name.ar : members[0].name.en}
+                      {locale === 'ar' ? `سعادة ${members[0].name.ar}` : `H.E. ${members[0].name.en}`}
                     </h4>
                     <div className="inline-block bg-primary/20 px-3 py-1 rounded-full mb-2 backdrop-blur-sm">
                       <p className="text-primary font-semibold">
@@ -290,7 +290,9 @@ export default function LeadershipPage() {
                   </div>
                 </div>
                 <h4 className="text-xl font-bold text-white mb-1">
-                  {locale === 'ar' ? member.name.ar : member.name.en}
+                  {locale === 'ar'
+                    ? `سعادة ${member.name.ar}`
+                    : `H.E. ${member.name.en}`}
                 </h4>
                 <p className="text-primary mb-2">
                   {locale === 'ar' ? member.position.ar : member.position.en}
