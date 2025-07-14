@@ -285,9 +285,9 @@ export default function NewsPage() {
                     <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors line-clamp-2">
                       {item.title[locale as keyof typeof item.title] || item.title.en}
                     </h3>
-                    <p className="text-gray-400 mb-4 line-clamp-3 flex-grow">
+                    {/* <p className="text-gray-400 mb-4 line-clamp-3 flex-grow">
                       {getExcerpt(item.content[locale as keyof typeof item.content] || item.content.en)}
-                    </p>
+                    </p> */}
                     <Link href={getLocalizedHref(`/news/${item._id}`)} className="text-primary font-medium inline-flex items-center group-hover:underline mt-auto">
                       {t('readMore')}
                       <ChevronRight className="ml-1 h-4 w-4" />

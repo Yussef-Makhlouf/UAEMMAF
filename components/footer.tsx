@@ -16,17 +16,19 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 xl:gap-12">
           {/* Column 1 - Logo and Info */}
           <div className="flex flex-col gap-4 sm:gap-6">
-            <Image 
-              src="/mainlogo.svg" 
-              alt="Capital Smart Logo" 
-              width={140} 
-              height={50}
-              loading="lazy"
-              className="w-auto h-8 sm:h-10 "
-            />
-            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
-              {t('description')}
-            </p>
+            <div className="flex flex-col items-start">
+              <Image 
+                src="/mainlogo.svg" 
+                alt="Capital Smart Logo" 
+                width={140} 
+                height={50}
+                loading="lazy"
+                className="w-auto h-8 sm:h-10"
+              />
+              <p className="text-gray-400 text-sm leading-relaxed max-w-sm mt-2">
+                {t('description')}
+              </p>
+            </div>
             <div className="flex flex-wrap gap-3 sm:gap-4">
               <a 
                 href="https://x.com/UAEMMAF?t=Zw8Gkof-X7A9XRbinT1PLA&s=09" 
