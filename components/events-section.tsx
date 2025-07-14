@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Button } from "n@/components/ui/button";
+// import { Button } from "n@/components/ui/button";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { ExternalLink, Sparkles, Calendar, Trophy } from "lucide-react";
@@ -153,20 +153,20 @@ export default function EventsSection() {
               />
               
               <div className="p-8 flex flex-col flex-grow">
-                <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                {/* <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
                   <Calendar className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
                 </div>
                 
                 <h3 className="text-2xl font-bold text-white mb-4 text-center">
                   {t("upcomingEvents")}
                 </h3>
-                
+                 */}
                 {/* <p className="text-gray-300 mb-8 text-center flex-grow">
                   {t("upcomingEventsDescription") ||
                     "View and register for all upcoming UAE MMA Federation events."}
                 </p> */}
                 
-                <div className="flex justify-center mt-auto">
+                <div className="flex justify-center mt-auto ">
                   <a 
                     href="https://uaemmaf.smoothcomp.com/en/federation/187/events/upcoming" 
                     target="_blank" 
@@ -195,25 +195,25 @@ export default function EventsSection() {
               />
               
               <div className="p-8 flex flex-col flex-grow">
-                <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
+                {/* <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
                   <Trophy className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
-                </div>
+                </div> */}
                 
-                <h3 className="text-2xl font-bold text-white mb-4 text-center">
+                {/* <h3 className="text-2xl font-bold text-white mb-4 text-center">
                   {t("pastEvents")}
                 </h3>
-                
+                 */}
                 {/* <p className="text-gray-300 mb-8 text-center flex-grow">
                   {t("pastEventsDescription") ||
                     "Browse our past events, results, and achievements."}
                 </p> */}
                 
-                <div className="flex justify-center mt-auto">
+                <div className="flex justify-center mt-auto ">
                   <a 
                     href="https://uaemmaf.smoothcomp.com/en/federation/187/events/past" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center border-2 border-primary/50 text-white hover:bg-primary/20 px-6 py-3 h-auto text-lg rounded-xl group transition-colors  "
+                    className="inline-flex items-center justify-center border-2 border-primary/50 text-white hover:bg-primary/20 px-10 py-3 h-auto text-lg rounded-xl group transition-colors  "
                   >
                     <span>{t("viewPast")}</span>
                     <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
