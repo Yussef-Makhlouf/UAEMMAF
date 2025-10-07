@@ -1,14 +1,19 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { useLocale } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
+import { useState } from "react"
+import { ChevronDown, ChevronUp } from "lucide-react"
 
 export default function AboutSection() {
   const t = useTranslations('about')
+  const locale = useLocale()
+  const [isExpanded, setIsExpanded] = useState(false)
   
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -50,7 +55,7 @@ export default function AboutSection() {
           <motion.div variants={itemVariants} className="relative">
             <div className="relative h-60 xs:h-72 sm:h-96 md:h-[400px] lg:h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl">
               <Image
-                src="./about.jpg"
+                src="/about.jpg"
                 alt={t('imageAlt')}
                 fill
                 className="object-cover hover:scale-105 transition-transform duration-700"
@@ -78,8 +83,27 @@ export default function AboutSection() {
               <div className="mb-6">
                 <div className="w-12 h-1 bg-primary mb-4"></div>
                 <h2 className="text-primary text-base sm:text-lg font-medium tracking-wider">{t('aboutUs')}</h2>
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mt-2 leading-tight">
-                  {t('title')}
+                <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-2 leading-relaxed">
+                  {locale === 'ar' ? (
+                    // Arabic title with custom styling and spacing
+                    <div className="space-y-2">
+                      <span className="block text-primary pb-3">اتحاد الإمارات</span>
+                      <span className=" text-white pb-3">للفنون القتالية </span>
+                      <span className=" text-primary pb-3" >المختلطة.</span>
+                    </div>
+                  ) : (
+                    // English title from translation
+                    <div className="space-y-1">
+                      {t('title').split('\\n').map((line, index) => (
+                        <span 
+                          key={index} 
+                          className={`block ${index % 2 === 0 ? 'text-primary' : 'text-white'}`}
+                        >
+                          {line}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </h3>
               </div>
               
@@ -92,17 +116,45 @@ export default function AboutSection() {
                   <div className="w-1 h-1 rounded-full bg-primary"></div>
                 </div>
                 
+                {/* First paragraph - always visible */}
                 <p className="text-gray-300 leading-relaxed">
-                  {t('description1')}
+                  {t('description1').split('.').slice(0, 2).join('.')}...
                 </p>
-                <div className="my-4 w-12 h-0.5 "></div>
-                <p className="text-gray-300 leading-relaxed">
-                  {t('description2')}
-                </p>
-                <div className="my-4 w-12 h-0.5 "></div>
-                <p className="text-gray-300 leading-relaxed">
-                  {t('description3')}
-                </p>
+                
+                {/* Collapsible content */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: isExpanded ? "auto" : 0,
+                    opacity: isExpanded ? 1 : 0
+                  }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="my-4 w-12 h-0.5 bg-primary/30"></div>
+                  <p className="text-gray-300 leading-relaxed">
+                    {t('description2')}
+                  </p>
+                  <div className="my-4 w-12 h-0.5 bg-primary/30"></div>
+                  <p className="text-gray-300 leading-relaxed">
+                    {t('description3')}
+                  </p>
+                </motion.div>
+                
+                {/* Expand/Collapse button */}
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="flex items-center justify-center mt-4 text-primary hover:text-primary-light transition-colors duration-200 group"
+                >
+                  <span className="text-sm font-medium mr-2">
+                    {isExpanded ? t('showLess') : t('readMore')}
+                  </span>
+                  {isExpanded ? (
+                    <ChevronUp className="w-4 h-4 group-hover:transform group-hover:-translate-y-0.5 transition-transform" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 group-hover:transform group-hover:translate-y-0.5 transition-transform" />
+                  )}
+                </button>
                 
                 {/* <div className="mt-6 pt-4 border-t border-gray-700/30">
                   <Link href="/about" className="inline-flex items-center text-primary hover:text-primary-light transition-colors">

@@ -319,7 +319,7 @@ export default function ContactSection() {
           {/* Contact Information */}
           <motion.div variants={itemVariants} className="flex flex-col space-y-8">
             <div>
-              <h2 className="text-primary text-lg font-medium">{t('getInTouch')}</h2>
+              <h2 className="text-primary text-3xl font-medium pb-4 ">{t('getInTouch')}</h2>
               {/* <h3 className="text-3xl md:text-4xl font-bold text-white mt-2 mb-6">
                 {t('title')}
               </h3> */}
@@ -333,7 +333,7 @@ export default function ContactSection() {
                 <div className="bg-primary/20 p-3 rounded-full mr-4">
                   <Mail className="h-6 w-6 text-primary" />
                 </div>
-                <div>
+                <div className="px-3">
                   <h4 className="text-white font-medium">{t('email')}</h4>
                   <a href="mailto: info@uaemmaf.com" className="text-gray-300 hover:text-primary transition-colors">
                      info@uaemmaf.com
@@ -345,7 +345,7 @@ export default function ContactSection() {
                 <div className="bg-primary/20 p-3 rounded-full mr-4">
                   <Phone className="h-6 w-6 text-primary" />
                 </div>
-                <div>
+                <div className="px-3">
                   <h4 className="text-white font-medium">{t('phone')}</h4>
                   <a href="tel:+97123336111" className="text-gray-300 hover:text-primary transition-colors" dir="ltr">+971 23336111</a>
                 </div>
@@ -355,13 +355,13 @@ export default function ContactSection() {
                 <div className="bg-primary/20 p-3 rounded-full mr-4">
                   <MapPin className="h-6 w-6 text-primary" />
                 </div>
-                <div>
+                <div className="px-3">
                   <h4 className="text-white font-medium">{t('address')}</h4>
-                  <p className="text-gray-300">
-                  UAE Mixed Martial Art Federation
-Capital Tower, Abu Dhabi, UAE
-PO Box 110007 Abu Dhabi, UAE
-                  </p>
+                  <div className="text-gray-300 space-y-1">
+                    {(t.raw('addressLines') as string[]).map((line: string, index: number) => (
+                      <p key={index} className="m-0">{line}</p>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

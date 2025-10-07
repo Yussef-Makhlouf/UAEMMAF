@@ -261,19 +261,15 @@ export default function MissionPage() {
           variants={containerVariants}
           initial="hidden"
           animate={inView1 ? "visible" : "hidden"}
-          className="text-center max-w-4xl mx-auto mb-20 py-16"
+          className="text-center max-w-4xl mx-auto mb-20 pt-16"
         >
           <motion.div variants={itemVariants} className="mb-4">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-              {locale === 'ar' ? 'القيم' : 'Our Values'}
+              {locale === 'ar' ? 'القيم' : ' Values'}
             </h2>
-            <div className="h-1 w-24 bg-primary mb-8 mx-auto"></div>
+            <div className="h-1 w-24 bg-primary mx-auto"></div>
           </motion.div>
-          <motion.h3 variants={itemVariants} className="text-primary text-xl font-bold mb-4">
-            {locale === 'ar'
-              ? 'يسعى اتحاد الإمارات العربية المتحدة لفنون القتال المختلطة إلى تعزيز القيم التالية'
-              : 'The UAE Mixed Martial Arts Federation strives to promote the following values'}
-          </motion.h3>
+        
           {/* <motion.p variants={itemVariants} className="text-gray-300 text-lg">
             {locale === 'ar'
               ? 'قيمنا هي الأساس الذي نبني عليه مستقبل رياضة فنون القتال المختلطة في دولة الإمارات. من خلال هذه القيم، نسعى لتطوير رياضيين يتميزون ليس فقط بالمهارة الفنية، ولكن أيضًا بالأخلاق والانضباط والروح الرياضية العالية.'

@@ -36,13 +36,15 @@
   },
   "about": {
     "aboutUs": "About Us",
-    "title": "The UAE Mixed Martial Arts Federation",
+    "title": "UAE Mixed\\nMartial Art\\nFederation.",
     "imageAlt": "MMA Training in UAE",
     "established": "Established",
     "mission": "Our mission is to develop and promote Mixed Martial Arts in the UAE, while ensuring the highest standards of safety, professionalism, and athletic excellence.",
     "description1": "The UAE Mixed Martial Arts Federation (UAEMMAF) serves as the official regulatory authority for Mixed Martial Arts (MMA) in the United Arab Emirates. Dedicated to the growth and advancement of MMA nationwide, UAEMMAF establishes consistent standards and promotes the sport at both grassroots and professional levels.",
     "description2": "In 2021, UAEMMAF proudly became a member of the International Mixed Martial Arts Federation (IMMAF), opening doors for the UAE to host flagship MMA and martial arts events. Registered in Abu Dhabi, UAEMMAF oversees the governance and technical development of both amateur and professional MMA in the country.",
     "description3": "In addition to its regulatory role, the Federation actively supports the training and development of MMA athletes across the UAE, offering coaching and training programs that cater to athletes of all levels.",
+    "readMore": "Read More",
+    "showLess": "Show Less",
     "learnMore": "Learn More",
     "joinUs": "Join Us",
     "feature1": {
@@ -262,6 +264,11 @@
     "description": "Have questions about joining the UAE Mixed Martial Arts Federation or need information about our programs? Fill out the form , and we'll get back to you as soon as possible.",
     "email": "Email",
     "phone": "Phone",
+    "addressLines": [
+      "UAE Mixed Martial Art Federation",
+      "Capital Tower, Abu Dhabi, UAE",
+      "PO Box 110007 Abu Dhabi, UAE"
+    ],
     "address": "Address",
     "location": "Our Location",
     "form": {

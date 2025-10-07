@@ -13,9 +13,9 @@ export default function Footer() {
     <footer className="bg-black text-white pt-10 sm:pt-16 pb-6 sm:pb-8 border-t border-primary/45">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-[100px]">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 xl:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6 md:gap-8 lg:gap-10 xl:gap-12 items-start">
           {/* Column 1 - Logo and Info */}
-          <div className="flex flex-col gap-4 sm:gap-6">
+          <div className="flex flex-col gap-4 sm:gap-6 md:col-span-2 lg:col-span-2 xl:col-span-2">
             <div className="flex flex-col items-start">
               <Image 
                 src="/mainlogo.svg" 
@@ -88,92 +88,63 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2 - Quick Links */}
-          <div className="flex flex-col gap-3 sm:gap-4 mt-2 sm:mt-0">
-            <h3 className="text-base sm:text-lg font-bold mb-1">{t('quickLinks')}</h3>
-            <Link href="/mission" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
-              {t('mission')}
-            </Link>
-            <Link href="/leadership" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
-              {t('leadership')}
-            </Link>
-            {/* <Link href="/events" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
-              {t('events')}
-            </Link> */}
-            <Link href="/news" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
-              {t('news')}
-            </Link>
-            <Link href="/contact" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
-              {t('contactUs')}
-            </Link>
-            {/* <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">
-              {t('privacyPolicy')}
-            </Link> */}
+          {/* Quick Links - Mission & Leadership */}
+          <div className="flex flex-col gap-3 sm:gap-4 lg:col-span-1 xl:col-span-2">
+            <h3 className="text-base sm:text-lg font-bold mb-1 text-white border-b border-gray-800 pb-2">{t('quickLinks')}</h3>
+            <nav className="flex flex-col gap-2 sm:gap-3">
+              <Link href="/mission" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 text-sm sm:text-base group">
+                <span className="group-hover:text-primary transition-colors">→</span> {t('mission')}
+              </Link>
+              <Link href="/leadership" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 text-sm sm:text-base group">
+                <span className="group-hover:text-primary transition-colors">→</span> {t('leadership')}
+              </Link>
+            </nav>
           </div>
 
-          {/* Column 3 - contact us */}
-          <div className="flex flex-col gap-3 sm:gap-4 mt-2 sm:mt-0">
-            <h3 className="text-base sm:text-lg font-bold mb-1">{t('contactUs')}</h3>
-            {/* <p className="text-gray-400 text-sm sm:text-base">
-              {t('description')}
-            </p> */}
-            <p className="text-gray-400 text-sm sm:text-base">
-              Telephone: <a href="tel:+97123336111" className="hover:text-white transition-colors">+971 23336111</a>
-            </p>
-            <p className="text-gray-400 text-sm sm:text-base">
-              Email: <a href="mailto:info@uaemmaf.com" className="hover:text-white transition-colors">info@uaemmaf.com</a>
-            </p>
-          </div>
-
-          {/* Column 4 - Location Map */}
-          <div className="flex flex-col gap-4 sm:gap-5 mt-4 sm:mt-0">
-            <h3 className="text-base sm:text-lg font-bold">{t('location')}</h3>
-            <div className="w-full h-[180px] sm:h-[200px] rounded-lg overflow-hidden">
-              <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d68949.90053632692!2d54.442805!3d24.418652!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5e42167a9cd0f1%3A0x7986ec2b7a18e80f!2sUAE%20Jiu-Jitsu%20Federation!5e1!3m2!1sen!2sus!4v1747085469086!5m2!1sen!2sus" 
-              width="100%" 
-                height="100%" 
-                style={{ border: 0 }} 
-                allowFullScreen 
-                loading="lazy" 
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Office Location"
-                className="w-full h-full"
-              />
-            </div>
+          {/* Quick Links - News & Contact */}
+          <div className="flex flex-col gap-3 sm:gap-4 lg:col-span-1 xl:col-span-2">
+            <h3 className="text-base sm:text-lg font-bold mb-1 text-white border-b border-gray-800 pb-2 md:opacity-0 lg:opacity-100">{t('quickLinks')}</h3>
+            <nav className="flex flex-col gap-2 sm:gap-3">
+              <Link href="/news" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 text-sm sm:text-base group">
+                <span className="group-hover:text-primary transition-colors">→</span> {t('news')}
+              </Link>
+              <Link href="/contact" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 text-sm sm:text-base group">
+                <span className="group-hover:text-primary transition-colors">→</span> {t('contactUs')}
+              </Link>
+            </nav>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-800 my-6 sm:my-8"></div>
+        <div className="border-t border-gray-800 my-8 sm:my-10 lg:my-12"></div>
 
         {/* Bottom Footer */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
           <p className="text-gray-500 text-xs sm:text-sm text-center sm:text-left">
             © {new Date().getFullYear()} UAEMMAF {t('allRightsReserved')}
           </p>
-          <div className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6">
-            <span  className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors">
+          <nav className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6">
+            <button className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors hover:underline underline-offset-2">
               {t('terms')}
-            </span>
-            <span  className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors">
+            </button>
+            <button className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors hover:underline underline-offset-2">
               {t('privacyPolicy')}
-            </span>
-            <span className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors">
+            </button>
+            <button className="text-gray-500 hover:text-white text-xs sm:text-sm transition-colors hover:underline underline-offset-2">
               {t('cookies')}
-            </span>
-          </div>
+            </button>
+          </nav>
         </div>
         
         {/* Developer Credit */}
-        <div className="mt-4 text-center">
+        <div className="mt-6 sm:mt-8 text-center border-t border-gray-900 pt-4 sm:pt-6">
           <p className="text-gray-500 text-xs sm:text-sm">
             {t('developedBy', {defaultValue: 'Developed by'})}{' '}
             <a 
               href="https://logixpro.ae/" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-primary transition-colors font-medium hover:underline underline-offset-2"
             >
               Logixpro
             </a>

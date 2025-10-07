@@ -248,7 +248,7 @@ export default function Header() {
             </div>
             
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-6">
+            <div className="hidden lg:flex items-center gap-8 xl:gap-16">
               <Link 
                 href={locale === 'en' ? '/' : `/${locale}`}
                 className="relative font-medium text-white hover:text-white transition-colors group"
@@ -282,10 +282,6 @@ export default function Header() {
                   aria-haspopup="true"
                 >
                   {t('about')}
-                  <ChevronDown 
-                    size={16} 
-                    className={`transition-transform duration-300 ease-in-out ${isAboutOpen ? 'rotate-180' : ''}`} 
-                  />
                   <motion.div 
                     className="absolute bottom-0 left-0 h-0.5 bg-green-600"
                     initial={pathname?.includes("/about") ? "visible" : "hidden"}
@@ -364,10 +360,6 @@ export default function Header() {
                   aria-haspopup="true"
                 >
                   {t('events')}
-                  <ChevronDown 
-                    size={16} 
-                    className={`transition-transform duration-300 ease-in-out ${isEventsOpen ? 'rotate-180' : ''}`} 
-                  />
                   <motion.div 
                     className="absolute bottom-0 left-0 h-0.5 bg-green-600"
                     initial={pathname?.includes("/events") ? "visible" : "hidden"}
@@ -429,10 +421,6 @@ export default function Header() {
                   aria-haspopup="true"
                 >
                   {t('joinUs')}
-                  <ChevronDown 
-                    size={16} 
-                    className={`transition-transform duration-300 ease-in-out ${isJoinUsOpen ? 'rotate-180' : ''}`} 
-                  />
                   <motion.div 
                     className="absolute bottom-0 left-0 h-0.5 bg-green-600"
                     initial={pathname?.includes("/join-us") ? "visible" : "hidden"}
@@ -569,10 +557,6 @@ export default function Header() {
                           aria-expanded={isAboutOpen}
                         >
                           {t('about')}
-                          <ChevronDown 
-                            size={16} 
-                            className={`transition-transform duration-300 ease-in-out ${isAboutOpen ? 'rotate-180' : ''}`} 
-                          />
                           {pathname?.includes("/about") && 
                             <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
                           }
@@ -629,10 +613,6 @@ export default function Header() {
                           aria-expanded={isEventsOpen}
                         >
                           {t('events')}
-                          <ChevronDown 
-                            size={16} 
-                            className={`transition-transform duration-300 ease-in-out ${isEventsOpen ? 'rotate-180' : ''}`} 
-                          />
                           {pathname?.includes("/events") && 
                             <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
                           }
@@ -680,10 +660,6 @@ export default function Header() {
                           aria-expanded={isJoinUsOpen}
                         >
                           {t('joinUs')}
-                          <ChevronDown 
-                            size={16} 
-                            className={`transition-transform duration-300 ease-in-out ${isJoinUsOpen ? 'rotate-180' : ''}`} 
-                          />
                           {pathname?.includes("/join-us") && 
                             <div className="absolute bottom-0 left-0 h-0.5 w-full bg-green-600" />
                           }

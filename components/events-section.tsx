@@ -121,15 +121,7 @@ export default function EventsSection() {
             {t("title")}
           </h2>
           
-          <motion.p 
-            className="text-gray-400 max-w-2xl mx-auto text-lg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-          >
-            {t("eventsDescription") ||
-              "All our events are managed through Smoothcomp. Click the links below to view and register for upcoming events or check past events."}
-          </motion.p>
+
         </motion.div>
 
         <motion.div
@@ -171,9 +163,9 @@ export default function EventsSection() {
                     href="https://uaemmaf.smoothcomp.com/en/federation/187/events/upcoming" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white px-6 py-3 h-auto text-lg rounded-xl group transition-colors"
+                    className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white px-6 py-3 h-auto text-lg rounded-xl group transition-colors w-64"
                   >
-                    <span>{t("viewUpcoming")}</span>
+                    <span className="text-base px-1">{t("viewUpcoming")}</span>
                     <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </a>
                 </div>
@@ -213,9 +205,9 @@ export default function EventsSection() {
                     href="https://uaemmaf.smoothcomp.com/en/federation/187/events/past" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center border-2 border-primary/50 text-white hover:bg-primary/20 px-10 py-3 h-auto text-lg rounded-xl group transition-colors  "
+                    className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white px-6 py-3 h-auto text-lg rounded-xl group transition-colors w-64"
                   >
-                    <span>{t("viewPast")}</span>
+                    <span className="text-base px-2">{t("viewPast")}</span>
                     <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </a>
                 </div>
