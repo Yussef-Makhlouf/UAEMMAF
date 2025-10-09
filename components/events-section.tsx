@@ -111,10 +111,6 @@ export default function EventsSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="inline-block"
           >
-            <span className="bg-primary/10 text-primary text-sm font-medium px-4 py-1.5 rounded-full inline-flex items-center gap-2 mb-4">
-              <Sparkles className="h-4 w-4" />
-              {t("upcomingEvents")}
-            </span>
           </motion.div>
           
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">

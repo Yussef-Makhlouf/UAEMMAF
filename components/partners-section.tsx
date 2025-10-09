@@ -43,53 +43,18 @@ export default function PartnersSection() {
       id: 5,
       name: "Partner 5",
       logo: "/logo6.svg"
-    },
-    {
-      id: 6,
-      name: "Partner 6",
-      logo: "/logo1.svg"
     }
   ]
 
-  // Create deterministic spaced sequence with no visible repeats
+  // Create duplicated partners for seamless infinite scroll
   const duplicatedPartners = useMemo(() => {
-    const createDeterministicSequence = () => {
-      const result: Partner[] = []
-      const totalItems = 42 // 7 cycles of 6 partners each
-      const minSpacing = 6 // Minimum positions between same partner
-      
-      for (let i = 0; i < totalItems; i++) {
-        // Get partners that haven't appeared in the last minSpacing positions
-        const recentPartners = result.slice(-minSpacing).map(p => p.id)
-        let availablePartners = partners.filter(p => 
-          !recentPartners.includes(p.id)
-        )
-        
-        // If no partners available (early in sequence), just avoid immediate repeat
-        if (availablePartners.length === 0) {
-          const lastPartner = result[result.length - 1]
-          availablePartners = partners.filter(p => 
-            !lastPartner || p.id !== lastPartner.id
-          )
-        }
-        
-        // If still no partners (shouldn't happen), use all
-        if (availablePartners.length === 0) {
-          availablePartners = [...partners]
-        }
-        
-        // Deterministically select partner using position-based algorithm
-        const selectedIndex = i % availablePartners.length
-        const selectedPartner = availablePartners[selectedIndex]
-        
-        result.push(selectedPartner)
-      }
-      
-      return result
+    // Duplicate the partners array multiple times for seamless scrolling
+    const duplicated = []
+    for (let i = 0; i < 8; i++) { // Create 8 copies for smooth infinite scroll
+      duplicated.push(...partners)
     }
-
-    return createDeterministicSequence()
-  }, []) // Empty dependency array ensures this only runs once on mount
+    return duplicated
+  }, [])
 
 
 
@@ -111,21 +76,20 @@ export default function PartnersSection() {
             className="flex partners-scroll"
             style={{
               animation: 'infiniteScroll 25s linear infinite',
-              transform: 'translateX(0)',
               willChange: 'transform'
             }}
           >
             {duplicatedPartners.map((partner, index) => (
               <div 
                 key={`${partner.id}-${index}`} 
-                className="group relative flex-shrink-0 mx-3 sm:mx-4 md:mx-6"
+                className="group relative flex-shrink-0 mx-6 sm:mx-8 md:mx-10 lg:mx-12"
               >
                 <div className="relative 
-                  h-16 sm:h-20 md:h-24 lg:h-28
-                  w-24 sm:w-28 md:w-32 lg:w-36
+                  h-20 sm:h-24 md:h-28 lg:h-32
+                  w-28 sm:w-32 md:w-36 lg:w-40
                   bg-white/95 backdrop-blur-sm
                   rounded-xl sm:rounded-2xl
-                  p-2 sm:p-3 md:p-4
+                  p-3 sm:p-4 md:p-5
                   shadow-lg shadow-black/10
                   border border-white/20
                   transition-all duration-500 ease-out
@@ -145,11 +109,13 @@ export default function PartnersSection() {
                       fill
                       loading="lazy"
                       sizes="
-                        (max-width: 640px) 96px, 
-                        (max-width: 768px) 112px, 
-                        (max-width: 1024px) 128px, 
-                        144px"
-                      className="object-contain transition-all duration-500 group-hover:scale-110"
+                        (max-width: 640px) 112px, 
+                        (max-width: 768px) 128px, 
+                        (max-width: 1024px) 144px, 
+                        160px"
+                      className={`object-contain transition-all duration-500 group-hover:scale-110 ${
+                        partner.logo === "/logo3.svg" ? "scale-75" : ""
+                      }`}
                     />
                   </div>
                   
@@ -195,7 +161,7 @@ export default function PartnersSection() {
         __html: `
           @keyframes infiniteScroll {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-14.286%); }
+            100% { transform: translateX(-100%); }
           }
           
           /* Performance optimizations for smooth animation */
@@ -203,6 +169,8 @@ export default function PartnersSection() {
             backface-visibility: hidden;
             perspective: 1000px;
             transform-style: preserve-3d;
+            animation-play-state: running;
+            animation-fill-mode: none;
           }
         `
       }} />

@@ -188,9 +188,6 @@ export default function NewsSection() {
         <h3 className="text-lg md:text-xl font-bold text-white mb-2 md:mb-3 group-hover:text-primary transition-colors line-clamp-2">
           {item.title}
         </h3>
-        <p className="text-sm md:text-base text-gray-400 mb-3 md:mb-4 line-clamp-3">
-          {item.excerpt}
-        </p>
         <Link 
           href={getLocalizedHref(`/news/${item._id}`)} 
           className={`text-sm md:text-base text-primary font-medium inline-flex items-center group-hover:underline ${isRtl ? 'flex-row-reverse' : ''}`}
