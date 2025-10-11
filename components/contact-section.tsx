@@ -24,7 +24,7 @@ export default function ContactSection() {
   const t = useTranslations('contact')
   const locale = useLocale();
   // استخدام المفتاح التجريبي الرسمي من Google
-  const recaptchaSiteKey = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+  const recaptchaSiteKey = "6LfV5eArAAAAAFhK8_OYuwi4pWGIN_pvZt1nLXOG";
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);

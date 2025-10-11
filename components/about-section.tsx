@@ -87,17 +87,17 @@ export default function AboutSection() {
                   {locale === 'ar' ? (
                     // Arabic title with custom styling and spacing
                     <div className="space-y-2">
-                      <span className="block text-primary pb-3">اتحاد الإمارات</span>
-                      <span className=" text-white pb-3">للفنون القتالية </span>
-                      <span className=" text-primary pb-3" >المختلطة.</span>
+                      <span className="block text-white pb-3 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">اتحاد الإمارات</span>
+                      <span className="block text-white pb-3 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">للفنون القتالية</span>
+                      <span className="block text-white pb-3 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">المختلطة.</span>
                     </div>
                   ) : (
                     // English title from translation
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                       {t('title').split('\\n').map((line, index) => (
                         <span 
                           key={index} 
-                          className={`block ${index % 2 === 0 ? 'text-primary' : 'text-white'}`}
+                          className="block text-white pb-3 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold"
                         >
                           {line}
                         </span>
@@ -131,11 +131,11 @@ export default function AboutSection() {
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="my-4 w-12 h-0.5 bg-primary/30"></div>
+                  <div className="my-4 w-12 h-0.5 "></div>
                   <p className="text-gray-300 leading-relaxed">
                     {t('description2')}
                   </p>
-                  <div className="my-4 w-12 h-0.5 bg-primary/30"></div>
+                  <div className="my-4 w-12 h-0.5 "></div>
                   <p className="text-gray-300 leading-relaxed">
                     {t('description3')}
                   </p>

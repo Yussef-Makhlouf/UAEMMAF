@@ -13,23 +13,23 @@ export default function Footer() {
     <footer className="bg-black text-white pt-10 sm:pt-16 pb-6 sm:pb-8 border-t border-primary/45">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-[100px]">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6 md:gap-8 lg:gap-10 xl:gap-12 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 xl:grid-cols-10 gap-6 md:gap-8 lg:gap-10 xl:gap-16 items-start">
           {/* Column 1 - Logo and Info */}
-          <div className="flex flex-col gap-4 sm:gap-6 md:col-span-2 lg:col-span-2 xl:col-span-2">
+          <div className="flex flex-col gap-4 sm:gap-6 md:col-span-2 lg:col-span-3 xl:col-span-3">
             <div className="flex flex-col items-start">
               <Image 
-                src="/mainlogo.svg" 
-                alt="Capital Smart Logo" 
-                width={140} 
-                height={50}
+                src="/virt-logo.svg" 
+                alt="UAEMMAF Logo" 
+                width={120} 
+                height={120}
                 loading="lazy"
-                className="w-auto h-8 sm:h-10"
+                // className="w-auto h-8 sm:h-10"
               />
-              <p className="text-gray-400 text-sm leading-relaxed max-w-sm mt-2">
+              {/* <p className="text-gray-400 text-sm leading-relaxed max-w-sm mt-2">
                 {t('description')}
-              </p>
+              </p> */}
             </div>
-            <div className="flex flex-wrap gap-3 sm:gap-4">
+            <div className="flex flex-row gap-3 sm:gap-4">
               <a 
                 href="https://x.com/UAEMMAF?t=Zw8Gkof-X7A9XRbinT1PLA&s=09" 
                 target="_blank" 
@@ -88,25 +88,18 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links - Mission & Leadership */}
-          <div className="flex flex-col gap-3 sm:gap-4 lg:col-span-1 xl:col-span-2">
+          {/* Quick Links */}
+          <div className="flex flex-col gap-3 sm:gap-4 lg:col-span-4 xl:col-span-4 lg:col-start-6 xl:col-start-7">
             <h3 className="text-base sm:text-lg font-bold mb-1 text-white border-b border-gray-800 pb-2">{t('quickLinks')}</h3>
-            <nav className="flex flex-col gap-2 sm:gap-3">
+            <nav className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               <Link href="/mission" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 text-sm sm:text-base group">
                 <span className="group-hover:text-primary transition-colors">→</span> {t('mission')}
               </Link>
-              <Link href="/leadership" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 text-sm sm:text-base group">
-                <span className="group-hover:text-primary transition-colors">→</span> {t('leadership')}
-              </Link>
-            </nav>
-          </div>
-
-          {/* Quick Links - News & Contact */}
-          <div className="flex flex-col gap-3 sm:gap-4 lg:col-span-1 xl:col-span-2">
-            <h3 className="text-base sm:text-lg font-bold mb-1 text-white border-b border-gray-800 pb-2 md:opacity-0 lg:opacity-100">{t('quickLinks')}</h3>
-            <nav className="flex flex-col gap-2 sm:gap-3">
               <Link href="/news" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 text-sm sm:text-base group">
                 <span className="group-hover:text-primary transition-colors">→</span> {t('news')}
+              </Link>
+              <Link href="/leadership" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 text-sm sm:text-base group">
+                <span className="group-hover:text-primary transition-colors">→</span> {t('leadership')}
               </Link>
               <Link href="/contact" className="text-gray-400 hover:text-white hover:translate-x-1 transition-all duration-200 text-sm sm:text-base group">
                 <span className="group-hover:text-primary transition-colors">→</span> {t('contactUs')}

@@ -5,6 +5,7 @@ import EventsSection from "@/components/events-section"
 import PartnersSection from "@/components/partners-section"
 import JoinUsSection from "@/components/join-us-section"
 import ContactSection from "@/components/contact-section"
+import PartnersCarousel from "@/components/partners-carousel"
 
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
       
       <EventsSection />
       <PartnersSection />
+      {/* <PartnersCarousel /> */}
       {/* <ContactSection /> */}
     </>
   )

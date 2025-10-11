@@ -31,7 +31,7 @@ export default function Hero() {
       title: locale === 'ar' ? 'الاتحاد الإماراتي للفنون القتالية المختلطة' : 'UAE Mixed Martial Arts Federation',
       description: locale === 'ar' ? 'نحن نقود مستقبل الرياضة القتالية في دولة الإمارات العربية المتحدة' : 'Leading the future of combat sports in the United Arab Emirates',
       cta: t('slide1.cta'),
-      link: "/about",
+      link: "/mission/",
       direction: "up",
       scale: "in"
     },
@@ -41,7 +41,7 @@ export default function Hero() {
       title: locale === 'ar' ?  'انضم إلى الاتحاد الإماراتي للفنون القتالية المختلطة' : 'Join the UAEMMAF fighters',
       description: locale === 'ar' ? 'اكتشف قوتك الحقيقية وانضم إلى نخبة الاتحاد الإماراتي' : 'Discover your true strength and join the UAEMMAF fighters',
       cta: t('slide2.cta'),
-      link: "/events/upcoming",
+      link: "https://uaemmaf.smoothcomp.com/en/federation/187/events/upcoming",
       direction: "up",
       scale: "out"
     },
@@ -51,7 +51,7 @@ export default function Hero() {
       title: locale === 'ar' ? 'التميز في الفنون القتالية المختلطة' : 'Excellence in Mixed Martial Arts',
       description: locale === 'ar' ? 'نبني أبطال المستقبل من خلال التدريب المتقدم والمنافسات العالمية' : 'Building future champions through advanced training and global competitions',
       cta: t('slide3.cta'),
-      link: "/join-us/athletes",
+      link: "https://uaemmaf.smoothcomp.com/en/federation/187/membership",
       direction: "up",
       scale: "in"
     }
@@ -190,7 +190,7 @@ export default function Hero() {
                     className="flex flex-row xs:flex-row flex-wrap gap-2 xs:gap-3 sm:gap-4 md:gap-6 justify-center items-center px-2"
                   >
                     <Link 
-                      href={`/${locale}/about`}
+                      href={`/${locale}/mission/`}
                       className="group relative px-4 xs:px-5 sm:px-6 md:px-8 py-2 xs:py-2.5 sm:py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white font-medium transition-all duration-300 hover:bg-white hover:text-black hover:scale-105 text-xs xs:text-sm sm:text-base min-w-[120px] xs:min-w-[140px] sm:min-w-[160px] text-center"
                     >
                       {locale === 'ar' ? 'اعرف المزيد' : 'Learn More'}
