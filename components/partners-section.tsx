@@ -83,9 +83,11 @@ function Marquee({
     const effectiveDx = reverse ? dx : -dx;
     animX.current += effectiveDx;
 
-    // آلية حماية إضافية للتأكد من عدم التوقف
-    if (Math.abs(animX.current) >= loopDistance) {
-      animX.current = animX.current % loopDistance;
+    // إعادة التموضع عند انتهاء الحلقة
+    if (animX.current < -loopDistance) {
+      animX.current += loopDistance;
+    } else if (animX.current > 0) {
+      animX.current -= loopDistance;
     }
 
     // ضمان عدم توقف الحركة أبداً
@@ -150,8 +152,6 @@ type Partner = {
   logo: string
 }
 
-
-
 export default function PartnersSection() {
   const t = useTranslations('partners')
   const locale = useLocale()
@@ -160,7 +160,6 @@ export default function PartnersSection() {
   const [marqueeSpeed, setMarqueeSpeed] = useState(50)
   const [isScrolling, setIsScrolling] = useState(true)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const lastPositionRef = useRef(0)
   const stuckCounterRef = useRef(0)
 
   const partners: Partner[] = [
@@ -189,148 +188,65 @@ export default function PartnersSection() {
       name: "Partner 5",
       logo: "/logo6.svg"
     }
-
   ]
 
-  // دالة لخلط ترتيب الشعارات
-  const shuffleArray = (array: Partner[], seed: number): Partner[] => {
-    const shuffled = [...array]
-    let currentIndex = shuffled.length
-    let randomIndex: number
-
-    // استخدام seed للحصول على نتائج ثابتة لكل تكرار
-    const seededRandom = (seed: number) => {
-      const x = Math.sin(seed) * 10000
-      return x - Math.floor(x)
-    }
-
-    while (currentIndex !== 0) {
-      randomIndex = Math.floor(seededRandom(seed + currentIndex) * currentIndex)
-      currentIndex--
-      ;[shuffled[currentIndex], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[currentIndex]]
-    }
-
-    return shuffled
-  }
-
-  // إنشاء مصفوفات مختلطة مختلفة لكل تكرار
-  const createVariedRepeats = () => {
-    const repeats = []
-    for (let i = 0; i < 25; i++) {
-      const shuffledPartners = shuffleArray(partners, i * 7) // seed مختلف لكل تكرار
-      repeats.push(...shuffledPartners)
-    }
-    return repeats
-  }
-
-  const allPartners = createVariedRepeats()
-
-  // آلية مراقبة التمرير وإعادة التشغيل التلقائي
-  useEffect(() => {
-    const monitorScrolling = setInterval(() => {
-      // فحص دوري كل ثانية للتأكد من استمرار الحركة
-      const currentTime = Date.now()
-      
-      // إذا توقف التمرير، أعد تشغيله
-      if (!isScrolling) {
-        setIsScrolling(true)
-        stuckCounterRef.current = 0
-      }
-      
-      // مراقبة إضافية: إذا لم تتغير السرعة لفترة طويلة
-      stuckCounterRef.current++
-      if (stuckCounterRef.current > 5) {
-        // إعادة تعيين قوية
-        setMarqueeSpeed(prev => prev === 50 ? 51 : 50)
-        stuckCounterRef.current = 0
-      }
-    }, 1000)
-
-    return () => clearInterval(monitorScrolling)
-  }, [isScrolling])
-
-  // آلية حماية إضافية عند تغيير الاتجاه
+  // دالة للتحكم في السرعة
   const handleScrollLeft = () => {
-    setIsReverse(true)
-    setIsScrolling(true)
-    stuckCounterRef.current = 0
-    
-    // ضمان استمرار التمرير بعد تغيير الاتجاه
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current)
-    }
+    setIsReverse(true);
+    setMarqueeSpeed(prev => Math.max(20, prev - 5)); // نقصان تدريجي (بحد أدنى 20)
+    setIsScrolling(true);
+    stuckCounterRef.current = 0;
+
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     scrollTimeoutRef.current = setTimeout(() => {
-      setIsScrolling(true)
-    }, 100)
-  }
+      setIsScrolling(true);
+    }, 100);
+  };
 
   const handleScrollRight = () => {
-    setIsReverse(false)
-    setIsScrolling(true)
-    stuckCounterRef.current = 0
-    
-    // ضمان استمرار التمرير بعد تغيير الاتجاه
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current)
-    }
+    setIsReverse(false);
+    setMarqueeSpeed(prev => Math.min(80, prev + 5)); // زيادة تدريجية (بحد أقصى 80)
+    setIsScrolling(true);
+    stuckCounterRef.current = 0;
+
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     scrollTimeoutRef.current = setTimeout(() => {
-      setIsScrolling(true)
-    }, 100)
-  }
-
-  // آلية حماية نهائية - إعادة تشغيل قوية كل 10 ثوانٍ
-  useEffect(() => {
-    const forceRestart = setInterval(() => {
-      // إعادة تشغيل قوية للتأكد من عدم التوقف أبداً
-      setMarqueeSpeed(prev => {
-        const newSpeed = prev + (Math.random() * 2 - 1) // تغيير طفيف في السرعة
-        return Math.max(Math.min(newSpeed, 60), 40) // بين 40-60
-      })
-      setIsScrolling(true)
-      stuckCounterRef.current = 0
-    }, 10000) // كل 10 ثوانٍ
-
-    return () => clearInterval(forceRestart)
-  }, [])
+      setIsScrolling(true);
+    }, 100);
+  };
 
   // حماية من فقدان التركيز أو تغيير التبويب
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         // عند العودة للتبويب، تأكد من استمرار التمرير
-        setIsScrolling(true)
-        setMarqueeSpeed(prev => prev === 50 ? 51 : 50) // دفعة صغيرة
+        setIsScrolling(true);
+        setMarqueeSpeed(prev => Math.max(30, Math.min(prev, 70))); // إعادة السرعة الطبيعية
       }
-    }
+    };
 
     const handleFocus = () => {
-      setIsScrolling(true)
-      stuckCounterRef.current = 0
-    }
+      setIsScrolling(true);
+      stuckCounterRef.current = 0;
+    };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    window.addEventListener('focus', handleFocus)
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      window.removeEventListener('focus', handleFocus)
-    }
-  }, [])
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
 
   // تنظيف المؤقتات عند إلغاء المكون
   useEffect(() => {
     return () => {
       if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current)
+        clearTimeout(scrollTimeoutRef.current);
       }
-    }
-  }, [])
-
-
-
-
-
-
+    };
+  }, []);
 
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-background-200 overflow-hidden" dir="ltr">
@@ -360,59 +276,59 @@ export default function PartnersSection() {
 
           {/* Partners Container */}
           <div className="flex-1 relative overflow-hidden rounded-xl sm:rounded-2xl p-2 sm:p-4">
-          <Marquee
-            className="[--gap:0.75rem] sm:[--gap:1.5rem] md:[--gap:2rem]"
-            pauseOnHover={false}
-            speed={marqueeSpeed}
-            reverse={isReverse}
-            repeat={1}
-          >
-            {allPartners.map((partner, index) => (
-              <div 
-                key={`${partner.id}-${index}`} 
-                className="group relative flex-shrink-0"
-              >
-                <div className="relative 
-                  h-16 xs:h-18 sm:h-20 md:h-24 lg:h-28 xl:h-32
-                  w-20 xs:w-22 sm:w-24 md:w-28 lg:w-32 xl:w-36
-                  bg-white/95 backdrop-blur-sm
-                  rounded-lg sm:rounded-xl md:rounded-2xl
-                  p-2 xs:p-2.5 sm:p-3 md:p-4 lg:p-5
-                  shadow-lg shadow-black/10
-                  border border-white/20
-                  transition-all duration-500 ease-out
-                  hover:scale-105 hover:shadow-2xl hover:shadow-primary/20
-                  hover:bg-white
-                  hover:-translate-y-2
-                  group-hover:border-primary/30
-                ">
-                  {/* Subtle gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  
-                  {/* Logo container */}
-                  <div className="relative h-full w-full z-10">
-                    <Image
-                      src={partner.logo}
-                      alt={partner.name}
-                      fill
-                      loading="lazy"
-                      sizes="
-                        (max-width: 480px) 80px,
-                        (max-width: 640px) 96px, 
-                        (max-width: 768px) 112px, 
-                        (max-width: 1024px) 128px, 
-                        144px"
-                      className="object-contain transition-all duration-500 group-hover:scale-110"
-                    />
+            <Marquee
+              className="[--gap:0.75rem] sm:[--gap:1.5rem] md:[--gap:2rem]"
+              pauseOnHover={false}
+              speed={marqueeSpeed}
+              reverse={isReverse}
+              repeat={9} // 👈 تكرار كافٍ لضمان سلاسة التمرير
+            >
+              {partners.map((partner, index) => (
+                <div 
+                  key={`${partner.id}-${index}`} 
+                  className="group relative flex-shrink-0"
+                >
+                  <div className="relative 
+                    h-16 xs:h-18 sm:h-20 md:h-24 lg:h-28 xl:h-32
+                    w-20 xs:w-22 sm:w-24 md:w-28 lg:w-32 xl:w-36
+                    bg-white/95 backdrop-blur-sm
+                    rounded-lg sm:rounded-xl md:rounded-2xl
+                    p-2 xs:p-2.5 sm:p-3 md:p-4 lg:p-5
+                    shadow-lg shadow-black/10
+                    border border-white/20
+                    transition-all duration-500 ease-out
+                    hover:scale-105 hover:shadow-2xl hover:shadow-primary/20
+                    hover:bg-white
+                    hover:-translate-y-2
+                    group-hover:border-primary/30
+                  ">
+                    {/* Subtle gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    {/* Logo container */}
+                    <div className="relative h-full w-full z-10">
+                      <Image
+                        src={partner.logo}
+                        alt={partner.name}
+                        fill
+                        loading="lazy"
+                        sizes="
+                          (max-width: 480px) 80px,
+                          (max-width: 640px) 96px, 
+                          (max-width: 768px) 112px, 
+                          (max-width: 1024px) 128px, 
+                          144px"
+                        className="object-contain transition-all duration-500 group-hover:scale-110"
+                      />
+                    </div>
+                    
+                    {/* Hover effect ring */}
+                    <div className="absolute inset-0 rounded-xl sm:rounded-2xl ring-2 ring-transparent group-hover:ring-primary/20 transition-all duration-500"></div>
                   </div>
-                  
-                  {/* Hover effect ring */}
-                  <div className="absolute inset-0 rounded-xl sm:rounded-2xl ring-2 ring-transparent group-hover:ring-primary/20 transition-all duration-500"></div>
                 </div>
-              </div>
-            ))}
-          </Marquee>
-          
+              ))}
+            </Marquee>
+            
             {/* Gradient fade edges */}
             <div className="absolute left-0 top-0 w-8 sm:w-12 md:w-16 lg:w-20 h-full bg-gradient-to-r from-background-200 to-transparent z-10 pointer-events-none"></div>
             <div className="absolute right-0 top-0 w-8 sm:w-12 md:w-16 lg:w-20 h-full bg-gradient-to-l from-background-200 to-transparent z-10 pointer-events-none"></div>
@@ -432,8 +348,6 @@ export default function PartnersSection() {
             <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
           </button>
         </div>
-
-
 
         {/* Enhanced decorative elements */}
         <div className="flex justify-center mt-8 md:mt-12">
