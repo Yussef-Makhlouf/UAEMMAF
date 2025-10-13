@@ -20,8 +20,8 @@ export default function Footer() {
               <Image 
                 src="/virt-logo.svg" 
                 alt="UAEMMAF Logo" 
-                width={120} 
-                height={120}
+                width={216} 
+                height={216}
                 loading="lazy"
                 // className="w-auto h-8 sm:h-10"
               />
